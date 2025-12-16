@@ -72,7 +72,8 @@ export const DocumentEditor: React.FC = () => {
     c.documents.map(d => ({ ...d, caseTitle: c.title, caseId: c.id }))
   ).filter(d => 
     d.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    d.caseTitle.toLowerCase().includes(searchTerm.toLowerCase())
+    d.caseTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    d.content.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Get the actual stored document to access versions

@@ -30,67 +30,134 @@ interface LegalStoreContextType {
 
 const LegalStoreContext = createContext<LegalStoreContextType | undefined>(undefined);
 
+// Default Data
+const DEFAULT_FIRM_PROFILE: FirmProfile = {
+  name: 'LexiNaija Chambers',
+  address: '12 Victoria Island, Lagos',
+  email: 'info@lexinaija.com',
+  phone: '0800-LEXI-NAIJA',
+  solicitorName: 'A. I. Lawyer, Esq.'
+};
+
+const DEFAULT_CLIENTS: Client[] = [
+  { id: '1', name: 'Musa Properties Ltd', type: 'Corporate', email: 'info@musaproperties.ng', phone: '08031234567', address: '45, Adetokunbo Ademola, VI, Lagos', dateAdded: new Date() },
+  { id: '2', name: 'Chief Emeka Okonkwo', type: 'Individual', email: 'emeka.okonkwo@email.com', phone: '09098765432', address: '12, Wuse 2, Abuja', dateAdded: new Date() }
+];
+
+const DEFAULT_CASES: Case[] = [
+  { 
+    id: '101', 
+    clientId: '1', 
+    title: 'Tenancy Recovery - 15 Awolowo Way', 
+    suitNumber: 'MC/L/123/2024', 
+    court: 'Magistrate Court, Yaba', 
+    status: 'Pending Court', 
+    nextHearing: '2024-05-20', 
+    notes: 'Tenant has not paid for 2 years. Statutory notices served.',
+    opposingParty: 'Mr. Johnson Chukwuma',
+    documents: [],
+    billableItems: [
+      { id: 'b1', description: 'Consultation Fee', amount: 50000, date: new Date('2024-01-15'), type: 'Professional Fee' },
+      { id: 'b2', description: 'Filing of Writ of Summons', amount: 25000, date: new Date('2024-02-01'), type: 'Expense' }
+    ],
+    evidence: [
+      {
+        id: 'ev1',
+        description: 'Tenancy Agreement dated 2020',
+        type: 'Document',
+        dateObtained: new Date('2020-01-01'),
+        isReliedUpon: true,
+        custodyLocation: 'Original with Client'
+      },
+      {
+        id: 'ev2',
+        description: 'Notice to Quit (Duplicate Copy)',
+        type: 'Document',
+        dateObtained: new Date('2023-11-01'),
+        isReliedUpon: true,
+        custodyLocation: 'Case File'
+      }
+    ]
+  }
+];
+
+const DEFAULT_INVOICES: Invoice[] = [
+  { id: '1001', clientId: '1', caseId: '101', amount: 75000, description: 'Professional fees for consultation and filing of recovery action.', status: 'Sent', date: new Date() }
+];
+
+const DEFAULT_TASKS: Task[] = [
+    { id: 't1', title: 'File Motion Ex-Parte', dueDate: new Date('2024-05-18'), priority: 'High', status: 'Pending', caseId: '101' },
+    { id: 't2', title: 'Call Client for Updates', dueDate: new Date('2024-05-19'), priority: 'Low', status: 'Pending', caseId: '101' }
+];
+
+// JSON Date Reviver
+const dateReviver = (key: string, value: any) => {
+  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) {
+    return new Date(value);
+  }
+  return value;
+};
+
 export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [firmProfile, setFirmProfile] = useState<FirmProfile>({
-    name: 'LexiNaija Chambers',
-    address: '12 Victoria Island, Lagos',
-    email: 'info@lexinaija.com',
-    phone: '0800-LEXI-NAIJA',
-    solicitorName: 'A. I. Lawyer, Esq.'
+  // Initialize State with LocalStorage or Defaults
+  const [firmProfile, setFirmProfile] = useState<FirmProfile>(() => {
+    try {
+      const saved = localStorage.getItem('lexinaija_firmProfile');
+      return saved ? JSON.parse(saved) : DEFAULT_FIRM_PROFILE;
+    } catch (e) { return DEFAULT_FIRM_PROFILE; }
+  });
+
+  const [clients, setClients] = useState<Client[]>(() => {
+    try {
+      const saved = localStorage.getItem('lexinaija_clients');
+      return saved ? JSON.parse(saved, dateReviver) : DEFAULT_CLIENTS;
+    } catch (e) { return DEFAULT_CLIENTS; }
+  });
+
+  const [cases, setCases] = useState<Case[]>(() => {
+    try {
+      const saved = localStorage.getItem('lexinaija_cases');
+      return saved ? JSON.parse(saved, dateReviver) : DEFAULT_CASES;
+    } catch (e) { return DEFAULT_CASES; }
+  });
+
+  const [invoices, setInvoices] = useState<Invoice[]>(() => {
+    try {
+      const saved = localStorage.getItem('lexinaija_invoices');
+      return saved ? JSON.parse(saved, dateReviver) : DEFAULT_INVOICES;
+    } catch (e) { return DEFAULT_INVOICES; }
+  });
+
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    try {
+      const saved = localStorage.getItem('lexinaija_tasks');
+      return saved ? JSON.parse(saved, dateReviver) : DEFAULT_TASKS;
+    } catch (e) { return DEFAULT_TASKS; }
   });
 
   const [activeDoc, setActiveDoc] = useState<{ caseId: string; docId: string } | null>(null);
 
-  const [clients, setClients] = useState<Client[]>([
-    { id: '1', name: 'Musa Properties Ltd', type: 'Corporate', email: 'info@musaproperties.ng', phone: '08031234567', address: '45, Adetokunbo Ademola, VI, Lagos', dateAdded: new Date() },
-    { id: '2', name: 'Chief Emeka Okonkwo', type: 'Individual', email: 'emeka.okonkwo@email.com', phone: '09098765432', address: '12, Wuse 2, Abuja', dateAdded: new Date() }
-  ]);
+  // Persist State Changes
+  useEffect(() => {
+    localStorage.setItem('lexinaija_firmProfile', JSON.stringify(firmProfile));
+  }, [firmProfile]);
 
-  const [cases, setCases] = useState<Case[]>([
-    { 
-      id: '101', 
-      clientId: '1', 
-      title: 'Tenancy Recovery - 15 Awolowo Way', 
-      suitNumber: 'MC/L/123/2024', 
-      court: 'Magistrate Court, Yaba', 
-      status: 'Pending Court', 
-      nextHearing: '2024-05-20', 
-      notes: 'Tenant has not paid for 2 years. Statutory notices served.',
-      opposingParty: 'Mr. Johnson Chukwuma',
-      documents: [],
-      billableItems: [
-        { id: 'b1', description: 'Consultation Fee', amount: 50000, date: new Date('2024-01-15'), type: 'Professional Fee' },
-        { id: 'b2', description: 'Filing of Writ of Summons', amount: 25000, date: new Date('2024-02-01'), type: 'Expense' }
-      ],
-      evidence: [
-        {
-          id: 'ev1',
-          description: 'Tenancy Agreement dated 2020',
-          type: 'Document',
-          dateObtained: new Date('2020-01-01'),
-          isReliedUpon: true,
-          custodyLocation: 'Original with Client'
-        },
-        {
-          id: 'ev2',
-          description: 'Notice to Quit (Duplicate Copy)',
-          type: 'Document',
-          dateObtained: new Date('2023-11-01'),
-          isReliedUpon: true,
-          custodyLocation: 'Case File'
-        }
-      ]
-    }
-  ]);
+  useEffect(() => {
+    localStorage.setItem('lexinaija_clients', JSON.stringify(clients));
+  }, [clients]);
 
-  const [invoices, setInvoices] = useState<Invoice[]>([
-    { id: '1001', clientId: '1', caseId: '101', amount: 75000, description: 'Professional fees for consultation and filing of recovery action.', status: 'Sent', date: new Date() }
-  ]);
+  useEffect(() => {
+    localStorage.setItem('lexinaija_cases', JSON.stringify(cases));
+  }, [cases]);
 
-  const [tasks, setTasks] = useState<Task[]>([
-      { id: 't1', title: 'File Motion Ex-Parte', dueDate: new Date('2024-05-18'), priority: 'High', status: 'Pending', caseId: '101' },
-      { id: 't2', title: 'Call Client for Updates', dueDate: new Date('2024-05-19'), priority: 'Low', status: 'Pending', caseId: '101' }
-  ]);
+  useEffect(() => {
+    localStorage.setItem('lexinaija_invoices', JSON.stringify(invoices));
+  }, [invoices]);
+
+  useEffect(() => {
+    localStorage.setItem('lexinaija_tasks', JSON.stringify(tasks));
+  }, [tasks]);
+
 
   const updateFirmProfile = (profile: FirmProfile) => setFirmProfile(profile);
 
@@ -289,6 +356,8 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
 export const useLegalStore = () => {
   const context = useContext(LegalStoreContext);
-  if (!context) throw new Error("useLegalStore must be used within a LegalStoreProvider");
+  if (context === undefined) {
+    throw new Error('useLegalStore must be used within a LegalStoreProvider');
+  }
   return context;
 };

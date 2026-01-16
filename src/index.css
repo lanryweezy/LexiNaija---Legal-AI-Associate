@@ -10,10 +10,13 @@
   --color-legal-goldLight: #FBBF24;
 }
 
-body {
-  font-family: var(--font-sans);
-}
-
-.legal-serif {
-  font-family: var(--font-serif);
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    background-color: #f8fafc;
+  }
+  
+  .legal-serif {
+    font-family: var(--font-serif);
+  }
 }

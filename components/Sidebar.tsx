@@ -1,5 +1,5 @@
 import React from 'react';
-import { Scale, BookOpen, PenTool, LayoutDashboard, ShieldCheck, Users, Briefcase, CreditCard, FileText, Calendar, ShieldAlert, Settings, Calculator, Library, List, BrainCircuit, Archive, UserCheck, Feather, Building2 } from 'lucide-react';
+import { Scale, BookOpen, PenTool, LayoutDashboard, ShieldCheck, Users, Briefcase, CreditCard, FileText, Calendar, ShieldAlert, Settings, Calculator, Library, List, BrainCircuit, Archive, UserCheck, Feather, Building2, BarChart3 } from 'lucide-react';
 import { AppView } from '../types';
 
 interface SidebarProps {
@@ -10,6 +10,7 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
   const practiceItems = [
     { id: AppView.DASHBOARD, label: 'Dashboard', icon: LayoutDashboard },
+    { id: AppView.ANALYTICS, label: 'Analytics', icon: BarChart3 },
     { id: AppView.DOCKET, label: 'Court Diary & Tasks', icon: Calendar },
     { id: AppView.CASES, label: 'Case Files', icon: Briefcase },
     { id: AppView.EVIDENCE, label: 'Evidence & Exhibits', icon: Archive },

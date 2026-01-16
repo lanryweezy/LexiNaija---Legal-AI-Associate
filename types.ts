@@ -17,7 +17,8 @@ export enum AppView {
   EVIDENCE = 'EVIDENCE',
   WITNESS = 'WITNESS',
   BRIEFS = 'BRIEFS',
-  CORPORATE = 'CORPORATE'
+  CORPORATE = 'CORPORATE',
+  ANALYTICS = 'ANALYTICS'
 }
 
 export interface ChatMessage {
@@ -127,4 +128,35 @@ export interface FirmProfile {
   email: string;
   phone: string;
   solicitorName: string;
+}
+
+export interface LegalAnalytics {
+  totalCases: number;
+  activeCases: number;
+  closedCases: number;
+  totalClients: number;
+  totalRevenue: number;
+  averageCaseValue: number;
+  caseStatusDistribution: {
+    Open: number;
+    'Pending Court': number;
+    Closed: number;
+    Drafting: number;
+  };
+  monthlyRevenue: {
+    month: string;
+    revenue: number;
+    cases: number;
+  }[];
+  topClients: {
+    clientId: string;
+    clientName: string;
+    totalRevenue: number;
+    caseCount: number;
+  }[];
+  caseTypes: {
+    type: string;
+    count: number;
+    avgValue: number;
+  }[];
 }

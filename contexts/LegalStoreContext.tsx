@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Client, Case, Invoice, SavedDocument, DocumentVersion, BillableItem, Task, FirmProfile, EvidenceItem } from '../types';
+import { Client, Case, Invoice, SavedDocument, DocumentVersion, BillableItem, Task, FirmProfile, EvidenceItem, LegalAnalytics } from '../types';
 
 interface LegalStoreContextType {
   firmProfile: FirmProfile;
@@ -25,6 +25,7 @@ interface LegalStoreContextType {
   deleteTask: (id: string) => void;
   addEvidence: (caseId: string, item: EvidenceItem) => void;
   deleteEvidence: (caseId: string, evidenceId: string) => void;
+  getAnalytics: () => LegalAnalytics;
 }
 
 const LegalStoreContext = createContext<LegalStoreContextType | undefined>(undefined);
@@ -185,13 +186,101 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setTasks(tasks.filter(t => t.id !== id));
   };
 
+  const getAnalytics = (): LegalAnalytics => {
+    const totalCases = cases.length;
+    const activeCases = cases.filter(c => c.status === 'Open' || c.status === 'Pending Court' || c.status === 'Drafting').length;
+    const closedCases = cases.filter(c => c.status === 'Closed').length;
+    const totalClients = clients.length;
+    const totalRevenue = invoices.reduce((sum, inv) => sum + inv.amount, 0);
+    const averageCaseValue = totalCases > 0 ? totalRevenue / totalCases : 0;
+
+    const caseStatusDistribution = {
+      Open: cases.filter(c => c.status === 'Open').length,
+      'Pending Court': cases.filter(c => c.status === 'Pending Court').length,
+      Closed: closedCases,
+      Drafting: cases.filter(c => c.status === 'Drafting').length,
+    };
+
+    // Generate monthly revenue data for the last 6 months
+    const monthlyRevenue = [];
+    const currentDate = new Date();
+    for (let i = 5; i >= 0; i--) {
+      const month = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+      const monthName = month.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      const monthInvoices = invoices.filter(inv => {
+        const invDate = new Date(inv.date);
+        return invDate.getMonth() === month.getMonth() && invDate.getFullYear() === month.getFullYear();
+      });
+      const revenue = monthInvoices.reduce((sum, inv) => sum + inv.amount, 0);
+      const casesCount = monthInvoices.length;
+      monthlyRevenue.push({ month: monthName, revenue, cases: casesCount });
+    }
+
+    // Calculate top clients by revenue
+    const clientRevenue = new Map<string, { name: string; revenue: number; cases: number }>();
+    invoices.forEach(inv => {
+      const client = clients.find(c => c.id === inv.clientId);
+      if (client) {
+        const existing = clientRevenue.get(inv.clientId) || { name: client.name, revenue: 0, cases: 0 };
+        existing.revenue += inv.amount;
+        existing.cases += 1;
+        clientRevenue.set(inv.clientId, existing);
+      }
+    });
+
+    const topClients = Array.from(clientRevenue.entries())
+      .map(([clientId, data]) => ({
+        clientId,
+        clientName: data.name,
+        totalRevenue: data.revenue,
+        caseCount: data.cases,
+      }))
+      .sort((a, b) => b.totalRevenue - a.totalRevenue)
+      .slice(0, 5);
+
+    // Calculate case types based on case titles
+    const caseTypes = new Map<string, { count: number; totalValue: number }>();
+    cases.forEach(c => {
+      const type = c.title.includes('Tenancy') ? 'Tenancy' : 
+                   c.title.includes('Contract') ? 'Contract' :
+                   c.title.includes('Corporate') ? 'Corporate' :
+                   c.title.includes('Divorce') ? 'Family' :
+                   c.title.includes('Criminal') ? 'Criminal' : 'General';
+      
+      const existing = caseTypes.get(type) || { count: 0, totalValue: 0 };
+      existing.count += 1;
+      const caseInvoices = invoices.filter(inv => inv.caseId === c.id);
+      existing.totalValue += caseInvoices.reduce((sum, inv) => sum + inv.amount, 0);
+      caseTypes.set(type, existing);
+    });
+
+    const caseTypesArray = Array.from(caseTypes.entries()).map(([type, data]) => ({
+      type,
+      count: data.count,
+      avgValue: data.count > 0 ? data.totalValue / data.count : 0,
+    }));
+
+    return {
+      totalCases,
+      activeCases,
+      closedCases,
+      totalClients,
+      totalRevenue,
+      averageCaseValue,
+      caseStatusDistribution,
+      monthlyRevenue,
+      topClients,
+      caseTypes: caseTypesArray,
+    };
+  };
+
   return (
     <LegalStoreContext.Provider value={{ 
       firmProfile, clients, cases, invoices, tasks, activeDoc,
       updateFirmProfile, addClient, updateClient, deleteClient, 
       addCase, updateCase, deleteCase, addInvoice, 
       saveDocumentToCase, updateCaseDocument, addBillableItem, 
-      addTask, updateTask, deleteTask, addEvidence, deleteEvidence, setActiveDoc 
+      addTask, updateTask, deleteTask, addEvidence, deleteEvidence, setActiveDoc, getAnalytics 
     }}>
       {children}
     </LegalStoreContext.Provider>

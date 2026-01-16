@@ -19,6 +19,7 @@ import { Evidence } from './components/Evidence';
 import { Witness } from './components/Witness';
 import { Briefs } from './components/Briefs';
 import { Corporate } from './components/Corporate';
+import { Analytics } from './components/Analytics';
 import { AppView } from './types';
 import { LegalStoreProvider } from './contexts/LegalStoreContext';
 
@@ -65,6 +66,8 @@ function App() {
         return <Briefs />;
       case AppView.CORPORATE:
         return <Corporate />;
+      case AppView.ANALYTICS:
+        return <Analytics />;
       default:
         return <Dashboard onNavigate={setCurrentView} />;
     }

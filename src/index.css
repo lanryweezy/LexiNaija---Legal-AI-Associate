@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: 'Merriweather', serif;
+  --font-sans: 'Inter', sans-serif;
+  --color-legal-900: #0F172A; /* Navy */
+  --color-legal-800: #1E293B;
+  --color-legal-700: #334155;
+  --color-legal-gold: #D97706;
+  --color-legal-goldLight: #FBBF24;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+.legal-serif {
+  font-family: var(--font-serif);
+}

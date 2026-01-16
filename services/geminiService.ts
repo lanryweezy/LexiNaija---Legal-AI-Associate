@@ -63,7 +63,82 @@ Further review of specific case law in the Nigerian Weekly Law Reports (NWLR) is
 
 export const draftContract = async (params: ContractParams): Promise<string> => {
   await delay(2000);
+  const type = params.type.toLowerCase();
 
+  // --- TENANCY AGREEMENT ---
+  if (type.includes('tenancy') || type.includes('lease')) {
+    return `**TENANCY AGREEMENT**
+
+**THIS AGREEMENT** is made this ____ day of ________, 20____.
+
+**BETWEEN:**
+
+**${params.partyA}** (The LANDLORD) of [Address].
+AND
+**${params.partyB}** (The TENANT) of [Address].
+
+**PREMISES:** [Description of Property] at [Address].
+**RENT:** N................ per annum.
+**TERM:** [Duration] commencing on [Date].
+
+**1. THE TENANT COVENANTS:**
+(a) To pay the rent reserved in advance.
+(b) To keep the interior of the premises in good and tenantable repair.
+(c) Not to assign or sublet the premises without the written consent of the Landlord.
+(d) To pay all utility bills including electricity and waste disposal.
+
+**2. THE LANDLORD COVENANTS:**
+(a) That the Tenant paying the rent shall peaceably hold and enjoy the premises.
+(b) To keep the main structure, roof, and walls in good repair.
+
+**3. KEY TERMS:**
+${params.keyTerms}
+
+**4. TERMINATION:**
+This tenancy shall be determined by serving [Notice Period] notice in writing.
+
+**5. JURISDICTION:**
+This Agreement is governed by the Tenancy Law of ${params.jurisdiction}.
+
+**IN WITNESS WHEREOF** the parties have set their hands.
+
+____________________        ____________________
+**LANDLORD**                **TENANT**`;
+  }
+
+  // --- EMPLOYMENT CONTRACT ---
+  if (type.includes('employment') || type.includes('staff') || type.includes('contract of service')) {
+    return `**CONTRACT OF EMPLOYMENT**
+
+**EMPLOYER:** ${params.partyA}
+**EMPLOYEE:** ${params.partyB}
+**DATE:** ${new Date().toLocaleDateString()}
+
+**1. APPOINTMENT**
+The Employer hereby employs the Employee in the capacity of [Job Title].
+
+**2. COMMENCEMENT & PROBATION**
+Employment commences on [Date] and is subject to a probation period of [Months].
+
+**3. DUTIES**
+The Employee shall perform such duties as are customary for this position and as directed by the Employer.
+
+**4. REMUNERATION**
+Salary: N................ per annum/month.
+
+**5. SPECIFIC TERMS:**
+${params.keyTerms}
+
+**6. GOVERNING LAW:**
+This contract is governed by the Labour Act and laws of Nigeria.
+
+**SIGNED:**
+
+____________________        ____________________
+**EMPLOYER**                **EMPLOYEE**`;
+  }
+
+  // --- GENERIC / DEFAULT ---
   return `**${params.type.toUpperCase()}**
 
 **THIS AGREEMENT** is made this ____ day of ________, 20____.
@@ -112,8 +187,7 @@ Signature: _______________
 by the within named **${params.partyB}**
 
 _________________________
-Signature
-`;
+Signature`;
 };
 
 export const getClauseSuggestions = async (contractType: string): Promise<string[]> => {

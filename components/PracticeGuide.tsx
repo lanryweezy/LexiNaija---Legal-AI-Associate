@@ -12,6 +12,7 @@ interface Guide {
 }
 
 const GUIDES: Guide[] = [
+  // --- PROPERTY ---
   {
     id: 'g1',
     category: 'Property',
@@ -31,6 +32,8 @@ const GUIDES: Guide[] = [
       'Collection of Perfected Deed.'
     ]
   },
+  
+  // --- CORPORATE ---
   {
     id: 'g2',
     category: 'Corporate',
@@ -50,6 +53,23 @@ const GUIDES: Guide[] = [
   },
   {
     id: 'g3',
+    category: 'Corporate',
+    title: 'Trademark Registration',
+    description: 'Procedure for registering a trademark in Nigeria.',
+    steps: [
+      'Conduct availability search at the Trademarks, Patents and Designs Registry.',
+      'File Application for Registration (Form 01) with the Registrar.',
+      'Receive Acknowledgement Letter (Official Receipt).',
+      'Receive Acceptance Letter (if trademark is distinctive and not deceptive).',
+      'Publication in the Trademarks Journal for opposition (2 months window).',
+      'If no opposition, apply for Trademark Certificate.',
+      'Collection of Trademark Certificate.'
+    ]
+  },
+
+  // --- LITIGATION ---
+  {
+    id: 'g4',
     category: 'Litigation',
     title: 'Recovery of Premises (Lagos)',
     description: 'Statutory procedure for evicting tenants under the Tenancy Law of Lagos State.',
@@ -66,7 +86,7 @@ const GUIDES: Guide[] = [
     ]
   },
   {
-    id: 'g4',
+    id: 'g5',
     category: 'Litigation',
     title: 'Fundamental Rights Enforcement',
     description: 'Procedure under the FREP Rules 2009.',
@@ -82,7 +102,24 @@ const GUIDES: Guide[] = [
     ]
   },
   {
-    id: 'g5',
+    id: 'g6',
+    category: 'Litigation',
+    title: 'Bail Application (High Court)',
+    description: 'Procedure for applying for bail pending trial.',
+    steps: [
+      'File Motion on Notice for Bail.',
+      'Support with Affidavit stating facts (e.g., medical condition, credible sureties).',
+      'Attach exhibits (e.g., Medical Report, Charge Sheet).',
+      'File Written Address citing relevant authorities (e.g., ACJA 2015).',
+      'Serve the Prosecution/Complainant.',
+      'Move the application in Court.',
+      'If granted, perfect bail conditions (Sureties to verify address, etc.).'
+    ]
+  },
+
+  // --- FAMILY & PROBATE ---
+  {
+    id: 'g7',
     category: 'Family',
     title: 'Dissolution of Marriage (Divorce)',
     description: 'Petition for Decree Nisi/Absolute under Matrimonial Causes Act.',
@@ -97,145 +134,131 @@ const GUIDES: Guide[] = [
       'Judge grants Decree Nisi.',
       'Wait 3 months for Decree Absolute.'
     ]
+  },
+  {
+    id: 'g8',
+    category: 'Family',
+    title: 'Probate Application (Grant of Probate)',
+    description: 'Procedure for obtaining Grant of Probate (Testate).',
+    steps: [
+      'Search for the Will at the Probate Registry.',
+      'Reading of the Will to the beneficiaries.',
+      'Executors apply for Grant of Probate (Form 1, 2, 3, etc.).',
+      'Pay Estate Duty/Fees based on estate value.',
+      'Publication of Notice in Newspaper and Gazette.',
+      'Wait for 21 days (to allow for Caveats).',
+      'If no objection, Probate Registry issues Grant of Probate.'
+    ]
+  },
+
+  // --- GENERAL ---
+  {
+    id: 'g9',
+    category: 'General',
+    title: 'Change of Name (Deed Poll)',
+    description: 'Legal procedure for changing a name in Nigeria.',
+    steps: [
+      'Depose to an Affidavit of Change of Name at the High Court Registry.',
+      'Draft a Deed Poll reflecting the old and new names.',
+      'Publish the change of name in a National Newspaper.',
+      'Publish in the Official Gazette (optional but recommended for official use).',
+      'Update records with banks, NIMC, and other institutions.'
+    ]
   }
 ];
 
 export const PracticeGuide: React.FC = () => {
-  const { cases, addTask } = useLegalStore();
-  const [selectedGuide, setSelectedGuide] = useState<Guide | null>(null);
-  const [selectedCaseId, setSelectedCaseId] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [activeGuide, setActiveGuide] = useState<string | null>(null);
 
-  const categories = ['All', 'Property', 'Corporate', 'Litigation', 'Family'];
+  const categories = ['All', ...Array.from(new Set(GUIDES.map(g => g.category)))];
 
-  const filteredGuides = GUIDES.filter(g => categoryFilter === 'All' || g.category === categoryFilter);
-
-  const handleCreateTasks = () => {
-    if (!selectedGuide) return;
-    
-    // Create tasks for each step
-    const today = new Date();
-    selectedGuide.steps.forEach((step, index) => {
-        const dueDate = new Date(today);
-        dueDate.setDate(today.getDate() + (index + 1)); // Stagger dates by 1 day
-
-        addTask({
-            id: Date.now().toString() + index,
-            title: step,
-            dueDate: dueDate,
-            priority: 'Medium',
-            status: 'Pending',
-            caseId: selectedCaseId || undefined
-        });
-    });
-
-    alert(`Successfully created ${selectedGuide.steps.length} tasks in your Docket.`);
-    setSelectedGuide(null);
-    setSelectedCaseId('');
-  };
+  const filteredGuides = selectedCategory === 'All' 
+    ? GUIDES 
+    : GUIDES.filter(g => g.category === selectedCategory);
 
   return (
-    <div className="p-8 max-w-7xl mx-auto h-[calc(100vh-2rem)] flex flex-col">
-      <div className="mb-6">
-        <h2 className="text-2xl font-serif font-bold text-legal-900">Practice Guides & Procedures</h2>
-        <p className="text-gray-500 text-sm mt-1">Standard Operating Procedures (SOPs) for Nigerian legal practice.</p>
+    <div className="p-8 max-w-7xl mx-auto h-screen flex flex-col">
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h2 className="text-3xl font-serif font-bold text-legal-900">Practice Guides</h2>
+          <p className="text-gray-600 mt-2">Step-by-step procedural guides for Nigerian law practice.</p>
+        </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-6 h-full overflow-hidden">
-        {/* Sidebar List */}
-        <div className="w-full md:w-1/3 flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="p-4 border-b border-gray-100 flex gap-2 overflow-x-auto scrollbar-hide">
-                {categories.map(cat => (
-                    <button 
-                        key={cat}
-                        onClick={() => setCategoryFilter(cat)}
-                        className={`px-3 py-1 text-xs font-bold rounded-full border whitespace-nowrap transition-colors ${categoryFilter === cat ? 'bg-legal-900 text-white border-legal-900' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`}
-                    >
-                        {cat}
-                    </button>
-                ))}
-            </div>
-            <div className="flex-1 overflow-y-auto">
-                {filteredGuides.map(guide => (
-                    <button
-                        key={guide.id}
-                        onClick={() => setSelectedGuide(guide)}
-                        className={`w-full text-left p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors flex items-start gap-3 ${selectedGuide?.id === guide.id ? 'bg-legal-50 border-l-4 border-l-legal-gold' : 'border-l-4 border-l-transparent'}`}
-                    >
-                        <div className="mt-1 text-legal-500 shrink-0">
-                            {guide.category === 'Property' ? <Home size={18}/> : 
-                             guide.category === 'Corporate' ? <Building2 size={18}/> :
-                             guide.category === 'Litigation' ? <Scale size={18}/> :
-                             guide.category === 'Family' ? <User size={18}/> : <Book size={18}/>}
-                        </div>
-                        <div>
-                            <h3 className={`font-bold text-sm ${selectedGuide?.id === guide.id ? 'text-legal-900' : 'text-gray-700'}`}>{guide.title}</h3>
-                            <p className="text-xs text-gray-400 mt-1 line-clamp-2">{guide.description}</p>
-                        </div>
-                    </button>
-                ))}
-            </div>
+      <div className="flex gap-6 flex-1 overflow-hidden">
+        {/* Sidebar Categories */}
+        <div className="w-64 flex-shrink-0 bg-white rounded-lg shadow-sm border border-gray-200 p-4 h-fit">
+          <h3 className="font-semibold text-gray-700 mb-4 px-2">Categories</h3>
+          <div className="space-y-1">
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                  selectedCategory === cat 
+                    ? 'bg-legal-50 text-legal-900 font-medium' 
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Detail View */}
-        <div className="flex-1 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col overflow-hidden">
-            {selectedGuide ? (
-                <>
-                    <div className="p-6 border-b border-gray-100 bg-gray-50">
-                        <div className="flex items-center gap-2 mb-2">
-                             <span className="text-[10px] font-bold uppercase tracking-wider bg-white px-2 py-0.5 rounded border border-gray-200 text-gray-500">{selectedGuide.category}</span>
-                        </div>
-                        <h2 className="text-2xl font-serif font-bold text-legal-900">{selectedGuide.title}</h2>
-                        <p className="text-gray-600 mt-2 text-sm">{selectedGuide.description}</p>
+        {/* Main Content */}
+        <div className="flex-1 overflow-y-auto pr-2 pb-4">
+          <div className="grid grid-cols-1 gap-4">
+            {filteredGuides.map(guide => (
+              <div 
+                key={guide.id}
+                className={`bg-white rounded-lg shadow-sm border transition-all duration-200 ${
+                  activeGuide === guide.id ? 'border-legal-gold ring-1 ring-legal-gold' : 'border-gray-200'
+                }`}
+              >
+                <div 
+                  onClick={() => setActiveGuide(activeGuide === guide.id ? null : guide.id)}
+                  className="p-5 cursor-pointer flex justify-between items-center"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className={`p-2 rounded-lg ${
+                      guide.category === 'Property' ? 'bg-orange-100 text-orange-600' :
+                      guide.category === 'Corporate' ? 'bg-blue-100 text-blue-600' :
+                      guide.category === 'Litigation' ? 'bg-red-100 text-red-600' :
+                      'bg-purple-100 text-purple-600'
+                    }`}>
+                      {guide.category === 'Property' && <Home className="w-5 h-5" />}
+                      {guide.category === 'Corporate' && <Building2 className="w-5 h-5" />}
+                      {guide.category === 'Litigation' && <Scale className="w-5 h-5" />}
+                      {guide.category === 'Family' && <User className="w-5 h-5" />}
+                      {guide.category === 'General' && <CheckSquare className="w-5 h-5" />}
                     </div>
-
-                    <div className="flex-1 overflow-y-auto p-6">
-                        <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                            <ListChecks className="text-legal-gold" size={20}/> Procedural Checklist
-                        </h3>
-                        <div className="space-y-4">
-                            {selectedGuide.steps.map((step, idx) => (
-                                <div key={idx} className="flex gap-4">
-                                    <div className="w-6 h-6 rounded-full bg-legal-100 text-legal-800 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
-                                        {idx + 1}
-                                    </div>
-                                    <p className="text-gray-700 text-sm leading-relaxed border-b border-gray-100 pb-2 w-full">{step}</p>
-                                </div>
-                            ))}
-                        </div>
+                    <div>
+                      <h3 className="font-serif font-bold text-legal-900 text-lg">{guide.title}</h3>
+                      <p className="text-sm text-gray-500">{guide.description}</p>
                     </div>
-
-                    <div className="p-6 border-t border-gray-100 bg-gray-50">
-                        <h4 className="font-bold text-sm text-gray-700 mb-2">Convert to Actionable Tasks</h4>
-                        <div className="flex gap-4 items-center">
-                            <div className="flex-1">
-                                <select 
-                                    value={selectedCaseId} 
-                                    onChange={e => setSelectedCaseId(e.target.value)}
-                                    className="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-legal-gold outline-none"
-                                >
-                                    <option value="">-- Associate with a Case (Optional) --</option>
-                                    {cases.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
-                                </select>
-                            </div>
-                            <button 
-                                onClick={handleCreateTasks}
-                                className="bg-legal-900 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-legal-800 flex items-center gap-2"
-                            >
-                                <CheckSquare size={16} /> Import to Docket
-                            </button>
-                        </div>
-                        <p className="text-xs text-gray-400 mt-2">
-                            This will create {selectedGuide.steps.length} pending tasks in your Court Diary.
-                        </p>
-                    </div>
-                </>
-            ) : (
-                <div className="flex-1 flex flex-col items-center justify-center text-gray-300 p-8">
-                    <ShieldCheck className="w-16 h-16 mb-4 opacity-20" />
-                    <p className="text-lg font-medium text-gray-400">Select a guide to view procedure</p>
+                  </div>
+                  <ChevronRight className={`w-5 h-5 text-gray-400 transition-transform ${activeGuide === guide.id ? 'rotate-90' : ''}`} />
                 </div>
-            )}
+
+                {activeGuide === guide.id && (
+                  <div className="px-5 pb-5 pt-0 border-t border-gray-100 bg-gray-50/50">
+                    <div className="mt-4 space-y-3">
+                      {guide.steps.map((step, index) => (
+                        <div key={index} className="flex items-start gap-3 p-2 rounded hover:bg-white transition-colors">
+                          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-legal-100 text-legal-700 flex items-center justify-center text-xs font-bold mt-0.5">
+                            {index + 1}
+                          </div>
+                          <p className="text-gray-700 text-sm leading-relaxed">{step}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

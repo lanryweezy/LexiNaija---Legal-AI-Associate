@@ -9,6 +9,10 @@ interface LegalStoreContextType {
   tasks: Task[];
   activeDoc: { caseId: string; docId: string } | null;
   setActiveDoc: (doc: { caseId: string; docId: string } | null) => void;
+  creditsTotal: number;
+  creditsUsed: number;
+  consumeCredits: (units: number) => boolean;
+  addCredits: (units: number) => void;
   updateFirmProfile: (profile: FirmProfile) => void;
   addClient: (client: Client) => void;
   updateClient: (id: string, data: Partial<Client>) => void;
@@ -29,6 +33,7 @@ interface LegalStoreContextType {
 }
 
 const LegalStoreContext = createContext<LegalStoreContextType | undefined>(undefined);
+const STORE_VERSION = '1';
 
 // Default Data
 const DEFAULT_FIRM_PROFILE: FirmProfile = {
@@ -137,7 +142,25 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const [activeDoc, setActiveDoc] = useState<{ caseId: string; docId: string } | null>(null);
 
+  const [creditsTotal, setCreditsTotal] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('lexinaija_credits_total');
+      return saved ? parseInt(saved) : 1000;
+    } catch (e) { return 1000; }
+  });
+
+  const [creditsUsed, setCreditsUsed] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('lexinaija_credits_used');
+      return saved ? parseInt(saved) : 0;
+    } catch (e) { return 0; }
+  });
+
   // Persist State Changes
+  useEffect(() => {
+    const v = localStorage.getItem('lexinaija_store_version');
+    if (!v) localStorage.setItem('lexinaija_store_version', STORE_VERSION);
+  }, []);
   useEffect(() => {
     localStorage.setItem('lexinaija_firmProfile', JSON.stringify(firmProfile));
   }, [firmProfile]);
@@ -158,8 +181,26 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     localStorage.setItem('lexinaija_tasks', JSON.stringify(tasks));
   }, [tasks]);
 
+  useEffect(() => {
+    localStorage.setItem('lexinaija_credits_total', String(creditsTotal));
+  }, [creditsTotal]);
+
+  useEffect(() => {
+    localStorage.setItem('lexinaija_credits_used', String(creditsUsed));
+  }, [creditsUsed]);
+
 
   const updateFirmProfile = (profile: FirmProfile) => setFirmProfile(profile);
+
+  const consumeCredits = (units: number) => {
+    if (creditsUsed + units > creditsTotal) return false;
+    setCreditsUsed(creditsUsed + units);
+    return true;
+  };
+
+  const addCredits = (units: number) => {
+    setCreditsTotal(creditsTotal + units);
+  };
 
   const addClient = (client: Client) => setClients([...clients, client]);
   
@@ -344,6 +385,7 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   return (
     <LegalStoreContext.Provider value={{ 
       firmProfile, clients, cases, invoices, tasks, activeDoc,
+      creditsTotal, creditsUsed, consumeCredits, addCredits,
       updateFirmProfile, addClient, updateClient, deleteClient, 
       addCase, updateCase, deleteCase, addInvoice, 
       saveDocumentToCase, updateCaseDocument, addBillableItem, 

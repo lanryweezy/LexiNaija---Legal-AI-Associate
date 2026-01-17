@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { Sidebar } from './components/Sidebar';
-import { Dashboard } from './components/Dashboard';
-import { Research } from './components/Research';
-import { Drafter } from './components/Drafter';
-import { Summarizer } from './components/Summarizer';
-import { Clients } from './components/Clients';
-import { Cases } from './components/Cases';
-import { Billing } from './components/Billing';
-import { DocumentEditor } from './components/DocumentEditor';
-import { Docket } from './components/Docket';
-import { Settings } from './components/Settings';
-import { ConflictCheck } from './components/ConflictCheck';
-import { Calculators } from './components/Calculators';
-import { Precedents } from './components/Precedents';
-import { PracticeGuide } from './components/PracticeGuide';
-import { Strategy } from './components/Strategy';
-import { Evidence } from './components/Evidence';
-import { Witness } from './components/Witness';
-import { Briefs } from './components/Briefs';
-import { Corporate } from './components/Corporate';
-import { Analytics } from './components/Analytics';
+const Dashboard = lazy(() => import('./components/Dashboard').then(m => ({ default: m.Dashboard })));
+const Research = lazy(() => import('./components/Research').then(m => ({ default: m.Research })));
+const Drafter = lazy(() => import('./components/Drafter').then(m => ({ default: m.Drafter })));
+const Summarizer = lazy(() => import('./components/Summarizer').then(m => ({ default: m.Summarizer })));
+const Clients = lazy(() => import('./components/Clients').then(m => ({ default: m.Clients })));
+const Cases = lazy(() => import('./components/Cases').then(m => ({ default: m.Cases })));
+const Billing = lazy(() => import('./components/Billing').then(m => ({ default: m.Billing })));
+const DocumentEditor = lazy(() => import('./components/DocumentEditor').then(m => ({ default: m.DocumentEditor })));
+const Docket = lazy(() => import('./components/Docket').then(m => ({ default: m.Docket })));
+const Settings = lazy(() => import('./components/Settings').then(m => ({ default: m.Settings })));
+const ConflictCheck = lazy(() => import('./components/ConflictCheck').then(m => ({ default: m.ConflictCheck })));
+const Calculators = lazy(() => import('./components/Calculators').then(m => ({ default: m.Calculators })));
+const Precedents = lazy(() => import('./components/Precedents').then(m => ({ default: m.Precedents })));
+const PracticeGuide = lazy(() => import('./components/PracticeGuide').then(m => ({ default: m.PracticeGuide })));
+const Strategy = lazy(() => import('./components/Strategy').then(m => ({ default: m.Strategy })));
+const Evidence = lazy(() => import('./components/Evidence').then(m => ({ default: m.Evidence })));
+const Witness = lazy(() => import('./components/Witness').then(m => ({ default: m.Witness })));
+const Briefs = lazy(() => import('./components/Briefs').then(m => ({ default: m.Briefs })));
+const Corporate = lazy(() => import('./components/Corporate').then(m => ({ default: m.Corporate })));
+const Analytics = lazy(() => import('./components/Analytics').then(m => ({ default: m.Analytics })));
 import { AppView } from './types';
 import { LegalStoreProvider } from './contexts/LegalStoreContext';
 
@@ -78,7 +78,9 @@ function App() {
       <div className="flex h-screen w-full bg-slate-50 font-sans text-slate-900">
         <Sidebar currentView={currentView} setView={setCurrentView} />
         <main className={`flex-1 ml-64 overflow-auto scrollbar-hide ${currentView === AppView.EDITOR || currentView === AppView.DOCKET || currentView === AppView.EVIDENCE || currentView === AppView.WITNESS || currentView === AppView.BRIEFS || currentView === AppView.CORPORATE ? 'bg-white' : ''}`}>
-          {renderView()}
+          <Suspense fallback={<div className="p-6 text-sm text-gray-600">Loading…</div>}>
+            {renderView()}
+          </Suspense>
         </main>
       </div>
     </LegalStoreProvider>

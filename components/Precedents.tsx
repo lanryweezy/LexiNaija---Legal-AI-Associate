@@ -13,6 +13,8 @@ interface Template {
   title: string;
   description: string;
   content: string;
+  jurisdiction?: string;
+  court?: string;
 }
 
 const TEMPLATES: Template[] = [
@@ -22,9 +24,11 @@ const TEMPLATES: Template[] = [
     category: 'Civil Litigation',
     title: 'Motion Ex-Parte for Substituted Service',
     description: 'Application to serve court processes by substitution (e.g. pasting at address).',
-    content: `# IN THE HIGH COURT OF LAGOS STATE
-# IN THE IKEJA JUDICIAL DIVISION
-# HOLDEN AT IKEJA
+    jurisdiction: 'Lagos State',
+    court: 'High Court',
+    content: `# [COURT]
+# [DIVISION]
+# HOLDEN AT [LOCATION]
 
 SUIT NO: ....................
 
@@ -57,8 +61,10 @@ Counsel to the Applicant
     category: 'Civil Litigation',
     title: 'Affidavit of Urgency',
     description: 'Supporting affidavit for urgent applications (e.g., Injunctions).',
-    content: `# IN THE HIGH COURT OF LAGOS STATE
-# HOLDEN AT LAGOS
+    jurisdiction: 'Lagos State',
+    court: 'High Court',
+    content: `# [COURT]
+# HOLDEN AT [LOCATION]
 
 SUIT NO: ....................
 
@@ -96,9 +102,11 @@ This ...... day of ...... 20....
     category: 'Civil Litigation',
     title: 'Writ of Summons (General)',
     description: 'Standard Writ of Summons for commencing civil actions.',
-    content: `# IN THE HIGH COURT OF LAGOS STATE
-# IN THE LAGOS JUDICIAL DIVISION
-# HOLDEN AT LAGOS
+    jurisdiction: 'Lagos State',
+    court: 'High Court',
+    content: `# [COURT]
+# [DIVISION]
+# HOLDEN AT [LOCATION]
 
 SUIT NO: ....................
 
@@ -143,6 +151,7 @@ Counsel to the Claimant
     category: 'Property',
     title: 'Notice to Quit (Generic)',
     description: 'Statutory notice to determine tenancy.',
+    jurisdiction: 'Generic',
     content: `[DATE]
 
 TO:
@@ -162,8 +171,9 @@ __________________________
   {
     id: 'prop2',
     category: 'Property',
-    title: '7 Days Notice of Owner\'s Intention',
+    title: "7 Days Notice of Owner's Intention",
     description: 'Notice to recover possession after expiry of Notice to Quit.',
+    jurisdiction: 'Generic',
     content: `[DATE]
 
 TO:
@@ -185,6 +195,7 @@ Owner / Solicitor`
     category: 'Property',
     title: 'Deed of Assignment (Land)',
     description: 'Transfer of title to land between Assignor and Assignee.',
+    jurisdiction: 'Generic',
     content: `**THIS DEED OF ASSIGNMENT** is made this ...... day of ...... 20....
 
 **BETWEEN**
@@ -229,6 +240,7 @@ Signature: ...............`
     category: 'Property',
     title: 'Tenancy Agreement (Residential)',
     description: 'Standard agreement for residential tenancy.',
+    jurisdiction: 'Generic',
     content: `**THIS TENANCY AGREEMENT** is made this .... day of .... 20....
 
 **BETWEEN**
@@ -267,6 +279,7 @@ ____________________        ____________________
     category: 'Corporate',
     title: 'Board Resolution (Generic)',
     description: 'Resolution of the Board of Directors for general matters.',
+    jurisdiction: 'Generic',
     content: `**BOARD RESOLUTION OF [COMPANY NAME] LTD**
 **Held at:** [Address]
 **On:** [Date]
@@ -294,6 +307,7 @@ __________________________      __________________________
     category: 'Corporate',
     title: 'Employment Contract',
     description: 'Standard contract of employment for staff.',
+    jurisdiction: 'Generic',
     content: `**CONTRACT OF EMPLOYMENT**
 
 **DATE:** [Date]
@@ -332,6 +346,7 @@ __________________________
     category: 'Corporate',
     title: 'Letter of Demand (Debt)',
     description: 'Formal demand for payment of outstanding debt.',
+    jurisdiction: 'Generic',
     content: `[FIRM LETTERHEAD]
 
 [DATE]
@@ -365,6 +380,7 @@ __________________________
     category: 'Family',
     title: 'Simple Will',
     description: 'Last Will and Testament for simple estate distribution.',
+    jurisdiction: 'Generic',
     content: `**THIS IS THE LAST WILL AND TESTAMENT** of me **[TESTATOR NAME]** of [Address].
 
 1. **REVOCATION:** I REVOKE all former Wills and testamentary dispositions made by me.
@@ -395,6 +411,7 @@ Signature: ...............`
     category: 'Family',
     title: 'Divorce Petition (Grounds)',
     description: 'Excerpt of grounds for dissolution of marriage.',
+    jurisdiction: 'Generic',
     content: `**GROUNDS FOR RELIEF**
 
 The Petitioner seeks a decree of dissolution of marriage on the ground that the marriage has broken down irretrievably in that:
@@ -416,15 +433,24 @@ export const Precedents: React.FC<PrecedentsProps> = ({ onNavigate }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [viewingTemplate, setViewingTemplate] = useState<Template | null>(null);
   const [copied, setCopied] = useState(false);
-  const { saveDocumentToCase, cases } = useLegalStore();
+  const { saveDocumentToCase, cases, setActiveDoc } = useLegalStore();
+  const [showUseModal, setShowUseModal] = useState(false);
+  const [useCaseId, setUseCaseId] = useState('');
+  const [useTitle, setUseTitle] = useState('');
+  const [selectedJurisdiction, setSelectedJurisdiction] = useState<string>('All');
+  const [selectedCourt, setSelectedCourt] = useState<string>('All');
 
   const categories = ['All', ...Array.from(new Set(TEMPLATES.map(t => t.category)))];
+  const jurisdictions = ['All', ...Array.from(new Set(TEMPLATES.map(t => t.jurisdiction).filter(Boolean))) as string[]];
+  const courts = ['All', ...Array.from(new Set(TEMPLATES.map(t => t.court).filter(Boolean))) as string[]];
 
   const filteredTemplates = TEMPLATES.filter(t => {
     const matchesCategory = selectedCategory === 'All' || t.category === selectedCategory;
     const matchesSearch = t.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                          t.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    const matchesJurisdiction = (selectedJurisdiction === 'All') || (t.jurisdiction === selectedJurisdiction);
+    const matchesCourt = (selectedCourt === 'All') || (t.court === selectedCourt);
+    return matchesCategory && matchesSearch && matchesJurisdiction && matchesCourt;
   });
 
   const handleCopy = () => {
@@ -436,14 +462,24 @@ export const Precedents: React.FC<PrecedentsProps> = ({ onNavigate }) => {
   };
 
   const handleUseTemplate = () => {
-    if (viewingTemplate) {
-        // Find 'Drafting' case or create a generic one? 
-        // Better to navigate to Editor with content
-        // For now, let's just copy and alert
-        handleCopy();
-        alert("Template copied to clipboard! You can paste this into the Document Editor.");
-        onNavigate(AppView.EDITOR);
-    }
+    if (!viewingTemplate) return;
+    setUseTitle(`${viewingTemplate.title} - Draft`);
+    setShowUseModal(true);
+  };
+
+  const confirmUseTemplate = () => {
+    if (!viewingTemplate || !useCaseId || !useTitle) return;
+    const newDocId = Date.now().toString();
+    saveDocumentToCase(useCaseId, {
+      id: newDocId,
+      title: useTitle,
+      content: viewingTemplate.content,
+      type: 'Draft',
+      createdAt: new Date()
+    });
+    setActiveDoc({ caseId: useCaseId, docId: newDocId });
+    setShowUseModal(false);
+    onNavigate(AppView.EDITOR);
   };
 
   return (
@@ -474,6 +510,24 @@ export const Precedents: React.FC<PrecedentsProps> = ({ onNavigate }) => {
               </button>
             ))}
           </div>
+          <div className="mt-6 space-y-2">
+            <label className="block text-xs font-semibold text-gray-500 px-2">Jurisdiction</label>
+            <select
+              className="w-full border border-gray-300 p-2 rounded"
+              value={selectedJurisdiction}
+              onChange={e => setSelectedJurisdiction(e.target.value)}
+            >
+              {jurisdictions.map(j => <option key={j} value={j}>{j}</option>)}
+            </select>
+            <label className="block text-xs font-semibold text-gray-500 px-2 mt-2">Court</label>
+            <select
+              className="w-full border border-gray-300 p-2 rounded"
+              value={selectedCourt}
+              onChange={e => setSelectedCourt(e.target.value)}
+            >
+              {courts.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
         </div>
 
         {/* Main Content */}
@@ -492,6 +546,11 @@ export const Precedents: React.FC<PrecedentsProps> = ({ onNavigate }) => {
 
           {!viewingTemplate ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto pr-2 pb-4">
+              {filteredTemplates.length === 0 && (
+                <div className="col-span-2 text-center text-sm text-gray-500 py-12">
+                  No templates match your filters. Try another category or search term.
+                </div>
+              )}
               {filteredTemplates.map(template => (
                 <div 
                   key={template.id}
@@ -506,6 +565,16 @@ export const Precedents: React.FC<PrecedentsProps> = ({ onNavigate }) => {
                   </div>
                   <h3 className="font-serif font-bold text-legal-900 mb-2">{template.title}</h3>
                   <p className="text-sm text-gray-500 line-clamp-2">{template.description}</p>
+                  {(template.jurisdiction || template.court) && (
+                    <div className="mt-3 flex gap-2">
+                      {template.jurisdiction && (
+                        <span className="px-2 py-0.5 text-xs bg-legal-50 text-legal-800 border border-legal-200 rounded">{template.jurisdiction}</span>
+                      )}
+                      {template.court && (
+                        <span className="px-2 py-0.5 text-xs bg-gray-50 text-gray-700 border border-gray-200 rounded">{template.court}</span>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -540,6 +609,16 @@ export const Precedents: React.FC<PrecedentsProps> = ({ onNavigate }) => {
               </div>
               <div className="flex-1 overflow-y-auto p-8 bg-gray-50">
                 <div className="max-w-3xl mx-auto bg-white p-12 shadow-sm min-h-full">
+                  {(viewingTemplate.jurisdiction || viewingTemplate.court) && (
+                    <div className="mb-4 flex gap-2">
+                      {viewingTemplate.jurisdiction && (
+                        <span className="px-2 py-0.5 text-xs bg-legal-50 text-legal-800 border border-legal-200 rounded">{viewingTemplate.jurisdiction}</span>
+                      )}
+                      {viewingTemplate.court && (
+                        <span className="px-2 py-0.5 text-xs bg-gray-50 text-gray-700 border border-gray-200 rounded">{viewingTemplate.court}</span>
+                      )}
+                    </div>
+                  )}
                   <pre className="whitespace-pre-wrap font-mono text-sm text-gray-800 leading-relaxed">
                     {viewingTemplate.content}
                   </pre>
@@ -549,6 +628,52 @@ export const Precedents: React.FC<PrecedentsProps> = ({ onNavigate }) => {
           )}
         </div>
       </div>
+      {showUseModal && viewingTemplate && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-lg text-legal-900">Use in Document Editor</h3>
+              <button onClick={() => setShowUseModal(false)} className="text-gray-400 hover:text-gray-600">✕</button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Select Matter</label>
+                <select 
+                  className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-legal-gold outline-none"
+                  value={useCaseId}
+                  onChange={e => setUseCaseId(e.target.value)}
+                >
+                  <option value="">-- Choose Case --</option>
+                  {cases.map(c => (
+                    <option key={c.id} value={c.id}>{c.title}</option>
+                  ))}
+                </select>
+                {cases.length === 0 && <p className="text-xs text-red-500 mt-1">No active cases found. Create a case first.</p>}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Document Title</label>
+                <input 
+                  type="text"
+                  className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-legal-gold outline-none"
+                  value={useTitle}
+                  onChange={e => setUseTitle(e.target.value)}
+                  placeholder={`e.g. ${viewingTemplate.title} - Draft 1`}
+                />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button onClick={() => setShowUseModal(false)} className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100">Cancel</button>
+                <button 
+                  onClick={confirmUseTemplate}
+                  disabled={!useCaseId || !useTitle}
+                  className="flex-1 px-4 py-2 text-sm font-medium text-white bg-legal-900 rounded-lg hover:bg-legal-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Use Template
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

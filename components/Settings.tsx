@@ -3,7 +3,7 @@ import { useLegalStore } from '../contexts/LegalStoreContext';
 import { Save, Building, Mail, Phone, User, ShieldCheck } from 'lucide-react';
 
 export const Settings: React.FC = () => {
-  const { firmProfile, updateFirmProfile } = useLegalStore();
+  const { firmProfile, updateFirmProfile, creditsTotal, creditsUsed, addCredits } = useLegalStore();
   const [formData, setFormData] = useState(firmProfile);
   const [saved, setSaved] = useState(false);
 
@@ -108,6 +108,16 @@ export const Settings: React.FC = () => {
             {saved && (
                 <span className="text-green-600 text-sm font-medium animate-in fade-in">Settings saved successfully!</span>
             )}
+            <div className="ml-auto flex items-center gap-3">
+              <span className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700">Credits: {creditsUsed}/{creditsTotal}</span>
+              <button
+                type="button"
+                onClick={() => addCredits(100)}
+                className="px-3 py-2 text-xs font-medium bg-legal-50 text-legal-900 border border-legal-200 rounded hover:bg-legal-100"
+              >
+                Add 100 Credits
+              </button>
+            </div>
           </div>
         </form>
       </div>

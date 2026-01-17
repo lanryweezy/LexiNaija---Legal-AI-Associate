@@ -20,12 +20,14 @@ interface EditorState {
 }
 
 export const DocumentEditor: React.FC = () => {
-  const { cases, updateCaseDocument, activeDoc, setActiveDoc } = useLegalStore();
+  const { cases, clients, firmProfile, updateCaseDocument, activeDoc, setActiveDoc, creditsTotal, creditsUsed, consumeCredits } = useLegalStore();
   const [selectedDoc, setSelectedDoc] = useState<EditorState | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [previewMode, setPreviewMode] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [showVariables, setShowVariables] = useState(false);
+  const [variables, setVariables] = useState<Record<string, string>>({});
   
   // AI Modal State
   const [showAiModal, setShowAiModal] = useState(false);
@@ -59,13 +61,34 @@ export const DocumentEditor: React.FC = () => {
           title: docItem.title,
           content: docItem.content
         });
+        const client = clients.find(cl => cl.id === caseItem.clientId);
+        const defaults: Record<string, string> = {
+          '[PLAINTIFF NAME]': client?.name || '',
+          '[CLAIMANT NAME]': client?.name || '',
+          '[CLIENT NAME]': client?.name || '',
+          '[DEFENDANT NAME]': caseItem.opposingParty || '',
+          '[TENANT NAME]': caseItem.opposingParty || '',
+          '[LANDLORD NAME]': client?.name || '',
+          '[COMPANY NAME]': client?.name || '',
+          '[COURT]': caseItem.court || '',
+          '[DIVISION]': (caseItem.court && caseItem.court.includes(',') ? caseItem.court.split(',')[1].trim() : ''),
+          '[LOCATION]': (caseItem.court && caseItem.court.includes(',') ? caseItem.court.split(',')[1].trim() : ''),
+          '[SUIT NO]': caseItem.suitNumber || '',
+          '[ADDRESS]': client?.address || '',
+          '[LAWYER NAME]': firmProfile.solicitorName,
+          '[FIRM ADDRESS]': firmProfile.address,
+          '[PHONE NUMBER]': firmProfile.phone,
+          '[EMAIL]': firmProfile.email,
+          '[DATE]': new Date().toLocaleDateString()
+        };
+        setVariables(defaults);
         setHasUnsavedChanges(false);
         setPreviewMode(false);
       }
       // Clear activeDoc so we don't keep resetting if user edits locally
       setActiveDoc(null); 
     }
-  }, [activeDoc, cases, hasUnsavedChanges, selectedDoc, setActiveDoc]);
+  }, [activeDoc, cases, hasUnsavedChanges, selectedDoc, setActiveDoc, clients, firmProfile]);
 
   // Flatten documents for the sidebar list
   const allDocs = cases.flatMap(c => 
@@ -248,6 +271,11 @@ export const DocumentEditor: React.FC = () => {
     if (!aiInstruction) return;
     setIsAiLoading(true);
     try {
+        if (!consumeCredits(5)) {
+          setIsAiLoading(false);
+          setAiResult("Insufficient credits.");
+          return;
+        }
         const result = await refineLegalText(aiSelectedText, aiInstruction);
         setAiResult(result);
     } catch (e) {
@@ -404,12 +432,20 @@ export const DocumentEditor: React.FC = () => {
               </div>
               
               <div className="flex items-center gap-2">
+                <span className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-600">Credits: {creditsUsed}/{creditsTotal}</span>
                 <button 
                    onClick={() => setShowHistory(!showHistory)}
                    className={`p-2 rounded-lg flex items-center gap-1.5 text-sm transition-colors ${showHistory ? 'bg-legal-50 text-legal-900 font-medium' : 'text-gray-500 hover:bg-gray-100'}`}
                    title="Version History"
                 >
                     <History size={16} /> 
+                </button>
+                <button 
+                   onClick={() => setShowVariables(!showVariables)}
+                   className={`p-2 rounded-lg flex items-center gap-1.5 text-sm transition-colors ${showVariables ? 'bg-legal-50 text-legal-900 font-medium' : 'text-gray-500 hover:bg-gray-100'}`}
+                   title="Variables"
+                >
+                    <Wand2 size={16} />
                 </button>
                 <div className="h-6 w-px bg-gray-200 mx-1"></div>
                 <button 
@@ -585,6 +621,45 @@ export const DocumentEditor: React.FC = () => {
                                     <p className="text-xs mt-1">Versions are created when you save changes.</p>
                                 </div>
                             )}
+                        </div>
+                    </div>
+                )}
+
+                {showVariables && (
+                    <div className="w-80 border-l border-gray-200 bg-gray-50 flex flex-col animate-in slide-in-from-right-10 duration-200">
+                        <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+                            <h3 className="font-bold text-legal-900 flex items-center gap-2"><Wand2 size={16}/> Variables</h3>
+                        </div>
+                        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                            {Object.entries(variables).map(([key, val]) => (
+                                <div key={key}>
+                                    <label className="block text-xs font-medium text-gray-600 mb-1">{key}</label>
+                                    <input
+                                        type="text"
+                                        value={val}
+                                        onChange={(e) => setVariables({ ...variables, [key]: e.target.value })}
+                                        className="w-full border border-gray-300 rounded-lg p-2 text-sm"
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                        <div className="p-4 border-t border-gray-200">
+                            <button
+                                onClick={() => {
+                                    if (!selectedDoc) return;
+                                    let content = selectedDoc.content;
+                                    Object.entries(variables).forEach(([key, val]) => {
+                                        if (!val) return;
+                                        const pattern = new RegExp(key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+                                        content = content.replace(pattern, val);
+                                    });
+                                    setSelectedDoc({ ...selectedDoc, content });
+                                    setHasUnsavedChanges(true);
+                                }}
+                                className="w-full px-4 py-2 text-sm font-medium text-white bg-legal-900 rounded-lg hover:bg-legal-800"
+                            >
+                                Apply Variables
+                            </button>
                         </div>
                     </div>
                 )}

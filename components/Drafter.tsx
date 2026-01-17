@@ -6,7 +6,7 @@ import { useLegalStore } from '../contexts/LegalStoreContext';
 import ReactMarkdown from 'react-markdown';
 
 export const Drafter: React.FC = () => {
-  const { cases, saveDocumentToCase } = useLegalStore();
+  const { cases, clients, firmProfile, saveDocumentToCase, creditsTotal, creditsUsed, consumeCredits, addCredits } = useLegalStore();
   const [params, setParams] = useState<ContractParams>({
     type: 'Tenancy Agreement',
     partyA: '',
@@ -22,12 +22,32 @@ export const Drafter: React.FC = () => {
   const [saveTitle, setSaveTitle] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+  const [prefillCaseId, setPrefillCaseId] = useState('');
+
+  const handlePrefillFromCase = (caseId: string) => {
+    setPrefillCaseId(caseId);
+    const selected = cases.find(c => c.id === caseId);
+    if (!selected) return;
+    const client = clients.find(cl => cl.id === selected.clientId);
+    const a = client ? client.name : params.partyA;
+    const b = selected.opposingParty ? selected.opposingParty : params.partyB;
+    let j = params.jurisdiction;
+    const court = selected.court || '';
+    const lc = court.toLowerCase();
+    if (lc.includes('lagos')) j = 'Lagos State';
+    else if (lc.includes('abuja') || lc.includes('fct')) j = 'FCT Abuja';
+    setParams({ ...params, partyA: a, partyB: b, jurisdiction: j });
+  };
 
   const handleDraft = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsDrafting(true);
     setGeneratedDraft('');
     try {
+      if (!consumeCredits(10)) {
+        alert("Insufficient credits. Please add credits to generate drafts.");
+        return;
+      }
       const result = await draftContract(params);
       setGeneratedDraft(result);
     } catch (error) {
@@ -68,6 +88,10 @@ export const Drafter: React.FC = () => {
     setLoadingSuggestions(true);
     setSuggestions([]);
     try {
+        if (!consumeCredits(2)) {
+          alert("Insufficient credits for clause suggestions.");
+          return;
+        }
         const results = await getClauseSuggestions(params.type);
         setSuggestions(results);
     } catch(e) {
@@ -107,6 +131,20 @@ export const Drafter: React.FC = () => {
               <option>Memorandum of Understanding (MoU)</option>
               <option>Service Level Agreement</option>
               <option>Non-Disclosure Agreement</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Auto-fill from Case</label>
+            <select 
+              value={prefillCaseId}
+              onChange={e => handlePrefillFromCase(e.target.value)}
+              className="w-full border-gray-300 rounded-lg shadow-sm focus:border-legal-gold focus:ring-legal-gold p-2 border"
+            >
+              <option value="">-- Select Case --</option>
+              {cases.map(c => (
+                <option key={c.id} value={c.id}>{c.title}</option>
+              ))}
             </select>
           </div>
 
@@ -210,6 +248,7 @@ export const Drafter: React.FC = () => {
         <div className="p-4 border-b border-gray-200 bg-white flex justify-between items-center">
           <span className="text-sm font-medium text-gray-500">Preview Mode</span>
           <div className="flex gap-2">
+            <span className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-600">Credits: {creditsUsed}/{creditsTotal}</span>
             <button 
                 onClick={openSaveModal}
                 disabled={!generatedDraft}

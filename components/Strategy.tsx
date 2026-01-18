@@ -5,7 +5,7 @@ import { generateCaseStrategy } from '../services/geminiService';
 import ReactMarkdown from 'react-markdown';
 
 export const Strategy: React.FC = () => {
-  const { cases, saveDocumentToCase } = useLegalStore();
+  const { cases, saveDocumentToCase, consumeCredits } = useLegalStore();
   const [selectedCaseId, setSelectedCaseId] = useState('');
   const [role, setRole] = useState('Claimant/Plaintiff');
   const [jurisdiction, setJurisdiction] = useState('Lagos State High Court');
@@ -28,6 +28,10 @@ export const Strategy: React.FC = () => {
   const handleAnalyze = async () => {
     if (!facts.trim()) {
         alert("Please enter the facts of the case.");
+        return;
+    }
+    if (!consumeCredits(10)) {
+        alert("Insufficient credits to generate a strategy report.");
         return;
     }
     setIsAnalyzing(true);

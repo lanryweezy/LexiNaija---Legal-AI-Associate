@@ -1430,6 +1430,641 @@ __________________________
 RELIEFS: As per Complaint.`
   },
 
+  },
+
+  // --- NEW CIVIL LITIGATION TEMPLATES ---
+  {
+    id: 'lit17',
+    category: 'Civil Litigation',
+    title: 'Final Written Address',
+    description: 'Final argument submitted by counsel.',
+    jurisdiction: 'Generic',
+    court: 'High Court',
+    content: `# [COURT]
+# [DIVISION]
+# HOLDEN AT [LOCATION]
+
+SUIT NO: [SUIT NO]
+
+BETWEEN:
+
+[PLAINTIFF NAME]   ........................................   CLAIMANT
+
+AND
+
+[DEFENDANT NAME]   ........................................   DEFENDANT
+
+## CLAIMANT'S FINAL WRITTEN ADDRESS
+
+1.  **INTRODUCTION**
+    This is the Final Written Address of the Claimant in this suit.
+
+2.  **ISSUES FOR DETERMINATION**
+    1.  Whether the Claimant has proved his case on the balance of probabilities.
+    2.  Whether the Claimant is entitled to the reliefs sought.
+
+3.  **ARGUMENT**
+    Issue 1: ...
+    Issue 2: ...
+
+4.  **CONCLUSION**
+    We urge the Court to grant the reliefs sought by the Claimant.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]`
+  },
+  {
+    id: 'lit18',
+    category: 'Civil Litigation',
+    title: 'Statement of Defence and Counterclaim',
+    description: 'Defendant’s pleading in response to a claim, with a counterclaim.',
+    jurisdiction: 'Generic',
+    court: 'High Court',
+    content: `# [COURT]
+# [DIVISION]
+# HOLDEN AT [LOCATION]
+
+SUIT NO: [SUIT NO]
+
+BETWEEN:
+
+[PLAINTIFF NAME]   ........................................   CLAIMANT
+
+AND
+
+[DEFENDANT NAME]   ........................................   DEFENDANT/COUNTER-CLAIMANT
+
+## STATEMENT OF DEFENCE AND COUNTERCLAIM
+
+**DEFENCE**
+1.  The Defendant admits paragraph 1 of the Statement of Claim.
+2.  The Defendant denies paragraphs 2, 3, and 4 of the Statement of Claim and puts the Claimant to the strictest proof thereof.
+3.  The Defendant avers that...
+
+**COUNTERCLAIM**
+The Defendant/Counter-Claimant repeats paragraphs 1-3 of the Defence and claims against the Claimant as follows:
+1.  A declaration that...
+2.  The sum of N...
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]`
+  },
+  {
+    id: 'lit19',
+    category: 'Civil Litigation',
+    title: 'Application for Bail (High Court)',
+    description: 'Formal application for bail at the High Court.',
+    jurisdiction: 'Generic',
+    court: 'High Court',
+    content: `# IN THE HIGH COURT OF [STATE]
+# IN THE [JUDICIAL DIVISION]
+# HOLDEN AT [LOCATION]
+
+CHARGE NO: [CHARGE NO]
+
+BETWEEN:
+
+THE STATE   ........................................   COMPLAINANT
+
+AND
+
+[DEFENDANT NAME]   ........................................   DEFENDANT/APPLICANT
+
+## MOTION ON NOTICE FOR BAIL
+
+**BROUGHT PURSUANT TO SECTION [SECTION] OF THE ADMINISTRATION OF CRIMINAL JUSTICE LAW OF [STATE] 20[XX] AND THE INHERENT JURISDICTION OF THIS HONOURABLE COURT.**
+
+**TAKE NOTICE** that this Honourable Court will be moved on the ... day of ..., 20... for:
+
+1.  **AN ORDER** admitting the Defendant/Applicant to bail pending the hearing and determination of this charge.
+2.  **AND FOR SUCH FURTHER ORDER(S)** as this Honourable Court may deem fit.
+
+**GROUNDS FOR THE APPLICATION:**
+1.  The offence is a bailable one.
+2.  The Defendant/Applicant has credible sureties.
+3.  The Defendant/Applicant will not jump bail.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]`
+  },
+  {
+    id: 'lit20',
+    category: 'Civil Litigation',
+    title: 'Application for Enforcement of Fundamental Rights',
+    description: 'Application for the enforcement of fundamental human rights.',
+    jurisdiction: 'Federal',
+    court: 'Federal High Court',
+    content: `# IN THE FEDERAL HIGH COURT OF NIGERIA
+# IN THE [JUDICIAL DIVISION]
+# HOLDEN AT [LOCATION]
+
+SUIT NO: [SUIT NO]
+
+**IN THE MATTER OF AN APPLICATION BY [APPLICANT NAME] FOR THE ENFORCEMENT OF HIS FUNDAMENTAL RIGHTS**
+
+BETWEEN:
+
+[APPLICANT NAME]   ........................................   APPLICANT
+
+AND
+
+[RESPONDENT NAME]   ........................................   RESPONDENT
+
+## ORIGINATING MOTION
+
+**BROUGHT PURSUANT TO ORDER II OF THE FUNDAMENTAL RIGHTS (ENFORCEMENT PROCEDURE) RULES, 2009.**
+
+**TAKE NOTICE** that this Honourable Court will be moved for the following reliefs:
+1.  **A DECLARATION** that the arrest and detention of the Applicant is unconstitutional, null and void.
+2.  **AN ORDER** for the immediate release of the Applicant.
+3.  **N[AMOUNT]** as damages.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]`
+  },
+
+  },
+
+  // --- NEW PROPERTY LAW TEMPLATES ---
+  {
+    id: 'prop9',
+    category: 'Property',
+    title: 'Irrevocable Power of Attorney',
+    description: 'Irrevocable power of attorney for property transactions.',
+    jurisdiction: 'Generic',
+    content: `**THIS IRREVOCABLE POWER OF ATTORNEY** is made this ...... day of ...... 20....
+
+BY **[DONOR NAME]** of [DONOR ADDRESS] (the "Donor").
+
+**NOW THIS DEED WITNESSES** as follows:
+1.  The Donor hereby irrevocably appoints **[DONEE NAME]** of [DONEE ADDRESS] (the "Donee") to be his lawful attorney to do all or any of the following acts:
+    a.  To sell, transfer, and assign the property at [PROPERTY ADDRESS].
+    b.  To sign all documents necessary to effect the sale.
+2.  This Power of Attorney is given for valuable consideration and shall be irrevocable.
+
+**IN WITNESS WHEREOF** the Donor has executed this Deed.
+
+__________________________
+**DONOR**`
+  },
+  {
+    id: 'prop10',
+    category: 'Property',
+    title: 'Hire Purchase Agreement',
+    description: 'Agreement for the hire of goods with an option to purchase.',
+    jurisdiction: 'Generic',
+    content: `**HIRE PURCHASE AGREEMENT**
+
+**PARTIES:**
+1.  **[OWNER NAME]** (the "Owner")
+2.  **[HIRER NAME]** (the "Hirer")
+
+**GOODS:** [DESCRIPTION OF GOODS]
+
+**TERMS:**
+1.  The Hirer shall pay N[AMOUNT] per month for [NUMBER] months.
+2.  The Hirer shall have the option to purchase the goods for N[AMOUNT] after the last payment.
+3.  The goods remain the property of the Owner until the option to purchase is exercised.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+**OWNER**
+
+__________________________
+**HIRER**`
+  },
+  {
+    id: 'prop11',
+    category: 'Property',
+    title: 'Formal Contract of Sale of Land',
+    description: 'A formal contract for the sale of land, including terms and conditions.',
+    jurisdiction: 'Generic',
+    content: `**CONTRACT OF SALE OF LAND**
+
+**PARTIES:**
+1.  **[VENDOR NAME]** (the "Vendor")
+2.  **[PURCHASER NAME]** (the "Purchaser")
+
+**PROPERTY:** [DESCRIPTION OF PROPERTY]
+
+**PRICE:** N[AMOUNT]
+
+**TERMS:**
+1.  The Purchaser shall pay a deposit of N[AMOUNT] on the signing of this agreement.
+2.  The balance shall be paid on or before [DATE].
+3.  The Vendor shall deduce a good title to the property.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+**VENDOR**
+
+__________________________
+**PURCHASER**`
+  },
+  {
+    id: 'prop12',
+    category: 'Property',
+    title: 'Deed of Lease',
+    description: 'A deed for the lease of property for a term of years.',
+    jurisdiction: 'Generic',
+    content: `**THIS DEED OF LEASE** is made this ...... day of ...... 20....
+
+**BETWEEN**
+
+**[LESSOR NAME]** of [ADDRESS] (the "Lessor")
+
+**AND**
+
+**[LESSEE NAME]** of [ADDRESS] (the "Lessee")
+
+**NOW THIS DEED WITNESSES** as follows:
+1.  The Lessor hereby demises to the Lessee ALL THAT [DESCRIPTION OF PROPERTY] for a term of [NUMBER] years.
+2.  The Lessee shall pay a yearly rent of N[AMOUNT].
+
+**IN WITNESS WHEREOF** the parties have executed this Deed.
+
+__________________________
+**LESSOR**
+
+__________________________
+**LESSEE**`
+  },
+  {
+    id: 'prop13',
+    category: 'Property',
+    title: 'Deed of Mortgage',
+    description: 'A deed creating a legal mortgage over a property.',
+    jurisdiction: 'Generic',
+    content: `**THIS DEED OF LEGAL MORTGAGE** is made this ...... day of ...... 20....
+
+**BETWEEN**
+
+**[MORTGAGOR NAME]** of [ADDRESS] (the "Mortgagor")
+
+**AND**
+
+**[MORTGAGEE NAME]** of [ADDRESS] (the "Mortgagee")
+
+**NOW THIS DEED WITNESSES** as follows:
+1.  The Mortgagor, in consideration of the sum of N[AMOUNT] advanced by the Mortgagee, hereby demises to the Mortgagee ALL THAT [DESCRIPTION OF PROPERTY].
+2.  Provided that if the Mortgagor shall on [DATE] repay the said sum with interest, the term hereby created shall cease.
+
+**IN WITNESS WHEREOF** the Mortgagor has executed this Deed.
+
+__________________________
+**MORTGAGOR**`
+  },
+  {
+    id: 'prop14',
+    category: 'Property',
+    title: 'Will and Codicil',
+    description: 'A template for a will and a codicil to amend it.',
+    jurisdiction: 'Generic',
+    content: `# LAST WILL AND TESTAMENT OF [TESTATOR NAME]
+
+I, [TESTATOR NAME] of [ADDRESS], hereby revoke all former wills and declare this to be my last will.
+
+1.  I appoint [EXECUTOR NAME] to be the executor of this my will.
+2.  I give my property at [ADDRESS] to [BENEFICIARY NAME].
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+**TESTATOR**
+
+---
+
+# CODICIL TO THE WILL OF [TESTATOR NAME]
+
+I, [TESTATOR NAME] of [ADDRESS], declare this to be a first codicil to my will dated [DATE OF WILL].
+
+1.  I revoke the gift of my property at [ADDRESS] to [OLD BENEFICIARY NAME].
+2.  I give the said property to [NEW BENEFICIARY NAME].
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+**TESTATOR**`
+  },
+
+  },
+
+  // --- NEW CORPORATE LAW TEMPLATES ---
+  {
+    id: 'corp6',
+    category: 'Corporate',
+    title: 'Partnership Agreement',
+    description: 'An agreement to form a partnership.',
+    jurisdiction: 'Generic',
+    content: `**THIS PARTNERSHIP AGREEMENT** is made this ...... day of ...... 20....
+
+**BETWEEN**
+
+**[PARTNER 1 NAME]** of [ADDRESS]
+
+**AND**
+
+**[PARTNER 2 NAME]** of [ADDRESS]
+
+**NOW IT IS HEREBY AGREED** as follows:
+1.  The parties shall carry on the business of [BUSINESS DESCRIPTION] in partnership.
+2.  The partnership shall commence on [DATE].
+3.  The capital of the partnership shall be N[AMOUNT] contributed in equal shares.
+4.  The net profits of the business shall be divided equally between the partners.
+
+**IN WITNESS WHEREOF** the parties have executed this Agreement.
+
+__________________________
+**PARTNER 1**
+
+__________________________
+**PARTNER 2**`
+  },
+  {
+    id: 'corp7',
+    category: 'Corporate',
+    title: 'Notice of General Meeting',
+    description: 'Notice of an Annual General Meeting (AGM) or Extraordinary General Meeting (EGM).',
+    jurisdiction: 'Generic',
+    content: `**NOTICE OF ANNUAL/EXTRAORDINARY GENERAL MEETING OF [COMPANY NAME]**
+
+**NOTICE IS HEREBY GIVEN** that the Annual/Extraordinary General Meeting of [COMPANY NAME] will be held at [LOCATION] on [DATE] at [TIME] for the following purposes:
+
+**ORDINARY BUSINESS**
+1.  To receive the Audited Financial Statements.
+2.  To declare a dividend.
+3.  To re-elect directors.
+
+**SPECIAL BUSINESS**
+1.  To consider and pass a special resolution to [RESOLUTION].
+
+DATED THIS ...... DAY OF ...... 20....
+
+BY ORDER OF THE BOARD
+
+__________________________
+**COMPANY SECRETARY**`
+  },
+  {
+    id: 'corp8',
+    category: 'Corporate',
+    title: 'Notice of Board Meeting',
+    description: 'Notice of a meeting of the Board of Directors.',
+    jurisdiction: 'Generic',
+    content: `**NOTICE OF A MEETING OF THE BOARD OF DIRECTORS OF [COMPANY NAME]**
+
+**TO:** [DIRECTOR NAME]
+
+**NOTICE IS HEREBY GIVEN** that a meeting of the Board of Directors will be held at [LOCATION] on [DATE] at [TIME].
+
+**AGENDA**
+1.  Minutes of the last meeting.
+2.  Matters arising.
+3.  [OTHER BUSINESS]
+4.  Any other business.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+**COMPANY SECRETARY**`
+  },
+
+  },
+
+  // --- NEW GENERAL LEGAL DOCUMENT TEMPLATES ---
+  {
+    id: 'gen1',
+    category: 'General',
+    title: 'Letter of Administration',
+    description: 'Application for letters of administration for the estate of a deceased person.',
+    jurisdiction: 'Generic',
+    content: `# IN THE HIGH COURT OF [STATE]
+# PROBATE DIVISION
+
+IN THE ESTATE OF **[DECEASED NAME]** (DECEASED)
+
+**PETITION FOR LETTERS OF ADMINISTRATION**
+
+The petition of **[PETITIONER NAME]** of [ADDRESS] respectfully showeth:
+1.  That the deceased died intestate on [DATE].
+2.  That the petitioner is the [RELATIONSHIP] of the deceased.
+3.  That the petitioner is entitled to a grant of letters of administration of the estate of the deceased.
+
+Dated this ...... day of ...... 20....
+
+__________________________
+**PETITIONER**`
+  },
+  {
+    id: 'gen2',
+    category: 'General',
+    title: 'Terms of Settlement',
+    description: 'An agreement to settle a dispute out of court.',
+    jurisdiction: 'Generic',
+    content: `**TERMS OF SETTLEMENT**
+
+**BETWEEN**
+
+**[PARTY A NAME]**
+
+**AND**
+
+**[PARTY B NAME]**
+
+The parties hereby agree to settle their dispute on the following terms:
+1.  [PARTY B] shall pay [PARTY A] the sum of N[AMOUNT] in full and final settlement of all claims.
+2.  This agreement shall be filed in court as a consent judgment.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+**PARTY A**
+
+__________________________
+**PARTY B**`
+  },
+  {
+    id: 'gen3',
+    category: 'General',
+    title: 'Bill of Charges',
+    description: 'A bill of charges for legal services rendered.',
+    jurisdiction: 'Generic',
+    content: `# [YOUR LAW FIRM NAME]
+[ADDRESS]
+[DATE]
+
+**BILL OF CHARGES**
+
+**TO:** [CLIENT NAME]
+
+**FOR PROFESSIONAL SERVICES RENDERED IN THE MATTER OF [MATTER NAME]**
+
+| DATE       | PARTICULARS                      | AMOUNT (NGN) |
+|------------|----------------------------------|--------------|
+| [DATE]     | Initial Consultation             | [AMOUNT]     |
+| [DATE]     | Filing of Writ of Summons        | [AMOUNT]     |
+|            | **TOTAL**                        | **[TOTAL]**  |
+
+__________________________
+**[YOUR NAME]**`
+  },
+  {
+    id: 'gen4',
+    category: 'General',
+    title: 'Client Agreement',
+    description: 'An agreement between a lawyer and a client for legal services.',
+    jurisdiction: 'Generic',
+    content: `**CLIENT AGREEMENT**
+
+**BETWEEN**
+
+**[LAWYER/FIRM NAME]** (the "Lawyer")
+
+**AND**
+
+**[CLIENT NAME]** (the "Client")
+
+**IT IS AGREED** as follows:
+1.  The Lawyer shall provide legal services to the Client in respect of [MATTER].
+2.  The Client shall pay the Lawyer a professional fee of N[AMOUNT].
+3.  The Client shall be responsible for all disbursements.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+**LAWYER**
+
+__________________________
+**CLIENT**`
+  },
+  {
+    id: 'gen5',
+    category: 'General',
+    title: 'Subpoena',
+    description: 'A writ ordering a person to attend a court.',
+    jurisdiction: 'Generic',
+    content: `# IN THE [COURT] OF [STATE]
+
+SUIT NO: [SUIT NO]
+
+**SUBPOENA AD TESTIFICANDUM / DUCES TECUM**
+
+**TO:** [WITNESS NAME]
+
+You are hereby commanded to appear in this court on [DATE] at [TIME] to testify in the above-named case.
+(and to bring with you the following documents: [LIST OF DOCUMENTS])
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+**REGISTRAR**`
+  },
+
+  },
+
+  // --- NEW ADVANCED PROPERTY LAW TEMPLATES ---
+  {
+    id: 'prop15',
+    category: 'Property',
+    title: 'Abstract of Title',
+    description: 'A chronological summary of the documents of title to a property.',
+    jurisdiction: 'Generic',
+    content: `**ABSTRACT OF TITLE**
+
+**TO:** [PROPERTY ADDRESS]
+
+1.  **[DATE]:** Deed of Assignment between **[PARTY A]** and **[PARTY B]**.
+2.  **[DATE]:** Certificate of Occupancy No. [C of O No.] issued to **[PARTY B]**.
+3.  **[DATE]:** Deed of Legal Mortgage between **[PARTY B]** and **[BANK NAME]**.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+**[LAWYER NAME]**`
+  },
+  {
+    id: 'prop16',
+    category: 'Property',
+    title: 'Epitome of Title',
+    description: 'A schedule of documents of title to a property.',
+    jurisdiction: 'Generic',
+    content: `**EPITOME OF TITLE**
+
+**TO:** [PROPERTY ADDRESS]
+
+| DATE       | DOCUMENT                               | PARTIES                          |
+|------------|----------------------------------------|----------------------------------|
+| [DATE]     | Deed of Assignment                     | [PARTY A] and [PARTY B]          |
+| [DATE]     | Certificate of Occupancy               | Governor of [STATE] and [PARTY B] |
+| [DATE]     | Deed of Legal Mortgage                 | [PARTY B] and [BANK NAME]        |
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+**[LAWYER NAME]**`
+  },
+
+  },
+
+  // --- NEW ADVANCED CORPORATE LAW TEMPLATES ---
+  {
+    id: 'corp9',
+    category: 'Corporate',
+    title: 'Memorandum of Association',
+    description: 'The memorandum of association of a company.',
+    jurisdiction: 'Generic',
+    content: `**MEMORANDUM OF ASSOCIATION**
+**OF**
+**[COMPANY NAME]**
+
+1.  The name of the company is **[COMPANY NAME]**.
+2.  The registered office of the company will be situated in Nigeria.
+3.  The objects for which the company is established are: [LIST OF OBJECTS].
+4.  The liability of the members is limited.
+5.  The share capital of the company is N[AMOUNT] divided into [NUMBER] ordinary shares of N[VALUE] each.
+
+We, the several persons whose names and addresses are subscribed, are desirous of being formed into a company, in pursuance of this memorandum of association, and we respectively agree to take the number of shares in the capital of the company set opposite our respective names.
+
+| Names, Addresses, and Occupations of Subscribers | Number of shares taken by each Subscriber |
+|----------------------------------------------------|-------------------------------------------|
+| [SUBSCRIBER 1]                                     | [NUMBER]                                  |
+| [SUBSCRIBER 2]                                     | [NUMBER]                                  |
+
+DATED THIS ...... DAY OF ...... 20....`
+  },
+  {
+    id: 'corp10',
+    category: 'Corporate',
+    title: 'Articles of Association',
+    description: 'The articles of association of a company.',
+    jurisdiction: 'Generic',
+    content: `**ARTICLES OF ASSOCIATION**
+**OF**
+**[COMPANY NAME]**
+
+1.  **PRELIMINARY**
+    The regulations in Table A in the First Schedule to the Companies and Allied Matters Act, 2020 shall apply to the company.
+
+2.  **SHARES**
+    The rights and privileges attached to any class of shares may be varied with the consent in writing of the holders of three-fourths of the issued shares of that class.
+
+3.  **DIRECTORS**
+    The number of directors shall not be less than two.
+    The first directors of the company shall be appointed in writing by the subscribers to the Memorandum of Association.
+
+DATED THIS ...... DAY OF ...... 20....`
+  },
+
   {
     id: 'sc1',
     category: 'Appellate',
@@ -1506,7 +2141,7 @@ export const Precedents: React.FC<PrecedentsProps> = ({ onNavigate }) => {
       content: viewingTemplate.content,
       type: 'Draft',
       createdAt: new Date()
-    });
+    } as Omit<SavedDocument, 'status'>);
     setActiveDoc({ caseId: useCaseId, docId: newDocId });
     setShowUseModal(false);
     onNavigate(AppView.EDITOR);

@@ -17,6 +17,7 @@ interface EditorState {
   docId: string;
   title: string;
   content: string;
+  status: SavedDocument['status'];
 }
 
 export const DocumentEditor: React.FC = () => {
@@ -59,7 +60,8 @@ export const DocumentEditor: React.FC = () => {
           caseId: activeDoc.caseId,
           docId: activeDoc.docId,
           title: docItem.title,
-          content: docItem.content
+          content: docItem.content,
+          status: docItem.status || 'Draft' // Default to 'Draft' if not set
         });
         const client = clients.find(cl => cl.id === caseItem.clientId);
         const defaults: Record<string, string> = {
@@ -112,7 +114,8 @@ export const DocumentEditor: React.FC = () => {
       caseId,
       docId: doc.id,
       title: doc.title,
-      content: doc.content
+      content: doc.content,
+      status: doc.status || 'Draft'
     });
     setHasUnsavedChanges(false);
     setPreviewMode(false);
@@ -360,6 +363,14 @@ export const DocumentEditor: React.FC = () => {
     document.body.removeChild(link);
   };
 
+  const handleUpdateStatus = (newStatus: SavedDocument['status']) => {
+    if (selectedDoc) {
+      updateCaseDocument(selectedDoc.caseId, selectedDoc.docId, { status: newStatus });
+      setSelectedDoc(prev => prev ? { ...prev, status: newStatus } : null);
+      alert(`Document status updated to ${newStatus}.`);
+    }
+  };
+
   return (
     <div className="flex h-screen bg-white">
       {/* Sidebar List */}
@@ -402,6 +413,7 @@ export const DocumentEditor: React.FC = () => {
                     >
                       <File className="w-3.5 h-3.5 shrink-0 text-legal-gold" />
                       <span className="truncate">{doc.title}</span>
+                      <span className="ml-auto text-xs px-2 py-0.5 rounded-full bg-legal-50 text-legal-800">{doc.status}</span>
                     </button>
                   ))}
                 </div>
@@ -433,6 +445,21 @@ export const DocumentEditor: React.FC = () => {
               
               <div className="flex items-center gap-2">
                 <span className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-600">Credits: {creditsUsed}/{creditsTotal}</span>
+                <div className="relative">
+                    <select 
+                        value={selectedDoc.status} 
+                        onChange={(e) => handleUpdateStatus(e.target.value as SavedDocument['status'])}
+                        className="p-1.5 text-xs rounded-lg border border-gray-300 bg-white text-gray-700 appearance-none pr-6 focus:ring-legal-gold focus:border-legal-gold"
+                    >
+                        <option value="Draft">Draft</option>
+                        <option value="Under Review">Under Review</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Signed">Signed</option>
+                        <option value="Rejected">Rejected</option>
+                        <option value="Archived">Archived</option>
+                    </select>
+                    <ChevronRight className="w-3 h-3 absolute right-2 top-1/2 -translate-y-1/2 rotate-90 text-gray-500 pointer-events-none" />
+                </div>
                 <button 
                    onClick={() => setShowHistory(!showHistory)}
                    className={`p-2 rounded-lg flex items-center gap-1.5 text-sm transition-colors ${showHistory ? 'bg-legal-50 text-legal-900 font-medium' : 'text-gray-500 hover:bg-gray-100'}`}

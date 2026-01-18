@@ -1,412 +1,328 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { ContractParams, CaseSummary } from "../types";
+
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+if (!apiKey) {
+  throw new Error("VITE_GEMINI_API_KEY is not set in the environment variables");
+}
+const genAI = new GoogleGenerativeAI(apiKey);
+
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-001" });
+
+async function run(prompt: string): Promise<string> {
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = await response.text();
+    return text;
+  } catch (error) {
+    console.error("Error generating content:", error);
+    // Return a user-friendly error message or re-throw a custom error
+    throw new Error("Failed to generate content from the AI model.");
+  }
+}
 
 // Mock implementation of AI services for offline capability
 
-// Helper to simulate network delay
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 
 export const generateLegalResearch = async (query: string): Promise<string> => {
-  await delay(1500);
-  
-  const lowerQuery = query.toLowerCase();
-  
-  if (lowerQuery.includes("tenancy") || lowerQuery.includes("landlord")) {
-    return `**Legal Research Memorandum: Tenancy Law in Nigeria**
+  const prompt = `LEGAL RESEARCH MEMORANDUM
+TO: Nigerian Lawyer
+FROM: LexiNaija AI Legal Assistant
+DATE: ${new Date().toLocaleDateString()}
+RE: Legal Research on "${query}" under Nigerian Law
 
-**Summary:**
-The relationship between landlord and tenant in Nigeria is primarily governed by the Tenancy Laws of various states (e.g., Tenancy Law of Lagos State 2011) and the Recovery of Premises Act (Abuja).
+**INSTRUCTIONS:**
+Provide a concise legal research memorandum on the query above. Structure the response with the following sections:
+1.  **Executive Summary:** A brief overview of the legal position.
+2.  **Key Principles & Doctrines:** The core legal rules and principles governing the area.
+3.  **Relevant Statutes:** A list of the most important Nigerian statutes (e.g., Acts of the National Assembly, State Laws).
+4.  **Landmark Case Law:** Seminal Nigerian cases (Supreme Court or Court of Appeal) that have defined the area. Cite cases with full citations where possible (e.g., *Locus Classicus v. The State (2023) 1 NWLR (Pt. 1234) 567*).
+5.  **Practical Application/Conclusion:** A concluding paragraph on how the law is applied in practice.
 
-**Key Principles:**
-1. **Notice to Quit:** A valid Notice to Quit must be issued based on the tenancy type (e.g., 6 months for yearly tenancy). *See Iheanacho v. Uzochukwu (1997)*.
-2. **Seven Days Notice:** Following the expiration of the Notice to Quit, a 7-Days Notice of Owner's Intention to Recover Possession must be served.
-3. **Mesne Profits:** The landlord is entitled to mesne profits for the period the tenant holds over.
+**QUERY:**
+"${query}"
 
-**Relevant Statutes:**
-- Tenancy Law of Lagos State 2011, Section 13.
-- Recovery of Premises Act.
-
-**Conclusion:**
-Ensure strict compliance with statutory notices to avoid the suit being struck out for procedural irregularity.`;
-  }
-
-  if (lowerQuery.includes("contract") || lowerQuery.includes("agreement")) {
-    return `**Legal Research: Contract Law Principles**
-
-**Summary:**
-Under Nigerian law, a valid contract requires Offer, Acceptance, Consideration, Intention to Create Legal Relations, and Capacity.
-
-**Key Cases:**
-- *Orient Bank (Nig.) Plc v. Bilante Int’l Ltd (1997)*: Defined the essential elements of a valid contract.
-- *Best (Nigeria) Ltd v. Blackwood Hodge (Nigeria) Ltd (2011)*: Emphasized the binding nature of signed agreements.
-
-**Statutory Framework:**
-- Common Law (received English Law).
-- Sale of Goods Act (where applicable).
-
-**Advice:**
-Ensure all material terms are expressly stated to avoid ambiguity.`;
-  }
-
-  return `**Legal Research Result**
-
-Based on your query regarding "${query}", here is a summary of the legal position in Nigeria:
-
-**General Principles:**
-The Nigerian legal system is based on English Common Law, Nigerian Legislation, and Customary Law. In matters not expressly covered by statute, judicial precedent (stare decisis) applies.
-
-**Relevant Authorities:**
-Please consult the Constitution of the Federal Republic of Nigeria 1999 (as amended) and recent Supreme Court judgments relevant to this specific area.
-
-**Recommendation:**
-Further review of specific case law in the Nigerian Weekly Law Reports (NWLR) is recommended for a definitive position.`;
+---
+**MEMORANDUM**
+---
+`;
+  return await run(prompt);
 };
 
 export const draftContract = async (params: ContractParams): Promise<string> => {
-  await delay(2000);
-  const type = params.type.toLowerCase();
+  const prompt = `DRAFT OF A NIGERIAN LEGAL DOCUMENT
+  
+TYPE: ${params.type}
+PARTIES:
+- Party A: ${params.partyA}
+- Party B: ${params.partyB}
+JURISDICTION: ${params.jurisdiction}, Nigeria
 
-  // --- TENANCY AGREEMENT ---
-  if (type.includes('tenancy') || type.includes('lease')) {
-    return `**TENANCY AGREEMENT**
-
-**THIS AGREEMENT** is made this ____ day of ________, 20____.
-
-**BETWEEN:**
-
-**${params.partyA}** (The LANDLORD) of [Address].
-AND
-**${params.partyB}** (The TENANT) of [Address].
-
-**PREMISES:** [Description of Property] at [Address].
-**RENT:** N................ per annum.
-**TERM:** [Duration] commencing on [Date].
-
-**1. THE TENANT COVENANTS:**
-(a) To pay the rent reserved in advance.
-(b) To keep the interior of the premises in good and tenantable repair.
-(c) Not to assign or sublet the premises without the written consent of the Landlord.
-(d) To pay all utility bills including electricity and waste disposal.
-
-**2. THE LANDLORD COVENANTS:**
-(a) That the Tenant paying the rent shall peaceably hold and enjoy the premises.
-(b) To keep the main structure, roof, and walls in good repair.
-
-**3. KEY TERMS:**
+KEY TERMS TO INCLUDE:
 ${params.keyTerms}
 
-**4. TERMINATION:**
-This tenancy shall be determined by serving [Notice Period] notice in writing.
+**INSTRUCTIONS:**
+Based on the parameters above, draft a standard Nigerian ${params.type}. The draft should be clean, well-formatted, and ready for a lawyer to review. It must include standard clauses for such an agreement under Nigerian law. Do not include placeholder brackets like "[Date]" or "[Address]"; instead, use "____".
 
-**5. JURISDICTION:**
-This Agreement is governed by the Tenancy Law of ${params.jurisdiction}.
-
-**IN WITNESS WHEREOF** the parties have set their hands.
-
-____________________        ____________________
-**LANDLORD**                **TENANT**`;
-  }
-
-  // --- EMPLOYMENT CONTRACT ---
-  if (type.includes('employment') || type.includes('staff') || type.includes('contract of service')) {
-    return `**CONTRACT OF EMPLOYMENT**
-
-**EMPLOYER:** ${params.partyA}
-**EMPLOYEE:** ${params.partyB}
-**DATE:** ${new Date().toLocaleDateString()}
-
-**1. APPOINTMENT**
-The Employer hereby employs the Employee in the capacity of [Job Title].
-
-**2. COMMENCEMENT & PROBATION**
-Employment commences on [Date] and is subject to a probation period of [Months].
-
-**3. DUTIES**
-The Employee shall perform such duties as are customary for this position and as directed by the Employer.
-
-**4. REMUNERATION**
-Salary: N................ per annum/month.
-
-**5. SPECIFIC TERMS:**
-${params.keyTerms}
-
-**6. GOVERNING LAW:**
-This contract is governed by the Labour Act and laws of Nigeria.
-
-**SIGNED:**
-
-____________________        ____________________
-**EMPLOYER**                **EMPLOYEE**`;
-  }
-
-  // --- GENERIC / DEFAULT ---
-  return `**${params.type.toUpperCase()}**
-
-**THIS AGREEMENT** is made this ____ day of ________, 20____.
-
-**BETWEEN:**
-
-**${params.partyA}** of [Address], (hereinafter referred to as "THE FIRST PARTY") which expression shall where the context so admits include heirs, legal representatives, and assigns of the one part.
-
-**AND**
-
-**${params.partyB}** of [Address], (hereinafter referred to as "THE SECOND PARTY") which expression shall where the context so admits include heirs, legal representatives, and assigns of the other part.
-
-**WHEREAS:**
-1. The First Party is...
-2. The Second Party is desirous of...
-3. Both parties have agreed to the terms herein contained.
-
-**NOW THIS AGREEMENT WITNESSETH AS FOLLOWS:**
-
-**1. CONSIDERATION**
-In consideration of the mutual covenants herein contained...
-
-**2. KEY TERMS**
-${params.keyTerms}
-
-**3. JURISDICTION AND GOVERNING LAW**
-This Agreement shall be governed by and construed in accordance with the laws of ${params.jurisdiction}, Nigeria.
-
-**4. DISPUTE RESOLUTION**
-Any dispute arising from this Agreement shall be settled amicably or referred to arbitration in accordance with the Arbitration and Mediation Act 2023.
-
-**IN WITNESS WHEREOF** the parties have set their hands and seals the day and year first above written.
-
-**SIGNED, SEALED AND DELIVERED**
-by the within named **${params.partyA}**
-
-_________________________
-Signature
-
-**In the presence of:**
-Name: ___________________
-Address: _________________
-Signature: _______________
-
-**SIGNED, SEALED AND DELIVERED**
-by the within named **${params.partyB}**
-
-_________________________
-Signature`;
+---
+**DRAFT DOCUMENT**
+---
+`;
+  return await run(prompt);
 };
 
-export const getClauseSuggestions = async (contractType: string): Promise<string[]> => {
-  await delay(1000);
+export const getClauseSuggestions = async (contractType: string): Promise<string> => {
+  const prompt = `LEGAL CLAUSE SUGGESTIONS
   
-  const commonClauses = [
-    "Force Majeure Clause",
-    "Dispute Resolution / Arbitration Clause",
-    "Governing Law and Jurisdiction Clause",
-    "Confidentiality Clause",
-    "Termination Clause",
-    "Indemnity Clause"
-  ];
+DOCUMENT TYPE: ${contractType} (Nigerian context)
 
-  if (contractType.toLowerCase().includes("tenancy") || contractType.toLowerCase().includes("lease")) {
-    return [
-      "Covenant to Pay Rent",
-      "Covenant to Keep Premises in Good Repair",
-      "Covenant Not to Sublet or Assign",
-      "Quiet Enjoyment Clause",
-      "Termination and Re-entry Clause",
-      "Option to Renew Clause"
-    ];
-  }
+**INSTRUCTIONS:**
+List 6-8 standard, essential clauses for a Nigerian ${contractType}. Present the list as a simple, comma-separated string. Do not use numbering or bullet points.
 
-  if (contractType.toLowerCase().includes("employment")) {
-    return [
-      "Probation Period Clause",
-      "Job Description and Duties",
-      "Remuneration and Benefits",
-      "Non-Compete and Non-Solicitation",
-      "Termination and Notice Period",
-      "Code of Conduct"
-    ];
-  }
+**EXAMPLE:**
+"Governing Law Clause,Termination Clause,Confidentiality Clause,Force Majeure Clause"
 
-  return commonClauses;
+---
+**CLAUSE LIST:**
+---
+`;
+  const result = await run(prompt);
+  // Post-process to ensure it's a clean, comma-separated list
+  return result.replace(/(\d\.|\*|-|\n)/g, '').split(',').map(s => s.trim()).filter(Boolean).join(',');
 };
 
 export const summarizeCaseText = async (text: string): Promise<CaseSummary> => {
-  await delay(2000);
+  const prompt = `CASE LAW SUMMARY
+  
+DOCUMENT TEXT:
+---
+${text}
+---
 
-  return {
-    title: "Analyzed Legal Text / Judgment",
-    ratioDecidendi: "The court held that where there is a clear and unambiguous contract between parties, the court must give effect to the intention of the parties as expressed in the document.",
-    summary: "This text appears to be a legal submission or judgment. The core issue revolves around the interpretation of rights and obligations. The analysis suggests that the text emphasizes strict adherence to procedural or substantive legal requirements as outlined in the provided excerpt.",
-    relevantStatutes: ["Constitution of the Federal Republic of Nigeria 1999", "Evidence Act 2011"]
-  };
+**INSTRUCTIONS:**
+Analyze the provided legal text (likely a court judgment or ruling from Nigeria). Extract the following key components and return them as a valid, stringified JSON object.
+
+1.  **title**: A concise, descriptive title for the document.
+2.  **ratioDecidendi**: The "Ratio Decidendi" or the core legal principle/reason for the decision.
+3.  **summary**: A brief summary of the facts and holding.
+4.  **relevantStatutes**: A JavaScript array of key statutes or laws cited (e.g., ["Evidence Act 2011", "CAMA 2020"]).
+
+**JSON OUTPUT STRUCTURE:**
+{
+  "title": "...",
+  "ratioDecidendi": "...",
+  "summary": "...",
+  "relevantStatutes": ["..."]
+}
+
+---
+**JSON OUTPUT:**
+---
+`;
+  const result = await run(prompt);
+  try {
+    // Clean the result to ensure it is valid JSON
+    const cleanedResult = result.replace(/```json|```/g, '').trim();
+    return JSON.parse(cleanedResult) as CaseSummary;
+  } catch (error) {
+    console.error("Failed to parse summary from AI:", error);
+    // Return a fallback object or rethrow
+    throw new Error("AI returned an invalid summary format.");
+  }
 };
 
 export const generateFeeNoteDescription = async (details: string): Promise<string> => {
-  await delay(800);
-  return `Professional fees for ${details.toLowerCase()}, including review of relevant documents, necessary consultations, and perfecting all required legal instruments.`;
+  const prompt = `FEE NOTE DESCRIPTION GENERATOR
+
+**TASK:**
+Generate a professional, one-sentence description for a fee note based on the following service details. The tone should be formal for a Nigerian legal context.
+
+**SERVICE DETAILS:**
+"${details}"
+
+---
+**FEE NOTE DESCRIPTION:**
+Professional fees for...
+`;
+  return await run(prompt);
 };
 
 export const refineLegalText = async (text: string, instruction: string): Promise<string> => {
-  await delay(1500);
-  return `${text}\n\n[Refined based on instruction: "${instruction}" - Ensure clarity, precision, and removal of ambiguity in accordance with legal drafting standards.]`;
+  const prompt = `LEGAL TEXT REFINEMENT
+
+**ORIGINAL TEXT:**
+---
+${text}
+---
+
+**REFINEMENT INSTRUCTION:**
+"${instruction}"
+
+**INSTRUCTIONS:**
+Based on the instruction, refine the original legal text provided above. Maintain a formal, Nigerian legal tone. The output should be only the refined text.
+
+---
+**REFINED TEXT:**
+---
+`;
+  return await run(prompt);
 };
 
 export const generateDailyBrief = async (scheduleData: string): Promise<string> => {
-  await delay(1500);
-  return `**Daily Brief for Counsel**
+  const prompt = `DAILY BRIEFING FOR A NIGERIAN LAWYER
 
-**Good morning, Learned Counsel.**
-
-Based on your schedule, here is your brief for the day:
-
-**Overview:**
-You have a busy schedule ahead. Please prioritize court appearances.
-
-**Schedule Summary:**
+**SCHEDULE & TASKS FOR THE DAY:**
+---
 ${scheduleData}
+---
 
+**INSTRUCTIONS:**
+You are the LexiNaija AI Legal Assistant. Generate a concise, professional daily briefing for a Nigerian lawyer based on the provided schedule. The tone should be encouraging and formal. Include a relevant quote about law or success.
+
+**EXAMPLE STRUCTURE:**
+**Daily Brief for Counsel**
+Good morning, Learned Counsel.
+[Summary of the day's schedule]
 **Action Items:**
-1. Ensure all case files for today's hearings are in order.
-2. Review the motion papers for the upcoming application.
-3. Confirm attendance with clients for meetings.
-
-**Note:**
-"Preparation is the key to success at the Bar." - *Afe Babalola, SAN*
-
+1. [Action 1]
+2. [Action 2]
+**Quote of the Day:**
+"[Quote]" - [Author]
 Best regards,
-**LexiNaija Assistant**`;
+**LexiNaija Assistant**
+
+---
+**BRIEFING:**
+---
+`;
+  return await run(prompt);
 };
 
 export const generateCaseStrategy = async (facts: string, role: string, jurisdiction: string): Promise<string> => {
-  await delay(2000);
-  return `**Case Strategy Report**
+  const prompt = `CASE STRATEGY REPORT (NIGERIAN LAW)
 
-**Jurisdiction:** ${jurisdiction}
-**Client Role:** ${role}
+**JURISDICTION:** ${jurisdiction}
+**CLIENT'S ROLE:** ${role}
+**SUMMARY OF FACTS:**
+---
+${facts}
+---
 
-**1. SWOT Analysis**
-*   **Strengths:** Based on the facts, your position appears supported by document evidence (if available).
-*   **Weaknesses:** Potential gaps in oral evidence; ensure witnesses are credible.
-*   **Opportunities:** Explore settlement (ADR) if the opposing party shows willingness.
-*   **Threats:** Delays in court processes; potential counter-claims.
+**INSTRUCTIONS:**
+Generate a preliminary case strategy report based on the facts provided. The report should be tailored for a Nigerian legal practitioner. It must include:
+1.  **SWOT Analysis** (Strengths, Weaknesses, Opportunities, Threats).
+2.  **Key Legal Issues** to be determined.
+3.  **Recommended Next Steps** (procedural and substantive).
+4.  **Relevant Statutes & Rules** (e.g., High Court Rules, Evidence Act).
+5.  A clear disclaimer that this is an AI-generated guide.
 
-**2. Legal Issues**
-*   Whether the Claimant has established a cause of action.
-*   Whether the proper parties are before the court.
-
-**3. Recommended Strategy**
-*   **Immediate:** File necessary originating processes or defense within time.
-*   **Evidence:** Gather all original documents.
-*   **Pre-Trial:** Issue a formal demand letter (if Claimant) or Request for Further and Better Particulars (if Defendant).
-
-**4. Relevant Statutes**
-*   High Court Civil Procedure Rules of ${jurisdiction.split(' ')[0] || 'Lagos'} State.
-*   Evidence Act 2011.
-
-**Disclaimer:** This is an AI-generated strategy guide. Please exercise professional judgment.`;
+---
+**STRATEGY REPORT:**
+---
+`;
+  return await run(prompt);
 };
 
 export const generateLegalArgument = async (issue: string, stance: string, facts: string, jurisdiction: string): Promise<string> => {
-  await delay(2000);
-  return `**Legal Argument Draft**
+  const prompt = `LEGAL ARGUMENT DRAFT (NIGERIAN COURT)
 
-**Court:** ${jurisdiction}
-**Issue:** ${issue}
-**Stance:** ${stance}
+**COURT/JURISDICTION:** ${jurisdiction}
+**LEGAL ISSUE:** ${issue}
+**STANCE TO DEFEND:** ${stance}
+**RELEVANT FACTS:**
+---
+${facts}
+---
 
-**My Lord,**
+**INSTRUCTIONS:**
+Draft a persuasive legal argument based on the provided information. The argument should be structured for a Nigerian court, addressing a Judge as "My Lord". It must:
+1.  Start with a formal submission.
+2.  State the legal principle (the "trite law").
+3.  Cite at least one relevant or illustrative Nigerian case.
+4.  Apply the principle to the given facts.
+5.  Conclude with a prayer urging the court to find in favor of the specified stance.
 
-**Submission:**
-It is our humble submission that, based on the facts before this Honourable Court, the position of the ${stance} is meritorious and grounded in law.
-
-**Argument:**
-1.  **On the Issue of ${issue}:**
-    The law is trite that [General Legal Principle]. This was established in the *locus classicus* case of *Madukolu v. Nkemdilim (1962)* regarding jurisdiction (if applicable) or other relevant authorities.
-
-2.  **Application to Facts:**
-    Applying the law to the instant case, the facts show that [Reference to Facts provided]. Therefore, the requirements of the law have been satisfied.
-
-**Prayer:**
-We urge this Honourable Court to resolve this issue in favour of the ${stance}.
-
-**Most Obliged.**`;
+---
+**DRAFT ARGUMENT:**
+---
+`;
+  return await run(prompt);
 };
 
 export const analyzeWitnessStatement = async (statement: string, role: string): Promise<string> => {
-  await delay(1800);
-  return `**Cross-Examination Strategy Analysis**
+  const prompt = `WITNESS STATEMENT ANALYSIS & CROSS-EXAMINATION STRATEGY (NIGERIAN LAW)
 
-**Target Witness Role:** ${role}
+**WITNESS ROLE:** ${role} (e.g., Claimant's Witness, Defendant's Expert Witness)
+**WITNESS STATEMENT ON OATH:**
+---
+${statement}
+---
 
-**1. Inconsistencies & Gaps**
-*   The statement appears generic in parts. Look for specific dates or times that are missing.
-*   Check if the witness has personal knowledge of the facts or is relying on hearsay (Section 38, Evidence Act 2011).
+**INSTRUCTIONS:**
+Analyze the provided witness statement from a Nigerian litigation context. Generate a cross-examination strategy guide that includes:
+1.  **Potential Inconsistencies & Gaps:** Identify weaknesses or areas lacking detail.
+2.  **Credibility Issues:** Note any potential motives, bias, or reliance on hearsay (referencing the Evidence Act 2011 where relevant).
+3.  **Suggested Cross-Examination Questions:** Propose 3-4 pointed questions to ask the witness. Frame them as a Nigerian lawyer would (e.g., "I put it to you that...").
+4.  **Strategic Goal:** State the main objective of the cross-examination.
 
-**2. Credibility Check**
-*   Does the witness have a motive to lie?
-*   Is the statement consistent with pleaded facts?
-
-**3. Suggested Questions**
-*   "Mr. Witness, you stated X in paragraph Y. Is it not true that [Contradictory Fact]?"
-*   "Were you personally present when this event occurred?"
-*   "I put it to you that your account is a fabrication..."
-
-**4. Strategic Goal**
-*   Discredit the testimony regarding [Key Issue].
-*   Elicit admission of [Favorable Fact].`;
+---
+**ANALYSIS & STRATEGY:**
+---
+`;
+  return await run(prompt);
 };
 
 export const generateCorporateObjects = async (description: string): Promise<string> => {
-  await delay(1200);
-  return `**Suggested Objects Clauses for Memorandum of Association**
+  const prompt = `CORPORATE OBJECTS CLAUSE GENERATOR (NIGERIAN COMPANY)
 
-1.  To carry on the business of ${description} and to act as manufacturers, distributors, agents, and general merchants.
-2.  To borrow or raise money in such manner as the Company shall think fit.
-3.  To do all such other things as may be deemed incidental or conducive to the attainment of the above objects or any of them.
+**PRIMARY BUSINESS ACTIVITY:**
+${description}
 
-**Note:** Ensure compliance with CAMA 2020 requirements for specific business types.`;
+**INSTRUCTIONS:**
+Generate 3-4 standard "Objects Clauses" for the Memorandum of Association of a Nigerian company based on the primary business activity described above. The clauses should be concise and compliant with the Companies and Allied Matters Act (CAMA) 2020. The output should be a simple, numbered list.
+
+---
+**SUGGESTED OBJECTS CLAUSES:**
+---
+`;
+  return await run(prompt);
 };
 
 export const generateCorporateResolution = async (action: string, companyName: string, directors: string, type: 'Board' | 'General'): Promise<string> => {
-  await delay(1200);
-  return `**${type.toUpperCase()} RESOLUTION OF ${companyName.toUpperCase()}**
+  const prompt = `CORPORATE RESOLUTION DRAFTER (NIGERIAN COMPANY)
 
-**HELD ON:** ${new Date().toLocaleDateString()}
-**AT:** Registered Address of the Company
+**COMPANY NAME:** ${companyName}
+**RESOLUTION TYPE:** ${type} Meeting
+**ACTION TO BE RESOLVED:** ${action}
+**DIRECTORS/MEMBERS PRESENT (if provided):** ${directors}
 
-**PRESENT:**
-${directors}
+**INSTRUCTIONS:**
+Draft a standard ${type} Resolution for the company named above to approve the specified action. The resolution should be formatted cleanly for a Nigerian corporate context. It must include fields for the date, attendees, the "WHEREAS" pre-amble, the "IT IS HEREBY RESOLVED" clauses, and signature lines for directors (or director/secretary). Use "____" for dates and signatures.
 
-**WHEREAS:**
-The Directors/Shareholders considered the need to ${action}.
-
-**IT IS HEREBY RESOLVED:**
-1.  **THAT** the Company do hereby approve ${action}.
-2.  **THAT** the Directors be and are hereby authorized to take all necessary steps to give effect to this resolution.
-3.  **THAT** any documents required to be signed in connection with the above be signed by any two Directors or a Director and the Secretary.
-
-**DATED this ___ day of _______, 20__**
-
-____________________
-Director
-
-____________________
-Director/Secretary`;
+---
+**DRAFT RESOLUTION:**
+---
+`;
+  return await run(prompt);
 };
 
 export const generateComplianceAdvice = async (query: string): Promise<string> => {
-  await delay(1500);
-  return `**Corporate Compliance Advisory**
+  const prompt = `CORPORATE COMPLIANCE ADVISORY (NIGERIAN LAW)
 
-**Query:** ${query}
+**COMPLIANCE QUERY:**
+"${query}"
 
-**Regulatory Framework:**
-*   Companies and Allied Matters Act (CAMA) 2020
-*   Tax Laws (CITA, PITA, VAT Act)
+**INSTRUCTIONS:**
+Provide preliminary compliance advice on the query above from the perspective of Nigerian law. Your advice should:
+1.  Identify the primary regulatory framework (e.g., CAMA 2020, tax laws).
+2.  Provide 2-3 high-level recommendations or points of caution.
+3.  Suggest a concrete next step or action point for the user.
 
-**Advice:**
-Based on the current regulatory landscape in Nigeria:
-1.  Ensure annual returns are filed with the Corporate Affairs Commission (CAC) to avoid penalties.
-2.  If this involves foreign participation, ensure NIPC registration.
-3.  Maintain statutory books (Register of Members, Directors, Secretaries) at the registered office.
-
-**Action Point:**
-Conduct a legal audit to verify specific compliance status regarding "${query}".`;
+---
+**PRELIMINARY ADVICE:**
+---
+`;
+  return await run(prompt);
 };

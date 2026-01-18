@@ -5,7 +5,7 @@ import { analyzeWitnessStatement } from '../services/geminiService';
 import ReactMarkdown from 'react-markdown';
 
 export const Witness: React.FC = () => {
-  const { cases, saveDocumentToCase } = useLegalStore();
+  const { cases, saveDocumentToCase, consumeCredits } = useLegalStore();
   const [statement, setStatement] = useState('');
   const [opposingRole, setOpposingRole] = useState('Opposing Party');
   const [analysis, setAnalysis] = useState('');
@@ -15,6 +15,10 @@ export const Witness: React.FC = () => {
   const handleAnalyze = async () => {
     if (!statement.trim()) {
       alert("Please paste the Witness Statement text.");
+      return;
+    }
+    if (!consumeCredits(4)) {
+      alert("Insufficient credits to analyze the statement.");
       return;
     }
     setIsAnalyzing(true);

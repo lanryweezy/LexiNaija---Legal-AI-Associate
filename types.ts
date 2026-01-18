@@ -94,6 +94,7 @@ export interface Case {
   documents: SavedDocument[];
   billableItems: BillableItem[];
   evidence: EvidenceItem[];
+  outcome?: 'Won' | 'Lost' | 'Settled' | 'Dismissed' | 'Pending'; // New outcome field
 }
 
 export interface DocumentVersion {
@@ -110,6 +111,7 @@ export interface SavedDocument {
   type: 'Draft' | 'Research' | 'Summary';
   createdAt: Date;
   versions?: DocumentVersion[];
+  status: 'Draft' | 'Under Review' | 'Approved' | 'Signed' | 'Rejected' | 'Archived';
 }
 
 export interface Invoice {
@@ -143,6 +145,14 @@ export interface LegalAnalytics {
     Closed: number;
     Drafting: number;
   };
+  outcomeDistribution: {
+    Won: number;
+    Lost: number;
+    Settled: number;
+    Dismissed: number;
+    Pending: number;
+  };
+  winRate: number;
   monthlyRevenue: {
     month: string;
     revenue: number;
@@ -160,3 +170,14 @@ export interface LegalAnalytics {
     avgValue: number;
   }[];
 }
+
+export interface AuditLogEntry {
+  id: string;
+  timestamp: Date;
+  eventType: 'DOCUMENT_CREATED' | 'DOCUMENT_UPDATED' | 'DOCUMENT_VIEWED' | 'DOCUMENT_DELETED';
+  documentId?: string;
+  caseId?: string;
+  userId?: string; // Will be null until authentication is implemented
+  details?: string;
+}
+

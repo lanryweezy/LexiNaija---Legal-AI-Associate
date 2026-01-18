@@ -7,7 +7,7 @@ import ReactMarkdown from 'react-markdown';
 type Tab = 'objects' | 'resolutions' | 'compliance';
 
 export const Corporate: React.FC = () => {
-  const { cases, saveDocumentToCase } = useLegalStore();
+  const { cases, saveDocumentToCase, consumeCredits } = useLegalStore();
   const [activeTab, setActiveTab] = useState<Tab>('objects');
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState('');
@@ -33,12 +33,15 @@ export const Corporate: React.FC = () => {
         let output = '';
         if (activeTab === 'objects') {
             if (!bizDesc) { alert('Enter business description'); setIsLoading(false); return; }
+            if (!consumeCredits(3)) { alert("Insufficient credits."); setIsLoading(false); return; }
             output = await generateCorporateObjects(bizDesc);
         } else if (activeTab === 'resolutions') {
             if (!resCompany || !resAction) { alert('Enter company details'); setIsLoading(false); return; }
+            if (!consumeCredits(4)) { alert("Insufficient credits."); setIsLoading(false); return; }
             output = await generateCorporateResolution(resAction, resCompany, resDirectors, resType);
         } else if (activeTab === 'compliance') {
             if (!compQuery) { alert('Enter query'); setIsLoading(false); return; }
+            if (!consumeCredits(5)) { alert("Insufficient credits."); setIsLoading(false); return; }
             output = await generateComplianceAdvice(compQuery);
         }
         setResult(output);
@@ -64,7 +67,7 @@ export const Corporate: React.FC = () => {
           content: result,
           type: 'Draft',
           createdAt: new Date()
-      });
+      } as Omit<SavedDocument, 'status'>);
       alert("Saved to Documents.");
   };
 

@@ -76,7 +76,7 @@ export const Drafter: React.FC = () => {
             content: generatedDraft,
             type: 'Draft',
             createdAt: new Date()
-        });
+        } as Omit<SavedDocument, 'status'>);
         setShowSaveModal(false);
         setSaveTitle('');
         setSelectedCase('');
@@ -93,7 +93,7 @@ export const Drafter: React.FC = () => {
           return;
         }
         const results = await getClauseSuggestions(params.type);
-        setSuggestions(results);
+        setSuggestions(results.split(','));
     } catch(e) {
         console.error("Failed to get suggestions");
     } finally {
@@ -131,6 +131,13 @@ export const Drafter: React.FC = () => {
               <option>Memorandum of Understanding (MoU)</option>
               <option>Service Level Agreement</option>
               <option>Non-Disclosure Agreement</option>
+              <option>Irrevocable Power of Attorney</option>
+              <option>Hire Purchase Agreement</option>
+              <option>Formal Contract of Sale of Land</option>
+              <option>Deed of Lease</option>
+              <option>Deed of Mortgage</option>
+              <option>Partnership Agreement</option>
+              <option>Will and Codicil</option>
             </select>
           </div>
 

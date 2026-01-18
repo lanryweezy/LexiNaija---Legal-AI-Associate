@@ -5,7 +5,7 @@ import { CaseSummary } from '../types';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 
 export const Summarizer: React.FC = () => {
-  const { cases, saveDocumentToCase } = useLegalStore();
+  const { cases, saveDocumentToCase, consumeCredits } = useLegalStore();
   const [text, setText] = useState('');
   const [summary, setSummary] = useState<CaseSummary | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -14,6 +14,10 @@ export const Summarizer: React.FC = () => {
 
   const handleAnalyze = async () => {
     if (!text.trim()) return;
+    if (!consumeCredits(3)) {
+      alert("Insufficient credits for analysis. Please top up your account.");
+      return;
+    }
     setIsLoading(true);
     setSummary(null);
     try {

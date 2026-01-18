@@ -5,7 +5,7 @@ import { generateLegalArgument } from '../services/geminiService';
 import ReactMarkdown from 'react-markdown';
 
 export const Briefs: React.FC = () => {
-  const { cases, saveDocumentToCase } = useLegalStore();
+  const { cases, saveDocumentToCase, consumeCredits } = useLegalStore();
   const [selectedCaseId, setSelectedCaseId] = useState('');
   
   const [formData, setFormData] = useState({
@@ -37,6 +37,10 @@ export const Briefs: React.FC = () => {
           alert("Please provide the Legal Issue and Facts.");
           return;
       }
+      if (!consumeCredits(8)) {
+          alert("Insufficient credits to generate a legal argument.");
+          return;
+      }
       setIsGenerating(true);
       setArgument('');
       try {
@@ -62,7 +66,7 @@ export const Briefs: React.FC = () => {
           content: argument,
           type: 'Draft',
           createdAt: new Date()
-      });
+      } as Omit<SavedDocument, 'status'>);
       alert("Saved to Case Documents.");
   };
 

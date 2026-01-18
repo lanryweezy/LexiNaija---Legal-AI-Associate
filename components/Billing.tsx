@@ -6,7 +6,7 @@ import { jsPDF } from 'jspdf';
 import { Invoice } from '../types';
 
 export const Billing: React.FC = () => {
-  const { clients, cases, invoices, addInvoice, firmProfile } = useLegalStore();
+  const { clients, cases, invoices, addInvoice, firmProfile, consumeCredits } = useLegalStore();
   const [drafting, setDrafting] = useState(false);
   const [loadingAi, setLoadingAi] = useState(false);
   
@@ -20,6 +20,10 @@ export const Billing: React.FC = () => {
 
   const handleAiRefine = async () => {
     if (!newInvoice.rawDescription) return;
+    if (!consumeCredits(1)) {
+      alert("Insufficient credits to use AI refine. Please top up your account.");
+      return;
+    }
     setLoadingAi(true);
     try {
       const refined = await generateFeeNoteDescription(newInvoice.rawDescription);

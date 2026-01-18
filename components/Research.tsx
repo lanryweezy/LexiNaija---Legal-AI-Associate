@@ -3,8 +3,10 @@ import { Send, User, Bot, Loader2 } from 'lucide-react';
 import { generateLegalResearch } from '../services/geminiService';
 import { ChatMessage } from '../types';
 import ReactMarkdown from 'react-markdown';
+import { useLegalStore } from '../contexts/LegalStoreContext';
 
 export const Research: React.FC = () => {
+  const { consumeCredits } = useLegalStore();
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
@@ -27,6 +29,11 @@ export const Research: React.FC = () => {
 
   const handleSend = async () => {
     if (!input.trim()) return;
+
+    if (!consumeCredits(5)) {
+      alert("Insufficient credits for research. Please top up your account.");
+      return;
+    }
 
     const userMsg: ChatMessage = {
       id: Date.now().toString(),

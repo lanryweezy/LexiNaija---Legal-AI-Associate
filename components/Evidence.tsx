@@ -88,7 +88,7 @@ C/O THEIR COUNSEL
         content: content,
         type: 'Draft',
         createdAt: new Date()
-    });
+    } as Omit<SavedDocument, 'status'>);
 
     alert("Generated 'List of Documents' and saved to Case Documents.");
   };

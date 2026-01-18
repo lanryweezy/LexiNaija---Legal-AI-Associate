@@ -425,6 +425,1036 @@ The Petitioner seeks a decree of dissolution of marriage on the ground that the 
 
 **PARTICULARS OF BEHAVIOUR:**
 1. That on [Date], the Respondent...`
+  },
+
+  {
+    id: 'lit4',
+    category: 'Civil Litigation',
+    title: 'Motion on Notice for Interlocutory Injunction',
+    description: 'Application restraining the Defendant pending determination of the suit.',
+    jurisdiction: 'FCT, Abuja',
+    court: 'High Court',
+    content: `# [COURT]
+# [DIVISION]
+# HOLDEN AT [LOCATION]
+
+SUIT NO: [SUIT NO]
+
+BETWEEN:
+
+[PLAINTIFF NAME]   ........................................   CLAIMANT/APPLICANT
+
+AND
+
+[DEFENDANT NAME]   ........................................   DEFENDANT/RESPONDENT
+
+## MOTION ON NOTICE
+BROUGHT PURSUANT TO ORDER 43 OF THE HIGH COURT OF THE FCT CIVIL PROCEDURE RULES AND UNDER THE INHERENT JURISDICTION OF THIS HONOURABLE COURT
+
+TAKE NOTICE that the Court will be moved on the ...... day of ...... 20.... or so soon thereafter by Counsel to the Claimant praying for:
+
+1. AN ORDER of interlocutory injunction restraining the Defendant, his servants, agents or privies from further interfering with the res pending the determination of this suit.
+2. AND FOR SUCH FURTHER ORDER(S) as this Honourable Court may deem fit.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]
+[FIRM ADDRESS]`
+  },
+
+  {
+    id: 'lit5',
+    category: 'Civil Litigation',
+    title: 'Statement of Claim',
+    description: 'Pleading setting out material facts and reliefs sought.',
+    jurisdiction: 'Rivers State',
+    court: 'High Court',
+    content: `# [COURT]
+# [DIVISION]
+# HOLDEN AT [LOCATION]
+
+SUIT NO: [SUIT NO]
+
+BETWEEN:
+
+[PLAINTIFF NAME]   ........................................   CLAIMANT
+
+AND
+
+[DEFENDANT NAME]   ........................................   DEFENDANT
+
+## STATEMENT OF CLAIM
+
+1. The Claimant is a Nigerian citizen of address at [ADDRESS].
+2. The Defendant is a Nigerian citizen whose address is [ADDRESS].
+3. By a contract dated [DATE], the Defendant agreed to [Summary].
+4. The Defendant breached the contract by [Particulars].
+5. As a result, the Claimant suffered loss and damage.
+
+WHEREOF the Claimant claims against the Defendant as follows:
+1. Damages in the sum of N[AMOUNT].
+2. Interest at the rate of [RATE]% per annum from [DATE] until judgment.
+3. Costs of this action.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]
+[FIRM ADDRESS]`
+  },
+
+  {
+    id: 'lit6',
+    category: 'Civil Litigation',
+    title: 'Originating Summons (Federal High Court)',
+    description: 'Proceedings commenced by originating summons under Federal High Court Rules.',
+    jurisdiction: 'Federal',
+    court: 'Federal High Court',
+    content: `# FEDERAL HIGH COURT OF NIGERIA
+# [DIVISION]
+# HOLDEN AT [LOCATION]
+
+SUIT NO: [SUIT NO]
+
+IN THE MATTER OF: [SUBJECT]
+
+AND IN THE MATTER OF: [STATUTE/REGULATION]
+
+BETWEEN:
+
+[PLAINTIFF NAME]   ........................................   APPLICANT
+
+AND
+
+[DEFENDANT NAME]   ........................................   RESPONDENT
+
+## ORIGINATING SUMMONS
+
+Let the Respondent within 30 days after service of this Summons on him, inclusive of the day of such service, cause an appearance to be entered to this Summons, and take notice that in default of his so doing, the Applicant may proceed therein and judgment may be given in his absence.
+
+Questions for determination:
+1. Whether on the proper construction of [STATUTE], the Applicant is entitled to [Relief].
+
+Reliefs sought:
+1. A DECLARATION that ...
+2. AN ORDER directing ...
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+REGISTRAR`
+  },
+
+  {
+    id: 'prop5',
+    category: 'Property',
+    title: 'Notice to Quit (Lagos Tenancy Law)',
+    description: 'State-specific notice in compliance with Lagos Tenancy Law 2011.',
+    jurisdiction: 'Lagos State',
+    court: 'Magistrate Court',
+    content: `[DATE]
+
+TO:
+[TENANT NAME]
+[ADDRESS]
+
+TAKE NOTICE that pursuant to the Lagos State Tenancy Law 2011, you are required to quit and deliver up possession of the premises known as [ADDRESS] being a [MONTHLY/YEARLY] tenancy on or before the expiration of [NOTICE PERIOD] months from the service of this notice.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LANDLORD NAME]
+or Counsel`
+  },
+
+  {
+    id: 'prop6',
+    category: 'Property',
+    title: 'Commercial Tenancy Agreement',
+    description: 'Lease agreement for commercial premises.',
+    jurisdiction: 'Rivers State',
+    court: 'High Court',
+    content: `THIS COMMERCIAL TENANCY AGREEMENT is made this ...... day of ...... 20....
+
+BETWEEN [LANDLORD NAME] and [TENANT NAME]
+
+PREMISES: [Address]
+RENT: N[Amount] per annum
+TERM: [Years] years commencing [DATE]
+USE: Commercial purposes only
+
+Key Terms:
+1. Service Charge: N[Amount] payable quarterly.
+2. Repairs: Tenant responsible for internal; Landlord for structural.
+3. Insurance: Tenant to insure contents; Landlord to insure building.
+4. Termination: [Months] notice.
+
+SIGNED:
+LANDLORD ................................  TENANT ................................`
+  },
+
+  {
+    id: 'corp4',
+    category: 'Corporate',
+    title: 'Special Resolution — Change of Company Name',
+    description: 'Shareholders’ special resolution pursuant to CAMA 2020.',
+    jurisdiction: 'Federal',
+    content: `SPECIAL RESOLUTION OF [COMPANY NAME] LTD PASSED ON [DATE]
+
+IT WAS RESOLVED THAT the name of the Company be changed from [OLD NAME] to [NEW NAME], subject to the approval of the Corporate Affairs Commission.
+
+That the Directors be and are hereby authorized to take all steps necessary to give effect to this resolution.
+
+__________________________
+CHAIRMAN`
+  },
+
+  {
+    id: 'crim1',
+    category: 'Criminal',
+    title: 'Bail Application (Magistrate Court)',
+    description: 'Application for bail pending trial.',
+    jurisdiction: 'Lagos State',
+    court: 'Magistrate Court',
+    content: `IN THE MAGISTRATE COURT OF LAGOS STATE HOLDEN AT [LOCATION]
+
+CHARGE NO: [SUIT NO]
+
+BETWEEN:
+
+THE STATE   ........................................   COMPLAINANT
+
+AND
+
+[CLIENT NAME]   ........................................   DEFENDANT/APPLICANT
+
+MOTION ON NOTICE
+
+BROUGHT PURSUANT TO THE LAGOS STATE ADMINISTRATION OF CRIMINAL JUSTICE LAW AND UNDER THE INHERENT JURISDICTION OF THIS COURT
+
+1. AN ORDER admitting the Applicant to bail on liberal terms.
+2. AND FOR SUCH FURTHER ORDER(S) as the Court may deem fit.
+
+GROUNDS:
+1. The Applicant is presumed innocent.
+2. The Applicant has reliable sureties and a fixed address at [ADDRESS].
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]`
+  },
+
+  {
+    id: 'crim2',
+    category: 'Criminal',
+    title: 'Motion for Variation of Bail Conditions',
+    description: 'Application to vary onerous bail terms.',
+    jurisdiction: 'Federal',
+    court: 'Federal High Court',
+    content: `IN THE FEDERAL HIGH COURT HOLDEN AT [LOCATION]
+
+SUIT/CHARGE NO: [SUIT NO]
+
+BETWEEN:
+
+FEDERAL REPUBLIC OF NIGERIA   ................................   COMPLAINANT
+
+AND
+
+[CLIENT NAME]   ........................................   DEFENDANT/APPLICANT
+
+MOTION ON NOTICE
+
+1. AN ORDER varying the bail terms to allow the Applicant meet same.
+2. AND FOR SUCH FURTHER ORDER(S) as the Court may deem fit.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]`
+  },
+
+  {
+    id: 'prob1',
+    category: 'Probate',
+    title: 'Petition for Letters of Administration',
+    description: 'Application for Letters of Administration over intestate estate.',
+    jurisdiction: 'Lagos State',
+    court: 'High Court (Probate)',
+    content: `IN THE HIGH COURT OF LAGOS STATE (PROBATE REGISTRY) HOLDEN AT [LOCATION]
+
+IN THE ESTATE OF [DECEASED NAME] (DECEASED)
+
+PETITIONERS: [CLIENT NAME] and [CO-PETITIONER NAME]
+
+The Petitioners humbly apply for the grant of Letters of Administration over the estate of the above-named deceased who died intestate on [DATE].
+
+Grounds:
+1. The Petitioners are lawful next-of-kin.
+2. Assets include property at [ADDRESS] and bank accounts at [BANK].
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+PETITIONERS`
+  },
+
+  {
+    id: 'prob2',
+    category: 'Probate',
+    title: 'Oath of Executor',
+    description: 'Executor’s oath in support of probate grant.',
+    jurisdiction: 'Ogun State',
+    court: 'High Court (Probate)',
+    content: `I, [CLIENT NAME], of [ADDRESS], do make Oath and say that I will well and truly administer the estate of [TESTATOR NAME], pay all debts, legacies and bequests, and render a true account when lawfully required.
+
+SWORN TO at the Probate Registry, Ogun State this ...... day of ...... 20....
+
+BEFORE ME
+COMMISSIONER FOR OATHS`
+  },
+
+  {
+    id: 'app1',
+    category: 'Appellate',
+    title: 'Notice of Appeal (Civil)',
+    description: 'Appeal to the Court of Appeal against High Court judgment.',
+    jurisdiction: 'Rivers State',
+    court: 'Court of Appeal, Port Harcourt Division',
+    content: `IN THE COURT OF APPEAL HOLDEN AT PORT HARCOURT
+
+APPEAL NO: [SUIT NO]
+
+BETWEEN:
+
+[PLAINTIFF NAME]   ........................................   APPELLANT
+
+AND
+
+[DEFENDANT NAME]   ........................................   RESPONDENT
+
+NOTICE OF APPEAL
+
+Take notice that the Appellant appeals to the Court of Appeal against the whole of the decision of the High Court delivered on [DATE].
+
+GROUNDS OF APPEAL:
+1. The learned trial judge erred in law when ...
+
+RELIEFS SOUGHT:
+1. Allow the appeal and set aside the judgment.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+COUNSEL TO THE APPELLANT`
+  },
+
+  {
+    id: 'app2',
+    category: 'Appellate',
+    title: 'Motion for Extension of Time (Court of Appeal)',
+    description: 'Application for extension of time to compile record or file brief.',
+    jurisdiction: 'FCT, Abuja',
+    court: 'Court of Appeal, Abuja Division',
+    content: `IN THE COURT OF APPEAL HOLDEN AT ABUJA
+
+APPEAL NO: [SUIT NO]
+
+MOTION ON NOTICE
+
+1. AN ORDER extending time within which the Appellant may file the Appellant’s Brief.
+2. AND FOR SUCH FURTHER ORDER(S) as the Court may deem fit.
+
+GROUNDS:
+1. Delay was due to circumstances beyond control.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+COUNSEL`
+  },
+
+  {
+    id: 'fam3',
+    category: 'Family',
+    title: 'Petition for Custody',
+    description: 'Matrimonial cause seeking custody of minor children.',
+    jurisdiction: 'Kano State',
+    court: 'High Court',
+    content: `IN THE HIGH COURT OF KANO STATE HOLDEN AT [LOCATION]
+
+SUIT NO: [SUIT NO]
+
+BETWEEN:
+
+[PLAINTIFF NAME]   ........................................   PETITIONER
+
+AND
+
+[DEFENDANT NAME]   ........................................   RESPONDENT
+
+RELIEFS:
+1. An order granting custody of the minor children to the Petitioner.
+2. An order for maintenance.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]`
+  },
+
+  {
+    id: 'lit7',
+    category: 'Civil Litigation',
+    title: 'Motion to Set Aside Default Judgment',
+    description: 'Application to set aside judgment entered in default of appearance.',
+    jurisdiction: 'Kaduna State',
+    court: 'High Court',
+    content: `MOTION ON NOTICE brought under Order [X] of the Kaduna State High Court Rules praying:
+
+1. AN ORDER setting aside the default judgment entered on [DATE].
+2. AND FOR SUCH FURTHER ORDER(S) as the Court may deem fit.
+
+GROUNDS:
+1. The Defendant was not served with the originating processes.
+2. The Defendant has a meritorious defence.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]`
+  },
+
+  {
+    id: 'lit8',
+    category: 'Civil Litigation',
+    title: 'Witness Statement on Oath',
+    description: 'Template of Witness Statement in support of pleadings.',
+    jurisdiction: 'Oyo State',
+    court: 'High Court',
+    content: `I, [CLIENT NAME], of [ADDRESS], make Oath and state:
+
+1. That I am the Claimant/Defendant in this suit.
+2. That the facts herein are within my personal knowledge.
+3. [Facts]
+
+SWORN TO at the High Court Registry, [LOCATION] this ...... day of ...... 20....
+
+BEFORE ME
+COMMISSIONER FOR OATHS`
+  },
+
+  {
+    id: 'lit9',
+    category: 'Civil Litigation',
+    title: 'Motion for Summary Judgment',
+    description: 'Application under summary judgment procedure.',
+    jurisdiction: 'Anambra State',
+    court: 'High Court',
+    content: `MOTION ON NOTICE brought pursuant to Order [X] of the Anambra State High Court (Civil Procedure) Rules praying:
+
+1. AN ORDER entering summary judgment in favour of the Claimant for the sum of N[AMOUNT].
+2. AND FOR SUCH FURTHER ORDER(S) as the Court may deem fit.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]`
+  },
+
+  {
+    id: 'lit10',
+    category: 'Civil Litigation',
+    title: 'Statement of Defence',
+    description: 'Defendant’s responsive pleading.',
+    jurisdiction: 'Enugu State',
+    court: 'High Court',
+    content: `# [COURT]
+# [DIVISION]
+# HOLDEN AT [LOCATION]
+
+SUIT NO: [SUIT NO]
+
+BETWEEN:
+
+[PLAINTIFF NAME]   ........................................   CLAIMANT
+
+AND
+
+[DEFENDANT NAME]   ........................................   DEFENDANT
+
+## STATEMENT OF DEFENCE
+
+1. The Defendant denies paragraphs [X] of the Statement of Claim and puts the Claimant to the strictest proof.
+2. In further answer, the Defendant states that [Facts].
+3. The suit is frivolous and an abuse of court process.
+
+WHEREFORE the Defendant prays the Court to dismiss the suit.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]`
+  },
+
+  {
+    id: 'prop7',
+    category: 'Property',
+    title: 'Notice to Quit (Delta State)',
+    description: 'Recovery of premises procedure — state-tagged.',
+    jurisdiction: 'Delta State',
+    court: 'Magistrate Court',
+    content: `[DATE]
+
+TO: [TENANT NAME]
+ADDRESS: [ADDRESS]
+
+TAKE NOTICE that you are required to quit and deliver up possession of the premises known as [ADDRESS] on or before [NOTICE PERIOD] months from service of this notice.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LANDLORD NAME]`
+  },
+
+  {
+    id: 'corp5',
+    category: 'Corporate',
+    title: 'Special Resolution — Increase of Share Capital',
+    description: 'Shareholders’ special resolution under CAMA 2020.',
+    jurisdiction: 'Federal',
+    content: `SPECIAL RESOLUTION OF [COMPANY NAME] LTD
+
+IT WAS RESOLVED THAT the issued share capital of the Company be increased from [OLD CAPITAL] to [NEW CAPITAL] by the creation of [NUMBER] shares of [VALUE] each.
+
+Directors are authorized to file necessary returns with the CAC.
+
+__________________________
+CHAIRMAN`
+  },
+
+  {
+    id: 'prob3',
+    category: 'Probate',
+    title: 'Affidavit of Next of Kin',
+    description: 'In support of Letters of Administration.',
+    jurisdiction: 'Anambra State',
+    court: 'High Court (Probate)',
+    content: `I, [CLIENT NAME], of [ADDRESS], make Oath and say:
+
+1. That I am the lawful next of kin of [DECEASED NAME].
+2. That the deceased died intestate on [DATE].
+3. That I undertake to administer the estate according to law.
+
+SWORN TO at the Probate Registry, Anambra State this ...... day of ...... 20....
+
+BEFORE ME
+COMMISSIONER FOR OATHS`
+  },
+
+  {
+    id: 'app3',
+    category: 'Appellate',
+    title: 'Notice of Appeal (Criminal)',
+    description: 'Appeal against conviction/sentence.',
+    jurisdiction: 'Lagos State',
+    court: 'Court of Appeal, Lagos Division',
+    content: `IN THE COURT OF APPEAL HOLDEN AT LAGOS
+
+APPEAL NO: [SUIT NO]
+
+BETWEEN:
+
+[APPELLANT NAME]   ........................................   APPELLANT
+
+AND
+
+THE STATE   ........................................   RESPONDENT
+
+NOTICE OF APPEAL (CRIMINAL)
+
+Grounds include:
+1. The learned trial judge erred in law in admitting [Evidence].
+2. The sentence is manifestly excessive.
+
+RELIEF: Allow the appeal and set aside the conviction/sentence.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+COUNSEL`
+  },
+
+  {
+    id: 'fam4',
+    category: 'Family',
+    title: 'Application for Maintenance',
+    description: 'Application for maintenance of spouse/children.',
+    jurisdiction: 'Ebonyi State',
+    court: 'High Court',
+    content: `MOTION ON NOTICE praying:
+
+1. AN ORDER directing the Respondent to pay monthly maintenance of N[AMOUNT] for the minor children.
+2. AND FOR SUCH FURTHER ORDER(S) as the Court may deem fit.
+
+GROUNDS: [Facts]
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]`
+  },
+
+  {
+    id: 'nicn1',
+    category: 'Corporate',
+    title: 'General Form of Complaint (NICN)',
+    description: 'Commencing employment dispute at NICN.',
+    jurisdiction: 'Federal',
+    court: 'National Industrial Court of Nigeria',
+    content: `IN THE NATIONAL INDUSTRIAL COURT OF NIGERIA HOLDEN AT [LOCATION]
+
+SUIT NO: [SUIT NO]
+
+BETWEEN:
+
+[CLAIMANT NAME]   ........................................   CLAIMANT
+
+AND
+
+[DEFENDANT NAME]   ........................................   DEFENDANT
+
+GENERAL FORM OF COMPLAINT
+
+The Claimant’s claim against the Defendant is as follows:
+1. Payment of outstanding salaries in the sum of N[AMOUNT].
+2. Damages for wrongful termination.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+REGISTRAR`
+  },
+
+  {
+    id: 'fhc1',
+    category: 'Civil Litigation',
+    title: 'Fundamental Rights Application (FHC)',
+    description: 'Enforcement of Fundamental Rights under FREP Rules.',
+    jurisdiction: 'Federal',
+    court: 'Federal High Court',
+    content: `IN THE FEDERAL HIGH COURT HOLDEN AT [LOCATION]
+
+SUIT NO: [SUIT NO]
+
+IN THE MATTER OF AN APPLICATION FOR THE ENFORCEMENT OF FUNDAMENTAL RIGHTS
+
+BETWEEN:
+
+[APPLICANT NAME]   ........................................   APPLICANT
+
+AND
+
+[RESPONDENT NAME]   ........................................   RESPONDENT
+
+MOTION ON NOTICE and STATEMENT in support seeking:
+1. DECLARATION that the arrest/detention of the Applicant is unlawful.
+2. ORDER compelling the Respondent to release the Applicant forthwith.
+3. DAMAGES in the sum of N[AMOUNT].
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]`
+  },
+
+  {
+    id: 'lit11',
+    category: 'Civil Litigation',
+    title: 'Notice of Discontinuance',
+    description: 'Claimant discontinues suit.',
+    jurisdiction: 'Edo State',
+    court: 'High Court',
+    content: `# [COURT]
+# [DIVISION]
+# HOLDEN AT [LOCATION]
+
+SUIT NO: [SUIT NO]
+
+BETWEEN:
+
+[PLAINTIFF NAME]   ........................................   CLAIMANT
+
+AND
+
+[DEFENDANT NAME]   ........................................   DEFENDANT
+
+## NOTICE OF DISCONTINUANCE
+
+TAKE NOTICE that the Claimant hereby wholly discontinues this suit against the Defendant.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]`
+  },
+
+  {
+    id: 'lit12',
+    category: 'Civil Litigation',
+    title: 'Subpoena ad Testificandum',
+    description: 'Command to attend court to give evidence.',
+    jurisdiction: 'Kwara State',
+    court: 'High Court',
+    content: `TO: [WITNESS NAME] of [ADDRESS]
+
+YOU ARE HEREBY COMMANDED to attend before the High Court of Kwara State holden at [LOCATION] on the ...... day of ...... 20.... at [TIME] to testify in the above suit and to remain until you are discharged.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+REGISTRAR`
+  },
+
+  {
+    id: 'lit13',
+    category: 'Civil Litigation',
+    title: 'Subpoena Duces Tecum',
+    description: 'Command to produce documents in court.',
+    jurisdiction: 'Oyo State',
+    court: 'High Court',
+    content: `TO: [WITNESS NAME] of [ADDRESS]
+
+YOU ARE HEREBY COMMANDED to bring with you and produce at the High Court holden at [LOCATION] on the ...... day of ...... 20.... the following documents: [DOCUMENTS].
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+REGISTRAR`
+  },
+
+  {
+    id: 'lit14',
+    category: 'Civil Litigation',
+    title: 'Motion for Joinder of Parties',
+    description: 'Application to join necessary parties.',
+    jurisdiction: 'Ogun State',
+    court: 'High Court',
+    content: `MOTION ON NOTICE praying:
+
+1. AN ORDER joining [PARTY NAME] as a necessary party to this suit.
+2. AND FOR SUCH FURTHER ORDER(S) as the Court may deem fit.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]`
+  },
+
+  {
+    id: 'lit15',
+    category: 'Civil Litigation',
+    title: 'Motion for Leave to Amend Pleadings',
+    description: 'Application to amend processes.',
+    jurisdiction: 'Ekiti State',
+    court: 'High Court',
+    content: `MOTION ON NOTICE praying:
+
+1. AN ORDER granting leave to amend the Statement of Claim in terms of the Schedule annexed.
+2. AND FOR SUCH FURTHER ORDER(S) as the Court may deem fit.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]`
+  },
+
+  {
+    id: 'lit16',
+    category: 'Civil Litigation',
+    title: 'Notice of Change of Counsel',
+    description: 'Formal notice substituting counsel on record.',
+    jurisdiction: 'Kano State',
+    court: 'High Court',
+    content: `TAKE NOTICE that henceforth **[NEW FIRM NAME]** of [FIRM ADDRESS] will represent the **[PLAINTIFF/DEFENDANT]** in place of **[OLD FIRM NAME]** in this suit.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]`
+  },
+
+  {
+    id: 'prop8',
+    category: 'Property',
+    title: 'Commercial Tenancy Agreement (Lagos)',
+    description: 'Lease for commercial use under Lagos law.',
+    jurisdiction: 'Lagos State',
+    court: 'High Court',
+    content: `THIS COMMERCIAL TENANCY AGREEMENT is made this ...... day of ...... 20....
+
+BETWEEN [LANDLORD NAME] and [TENANT NAME]
+
+PREMISES: [Address]
+RENT: N[AMOUNT] per annum
+TERM: [Years] years commencing [DATE]
+USE: Commercial purposes only
+
+Key Terms:
+1. Service Charge: N[AMOUNT].
+2. Repairs and maintenance responsibilities.
+3. Insurance obligations.
+4. Termination: [Months] notice.
+
+SIGNED:
+LANDLORD ................................  TENANT ................................`
+  },
+
+  {
+    id: 'crim3',
+    category: 'Criminal',
+    title: 'Information (Criminal — High Court)',
+    description: 'Prosecutor’s information to commence criminal trial.',
+    jurisdiction: 'Ogun State',
+    court: 'High Court',
+    content: `IN THE HIGH COURT OF OGUN STATE HOLDEN AT [LOCATION]
+
+CHARGE/CASE NO: [SUIT NO]
+
+THE STATE
+v.
+[DEFENDANT NAME]
+
+INFORMATION
+
+Count 1: That you, [DEFENDANT NAME], on [DATE] at [LOCATION], did [OFFENCE DESCRIPTION], contrary to and punishable under [SECTION/LAW].
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+DIRECTOR OF PUBLIC PROSECUTIONS`
+  },
+
+  {
+    id: 'crim4',
+    category: 'Criminal',
+    title: 'Charge Sheet (Magistrate Court)',
+    description: 'Charge before Magistrate.',
+    jurisdiction: 'FCT, Abuja',
+    court: 'Magistrate Court',
+    content: `IN THE MAGISTRATE COURT OF THE FCT HOLDEN AT [LOCATION]
+
+CHARGE NO: [SUIT NO]
+
+THE COMMISSIONER OF POLICE
+v.
+[DEFENDANT NAME]
+
+Charge: That you did [OFFENCE DESCRIPTION] contrary to [SECTION/LAW].`
+  },
+
+  {
+    id: 'crim5',
+    category: 'Criminal',
+    title: 'Bail Bond',
+    description: 'Bond by surety for the accused’s bail.',
+    jurisdiction: 'Lagos State',
+    court: 'Magistrate Court',
+    content: `I, [SURETY NAME], of [ADDRESS], hereby undertake to be surety for [DEFENDANT NAME] admitted to bail in the sum of N[AMOUNT]. I shall ensure the Defendant attends court as required.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+SURETY`
+  },
+
+  {
+    id: 'prob4',
+    category: 'Probate',
+    title: 'Inventory of Estate Assets',
+    description: 'List of assets filed in probate.',
+    jurisdiction: 'Cross River State',
+    court: 'High Court (Probate)',
+    content: `INVENTORY OF ASSETS of the Estate of [DECEASED NAME]
+
+1. Real Property: [ADDRESS]
+2. Bank Accounts: [BANKS]
+3. Motor Vehicles: [DETAILS]
+4. Shares/Investments: [DETAILS]
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+EXECUTOR/ADMINISTRATOR`
+  },
+
+  {
+    id: 'prob5',
+    category: 'Probate',
+    title: "Administrators' Bond",
+    description: 'Bond undertaking proper administration of estate.',
+    jurisdiction: 'Bayelsa State',
+    court: 'High Court (Probate)',
+    content: `We, [ADMINISTRATOR NAME] of [ADDRESS] and [SURETY NAME] of [ADDRESS], are jointly and severally bound unto the Probate Registrar in the sum of N[AMOUNT] for due administration of the estate of [DECEASED NAME].`
+  },
+
+  {
+    id: 'prob6',
+    category: 'Probate',
+    title: 'Affidavit of Attesting Witness',
+    description: 'Affidavit by witness to the Will.',
+    jurisdiction: 'Akwa Ibom State',
+    court: 'High Court (Probate)',
+    content: `I, [WITNESS NAME], of [ADDRESS], state that I was present and saw [TESTATOR NAME] sign the Will dated [DATE] and that I signed as a witness in his/her presence.
+
+SWORN TO at the Probate Registry, Akwa Ibom State this ...... day of ...... 20....
+
+BEFORE ME
+COMMISSIONER FOR OATHS`
+  },
+
+  {
+    id: 'app4',
+    category: 'Appellate',
+    title: 'Motion for Stay of Execution',
+    description: 'Stay of execution pending appeal.',
+    jurisdiction: 'Enugu State',
+    court: 'Court of Appeal, Enugu Division',
+    content: `IN THE COURT OF APPEAL HOLDEN AT ENUGU
+
+APPEAL NO: [SUIT NO]
+
+MOTION ON NOTICE praying:
+1. AN ORDER staying execution of the judgment delivered on [DATE] pending determination of the appeal.
+2. AND FOR SUCH FURTHER ORDER(S) as the Court may deem fit.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+COUNSEL`
+  },
+
+  {
+    id: 'app5',
+    category: 'Appellate',
+    title: 'Notice of Cross Appeal',
+    description: 'Respondent cross-appeals.',
+    jurisdiction: 'Edo State',
+    court: 'Court of Appeal, Benin Division',
+    content: `IN THE COURT OF APPEAL HOLDEN AT BENIN
+
+APPEAL NO: [SUIT NO]
+
+NOTICE OF CROSS APPEAL
+
+The Respondent cross-appeals against the judgment delivered on [DATE] on the following grounds: [GROUNDS].`
+  },
+
+  {
+    id: 'fam5',
+    category: 'Family',
+    title: 'Petition for Dissolution of Marriage',
+    description: 'Full petition under Matrimonial Causes Act.',
+    jurisdiction: 'Imo State',
+    court: 'High Court',
+    content: `IN THE HIGH COURT OF IMO STATE HOLDEN AT [LOCATION]
+
+SUIT NO: [SUIT NO]
+
+BETWEEN:
+[PLAINTIFF NAME]   ........................................   PETITIONER
+
+AND
+[DEFENDANT NAME]   ........................................   RESPONDENT
+
+PETITION FOR DISSOLUTION OF MARRIAGE on grounds of irretrievable breakdown per Section 15 MCA.
+
+RELIEFS: Decree Nisi; Custody; Maintenance.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]`
+  },
+
+  {
+    id: 'fam6',
+    category: 'Family',
+    title: 'Consent Terms',
+    description: 'Agreed terms filed by parties.',
+    jurisdiction: 'Osun State',
+    court: 'High Court',
+    content: `The parties hereby agree to the following consent terms:
+1. Custody to the Petitioner.
+2. Maintenance of N[AMOUNT] monthly.
+3. Access arrangements as follows: [DETAILS].
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+PARTIES`
+  },
+
+  {
+    id: 'nicn2',
+    category: 'Corporate',
+    title: 'Motion on Notice (NICN)',
+    description: 'Interlocutory application at NICN.',
+    jurisdiction: 'Federal',
+    court: 'National Industrial Court of Nigeria, Lagos',
+    content: `MOTION ON NOTICE praying:
+1. AN ORDER directing payment of outstanding salaries.
+2. AND FOR SUCH FURTHER ORDER(S) as the Court may deem fit.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+[LAWYER NAME]`
+  },
+
+  {
+    id: 'nicn3',
+    category: 'Corporate',
+    title: 'Statement of Facts (NICN)',
+    description: 'Employee’s concise statement of facts in support of complaint.',
+    jurisdiction: 'Federal',
+    court: 'National Industrial Court of Nigeria, Port Harcourt',
+    content: `STATEMENT OF FACTS
+
+1. The Claimant was employed on [DATE] as [POSITION].
+2. The Defendant terminated employment on [DATE] without due process.
+3. The Claimant is owed salaries of N[AMOUNT].
+
+RELIEFS: As per Complaint.`
+  },
+
+  {
+    id: 'sc1',
+    category: 'Appellate',
+    title: 'Notice of Appeal (Supreme Court)',
+    description: 'Appeal to the Supreme Court of Nigeria.',
+    jurisdiction: 'Federal',
+    court: 'Supreme Court of Nigeria',
+    content: `IN THE SUPREME COURT OF NIGERIA HOLDEN AT ABUJA
+
+SC. [NUMBER]
+
+BETWEEN:
+
+[APPELLANT NAME]   ........................................   APPELLANT
+
+AND
+
+[RESPONDENT NAME]   ........................................   RESPONDENT
+
+NOTICE OF APPEAL against the judgment of the Court of Appeal delivered on [DATE] on the grounds: [GROUNDS].
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+COUNSEL`
   }
 ];
 

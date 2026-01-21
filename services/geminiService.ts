@@ -5,12 +5,14 @@ const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 if (!apiKey) {
   throw new Error("VITE_GEMINI_API_KEY is not set in the environment variables");
 }
-const genAI = new GoogleGenerativeAI(apiKey);
+const genAI = new GoogleGenerativeAI(apiKey, { apiVersion: 'v1' });
 
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-001" });
 
 async function run(prompt: string): Promise<string> {
   try {
+    console.log("AI Model Used:", model.model);
+    console.log("Prompt sent to AI:", prompt);
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = await response.text();

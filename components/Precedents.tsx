@@ -1430,9 +1430,7 @@ __________________________
 RELIEFS: As per Complaint.`
   },
 
-  },
-
-  // --- NEW CIVIL LITIGATION TEMPLATES ---
+  }, // Closing bracket for nicn3 template
   {
     id: 'lit17',
     category: 'Civil Litigation',
@@ -1970,7 +1968,6 @@ __________________________
 **REGISTRAR**`
   },
 
-  },
 
   // --- NEW ADVANCED PROPERTY LAW TEMPLATES ---
   {

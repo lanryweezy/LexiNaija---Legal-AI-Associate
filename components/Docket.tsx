@@ -3,6 +3,7 @@ import { Calendar as CalendarIcon, CheckCircle2, Circle, Clock, Plus, AlertCircl
 import { useLegalStore } from '../contexts/LegalStoreContext';
 import { generateDailyBrief } from '../services/geminiService';
 import { Task } from '../types';
+import ReactMarkdown from 'react-markdown';
 
 export const Docket: React.FC = () => {
   const { cases, tasks, addTask, updateTask, deleteTask } = useLegalStore();
@@ -108,7 +109,7 @@ export const Docket: React.FC = () => {
                 <h3 className="font-serif font-bold flex items-center gap-2"><Sparkles size={16} className="text-legal-gold"/> Executive Brief</h3>
                 <button onClick={() => setBrief(null)} className="text-gray-400 hover:text-white text-xs">Dismiss</button>
             </div>
-            <p className="text-sm leading-relaxed whitespace-pre-wrap font-light">{brief}</p>
+            <ReactMarkdown className="prose prose-invert prose-sm max-w-none">{brief}</ReactMarkdown>
         </div>
       )}
 

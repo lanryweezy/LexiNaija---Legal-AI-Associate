@@ -1428,8 +1428,6 @@ __________________________
 3. The Claimant is owed salaries of N[AMOUNT].
 
 RELIEFS: As per Complaint.`
-  },
-
   }, // Closing bracket for nicn3 template
   {
     id: 'lit17',
@@ -1587,8 +1585,6 @@ DATED THIS ...... DAY OF ...... 20....
 
 __________________________
 [LAWYER NAME]`
-  },
-
   },
 
   // --- NEW PROPERTY LAW TEMPLATES ---
@@ -1755,8 +1751,6 @@ __________________________
 **TESTATOR**`
   },
 
-  },
-
   // --- NEW CORPORATE LAW TEMPLATES ---
   {
     id: 'corp6',
@@ -1835,8 +1829,6 @@ DATED THIS ...... DAY OF ...... 20....
 
 __________________________
 **COMPANY SECRETARY**`
-  },
-
   },
 
   // --- NEW GENERAL LEGAL DOCUMENT TEMPLATES ---
@@ -2011,8 +2003,6 @@ __________________________
 **[LAWYER NAME]**`
   },
 
-  },
-
   // --- NEW ADVANCED CORPORATE LAW TEMPLATES ---
   {
     id: 'corp9',
@@ -2061,7 +2051,186 @@ DATED THIS ...... DAY OF ...... 20....`
 
 DATED THIS ...... DAY OF ...... 20....`
   },
+  {
+    id: 'fam7',
+    category: 'Family',
+    title: 'Adoption Petition',
+    description: 'Petition for an Adoption Order.',
+    jurisdiction: 'Generic',
+    court: 'Family Court / High Court',
+    content: `# IN THE FAMILY COURT OF [STATE]
+# HOLDEN AT [LOCATION]
 
+IN THE MATTER OF THE ADOPTION LAW OF [STATE]
+AND
+IN THE MATTER OF [CHILD'S NAME] (AN INFANT)
+
+**PETITION FOR AN ADOPTION ORDER**
+
+The Petition of **[PETITIONER 1 NAME]** and **[PETITIONER 2 NAME]** of [ADDRESS] showeth:
+
+1. That the Petitioners are desirous of adopting the infant **[CHILD'S NAME]**.
+2. That the Petitioners are [MARITAL STATUS] and have been resident in [STATE] for [NUMBER] years.
+3. That the infant is of the [MALE/FEMALE] sex and was born on [DATE].
+4. That the infant is in the care and possession of the Petitioners.
+
+**PRAYER:**
+The Petitioners pray that an Adoption Order be made in their favor in respect of the said infant.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+**PETITIONERS**`
+  },
+  {
+    id: 'fam8',
+    category: 'Family',
+    title: 'Affidavit of Marriage',
+    description: 'Affidavit to prove existence of marriage.',
+    jurisdiction: 'Generic',
+    content: `I, [NAME], [SEX], [RELIGION], [OCCUPATION], of [ADDRESS], do hereby make Oath and state as follows:
+
+1. That I am the Deponent herein and a citizen of Nigeria.
+2. That I am lawfully married to [SPOUSE NAME] under [NATIVE LAW AND CUSTOM / MARRIAGE ACT].
+3. That the marriage was celebrated on [DATE] at [LOCATION].
+4. That the marriage is still subsisting.
+5. That I swear to this Affidavit in good faith.
+
+__________________________
+**DEPONENT**
+
+**SWORN TO** at the High Court Registry, [LOCATION].
+This ...... day of ...... 20....
+
+**BEFORE ME**
+
+**COMMISSIONER FOR OATHS**`
+  },
+  {
+    id: 'lit21',
+    category: 'Civil Litigation',
+    title: 'Writ of Execution (Fi.Fa)',
+    description: 'Writ for attachment and sale of property to satisfy judgment.',
+    jurisdiction: 'Generic',
+    court: 'High Court',
+    content: `# IN THE HIGH COURT OF [STATE]
+# [DIVISION]
+# HOLDEN AT [LOCATION]
+
+SUIT NO: [SUIT NO]
+
+**WRIT OF FIERI FACIAS (FI.FA)**
+
+**TO THE SHERIFF:**
+
+YOU ARE HEREBY COMMANDED that of the goods and chattels of **[JUDGMENT DEBTOR NAME]** in your division, you cause to be made the sum of N[AMOUNT] which **[JUDGMENT CREDITOR NAME]** lately in this court recovered against him.
+
+AND in what manner you shall have executed this Writ, make appear to this Court immediately after the execution thereof.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+**JUDGE / REGISTRAR**`
+  },
+  {
+    id: 'corp11',
+    category: 'Corporate',
+    title: 'Share Transfer Form',
+    description: 'Form for the transfer of shares between shareholders.',
+    jurisdiction: 'Generic',
+    content: `**SHARE TRANSFER FORM**
+
+**NAME OF COMPANY:** [COMPANY NAME]
+
+I, **[TRANSFEROR NAME]** of [ADDRESS], in consideration of the sum of N[AMOUNT] paid to me by **[TRANSFEREE NAME]** of [ADDRESS], (the "Transferee"), do hereby transfer to the Transferee [NUMBER] ordinary shares of N[VALUE] each in the above-named company.
+
+TO HOLD the same unto the Transferee subject to the conditions on which I held the same immediately before the execution hereof.
+
+**AS WITNESS** our hands this ...... day of ...... 20....
+
+__________________________
+**TRANSFEROR**
+
+__________________________
+**TRANSFEREE**`
+  },
+  {
+    id: 'corp12',
+    category: 'Corporate',
+    title: 'Affidavit of Loss of Share Certificate',
+    description: 'Affidavit to support application for duplicate share certificate.',
+    jurisdiction: 'Generic',
+    content: `I, [NAME], of [ADDRESS], do hereby make Oath and state as follows:
+
+1. That I am a shareholder in [COMPANY NAME] holding [NUMBER] shares.
+2. That Certificate No. [NUMBER] was issued to me in respect of the said shares.
+3. That I have searched for the said certificate but cannot find same.
+4. That the said certificate has been lost or mislaid.
+5. That I make this Affidavit in support of an application for a duplicate certificate.
+
+__________________________
+**DEPONENT**
+
+**SWORN TO** at the High Court Registry.
+This ...... day of ...... 20....`
+  },
+  {
+    id: 'prop17',
+    category: 'Property',
+    title: 'Surrender of Lease',
+    description: 'Agreement to surrender a lease before expiry.',
+    jurisdiction: 'Generic',
+    content: `**DEED OF SURRENDER**
+
+**BETWEEN**
+
+**[LESSEE NAME]** (the "Lessee")
+
+**AND**
+
+**[LESSOR NAME]** (the "Lessor")
+
+**WHEREAS:**
+1. By a Lease dated [DATE], the Lessor demised the property at [ADDRESS] to the Lessee.
+2. The parties have agreed to a surrender of the said Lease.
+
+**NOW THIS DEED WITNESSES** that the Lessee hereby yields up and surrenders to the Lessor all the unexpired residue of the term granted by the Lease.
+
+DATED THIS ...... DAY OF ...... 20....
+
+__________________________
+**LESSEE**`
+  },
+  {
+    id: 'crim6',
+    category: 'Criminal',
+    title: 'Petition to Police (General)',
+    description: 'Formal letter reporting a criminal offence to the Police.',
+    jurisdiction: 'Generic',
+    content: `[FIRM LETTERHEAD]
+
+[DATE]
+
+**THE COMMISSIONER OF POLICE,**
+[STATE] COMMAND.
+
+Dear Sir,
+
+**PETITION AGAINST [NAME] FOR [OFFENCE]**
+
+We act as Solicitors to **[CLIENT NAME]** ("our Client") on whose instruction we write.
+
+Our Client instructs us that [DETAILED FACTS OF THE CRIME].
+
+This act constitutes an offence of [OFFENCE] contrary to the [CRIMINAL/PENAL CODE].
+
+We respectfully urge you to use your good offices to investigate this matter and bring the culprits to book.
+
+Yours faithfully,
+
+__________________________
+**[LAWYER NAME]**`
+  },
   {
     id: 'sc1',
     category: 'Appellate',

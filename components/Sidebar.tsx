@@ -1,5 +1,5 @@
 import React from 'react';
-import { Scale, BookOpen, PenTool, LayoutDashboard, ShieldCheck, Users, Briefcase, CreditCard, FileText, Calendar, ShieldAlert, Settings, Calculator, Library, List, BrainCircuit, Archive, UserCheck, Feather, Building2, BarChart3, Gavel, Truck, Share2, LogOut, ChevronRight } from 'lucide-react';
+import { Scale, BookOpen, PenTool, LayoutDashboard, ShieldCheck, Users, Briefcase, CreditCard, FileText, Calendar, ShieldAlert, Settings, Calculator, Library, List, BrainCircuit, Archive, UserCheck, Feather, Building2, BarChart3, Gavel, Truck, Share2, LogOut, ChevronRight, Zap } from 'lucide-react';
 import { AppView } from '../types';
 
 interface SidebarProps {

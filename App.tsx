@@ -1,5 +1,6 @@
 import React, { useState, Suspense, lazy } from 'react';
 import { Sidebar } from './components/Sidebar';
+import { LandingPage } from './components/LandingPage';
 const Dashboard = lazy(() => import('./components/Dashboard').then(m => ({ default: m.Dashboard })));
 const Research = lazy(() => import('./components/Research').then(m => ({ default: m.Research })));
 const Drafter = lazy(() => import('./components/Drafter').then(m => ({ default: m.Drafter })));
@@ -28,10 +29,12 @@ import { AppView } from './types';
 import { LegalStoreProvider } from './contexts/LegalStoreContext';
 
 function App() {
-  const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
+  const [currentView, setCurrentView] = useState<AppView>(AppView.LANDING);
 
   const renderView = () => {
     switch (currentView) {
+      case AppView.LANDING:
+        return <LandingPage onGetStarted={() => setCurrentView(AppView.DASHBOARD)} />;
       case AppView.DASHBOARD:
         return <Dashboard onNavigate={setCurrentView} />;
       case AppView.DOCKET:
@@ -88,8 +91,8 @@ function App() {
   return (
     <LegalStoreProvider>
       <div className="flex h-screen w-full bg-slate-50 font-sans text-slate-900">
-        <Sidebar currentView={currentView} setView={setCurrentView} />
-        <main className={`flex-1 ml-64 overflow-auto scrollbar-hide ${currentView === AppView.EDITOR || currentView === AppView.DOCKET || currentView === AppView.EVIDENCE || currentView === AppView.WITNESS || currentView === AppView.BRIEFS || currentView === AppView.CORPORATE ? 'bg-white' : ''}`}>
+        {currentView !== AppView.LANDING && <Sidebar currentView={currentView} setView={setCurrentView} />}
+        <main className={`flex-1 ${currentView !== AppView.LANDING ? 'ml-64' : ''} overflow-auto scrollbar-hide ${currentView === AppView.EDITOR || currentView === AppView.DOCKET || currentView === AppView.EVIDENCE || currentView === AppView.WITNESS || currentView === AppView.BRIEFS || currentView === AppView.CORPORATE ? 'bg-white' : ''}`}>
           <Suspense fallback={<div className="p-6 text-sm text-gray-600">Loading…</div>}>
             {renderView()}
           </Suspense>

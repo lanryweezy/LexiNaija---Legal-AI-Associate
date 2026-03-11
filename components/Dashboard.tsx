@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
-import { FileText, Clock, AlertCircle, TrendingUp, Users, Gavel, ArrowRight, Activity, Zap, CheckCircle2, ChevronRight, Scale } from 'lucide-react';
+import { FileText, Clock, AlertCircle, TrendingUp, Users, Gavel, ArrowRight, Activity, Zap, CheckCircle2, ChevronRight, Scale, PenTool, BookOpen } from 'lucide-react';
 import { AppView } from '../types';
 
 interface DashboardProps {

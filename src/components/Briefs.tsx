@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
     Feather, BookOpen, Save, Gavel, Scale, Play, Copy, CheckCircle2,
-    RefreshCw, X, Zap, Bookmark, ChevronRight, Clipboard
+    RefreshCw, X, Zap, Bookmark, ChevronRight, ChevronLeft, Briefcase, Users, Loader2, ArrowRight, Eye, Clipboard
 } from 'lucide-react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 import { generateLegalArgument } from '../services/geminiService';
@@ -12,7 +12,7 @@ import { MatterArchiveModal } from './MatterArchiveModal';
 
 export const Briefs: React.FC = () => {
   const { showToast } = useToast();
-  const { cases, consumeCredits, creditsTotal, creditsUsed } = useLegalStore();
+  const { cases, consumeCredits, creditsTotal, creditsUsed, activeSuggestion, setActiveSuggestion } = useLegalStore();
   const [selectedCaseId, setSelectedCaseId] = useState('');
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   
@@ -25,6 +25,18 @@ export const Briefs: React.FC = () => {
 
   const [argument, setArgument] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+
+  // Handle Actionable Intelligence
+  React.useEffect(() => {
+    if (activeSuggestion && activeSuggestion.targetView === 'BRIEFS' && activeSuggestion.targetState) {
+        const state = activeSuggestion.targetState;
+        if (state.prefillCaseId) handleCaseSelect(state.prefillCaseId);
+        if (state.initialIssue) setFormData(prev => ({ ...prev, issue: state.initialIssue }));
+        
+        showToast("Intelligence parameters injected from Counsel Agent", "success");
+        setActiveSuggestion(null);
+    }
+  }, [activeSuggestion]);
 
   // Auto-fill facts when case selected
   const handleCaseSelect = (caseId: string) => {

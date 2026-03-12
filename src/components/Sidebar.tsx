@@ -8,7 +8,7 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
-  const { suggestions } = useLegalStore();
+  const { suggestions, activeCaseId, cases } = useLegalStore();
   const practiceItems = [
     { id: AppView.DASHBOARD, label: 'Dashboard', icon: LayoutDashboard, badge: suggestions.length > 0 ? suggestions.length : undefined },
     { id: AppView.ANALYTICS, label: 'Analytics', icon: BarChart3 },
@@ -104,7 +104,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
         </ul>
       </nav>
 
-      <div className="p-6 border-t border-legal-700">
+      <div className="p-6 border-t border-legal-700 space-y-4">
+        {activeCaseId && (
+            <div className="bg-legal-gold/10 rounded-2xl p-4 border border-legal-gold/20 animate-in slide-in-from-bottom-2 duration-500">
+                <div className="flex items-center gap-2 mb-1">
+                    <div className="w-1.5 h-1.5 rounded-full bg-legal-gold"></div>
+                    <span className="text-[8px] font-black text-legal-gold uppercase tracking-[0.2em]">Active Focus</span>
+                </div>
+                <p className="text-[11px] font-black text-white truncate italic">
+                    {cases.find(c => c.id === activeCaseId)?.title || 'Matter Syncing...'}
+                </p>
+            </div>
+        )}
         <div className="bg-legal-800 rounded-lg p-4 border border-legal-700">
           <p className="text-xs text-legal-gold uppercase font-bold mb-1">LexiNaija Pro</p>
           <p className="text-xs text-gray-400 mb-3">Enterprise License</p>

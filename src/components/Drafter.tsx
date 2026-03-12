@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   FileText, Download, Copy, RefreshCw, CheckCircle2, Save, X, Sparkles, Plus, 
-  ChevronRight, ChevronLeft, Briefcase, Users, Gavel, Scale, Loader2, ArrowRight
+  ChevronRight, ChevronLeft, Briefcase, Users, Gavel, Scale, Loader2, ArrowRight, Eye
 } from 'lucide-react';
 import { draftContract, getClauseSuggestions } from '../services/geminiService';
 import { ContractParams, SavedDocument } from '../types';
@@ -14,7 +14,7 @@ type Step = 'type' | 'parties' | 'terms' | 'preview';
 
 export const Drafter: React.FC = () => {
   const { showToast } = useToast();
-  const { cases, clients, updateCaseDocument, saveDocumentToCase, creditsTotal, creditsUsed, consumeCredits } = useLegalStore();
+  const { cases, clients, updateCaseDocument, saveDocumentToCase, creditsTotal, creditsUsed, consumeCredits, activeSuggestion, setActiveSuggestion } = useLegalStore();
   const [currentStep, setCurrentStep] = useState<Step>('type');
   const [params, setParams] = useState<ContractParams>({
     type: 'Tenancy Agreement',
@@ -32,6 +32,22 @@ export const Drafter: React.FC = () => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [prefillCaseId, setPrefillCaseId] = useState('');
+
+  // Handle Actionable Intelligence (Injected State)
+  useEffect(() => {
+    if (activeSuggestion && activeSuggestion.targetView === 'DRAFTER' && activeSuggestion.targetState) {
+        const state = activeSuggestion.targetState;
+        if (state.type) setParams(prev => ({ ...prev, type: state.type }));
+        if (state.jurisdiction) setParams(prev => ({ ...prev, jurisdiction: state.jurisdiction }));
+        if (state.prefillCaseId) handlePrefillFromCase(state.prefillCaseId);
+        
+        // Transition to terms if pre-filled
+        if (state.type && state.prefillCaseId) setCurrentStep('terms');
+        
+        showToast("Intelligence parameters injected from Counsel Agent", "success");
+        setActiveSuggestion(null); // Clear suggestion after consumption
+    }
+  }, [activeSuggestion]);
 
   const contractTypes = [
     'Tenancy Agreement (Residential)',

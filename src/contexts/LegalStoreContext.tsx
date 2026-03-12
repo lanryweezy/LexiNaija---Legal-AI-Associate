@@ -36,6 +36,8 @@ interface LegalStoreContextType {
   activeCaseId: string | null;
   setActiveCaseId: (id: string | null) => void;
   dismissSuggestion: (id: string) => void;
+  activeSuggestion: Suggestion | null;
+  setActiveSuggestion: (s: Suggestion | null) => void;
 }
 
 const LegalStoreContext = createContext<LegalStoreContextType | undefined>(undefined);
@@ -176,6 +178,7 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [activeCaseId, setActiveCaseId] = useState<string | null>(null);
+  const [activeSuggestion, setActiveSuggestion] = useState<Suggestion | null>(null);
 
   // Agentic Audit Engine
   useEffect(() => {
@@ -207,6 +210,11 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
                 description: 'This is a tenancy recovery matter, but no "Notice to Quit" has been logged in the evidence locker.',
                 actionLabel: 'Draft Notice',
                 targetView: AppView.DRAFTER,
+                targetState: { 
+                    type: 'Notice to Quit', 
+                    jurisdiction: activeCase.court?.includes('Lagos') ? 'Lagos State' : 'Federal Territory',
+                    prefillCaseId: activeCase.id 
+                },
                 priority: 'High',
                 timestamp: new Date()
             });
@@ -225,6 +233,10 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
                 description: `Matter is set for hearing in ${diffDays} days. Shall I draft the Trial Brief and Witness Statements?`,
                 actionLabel: 'Prepare Brief',
                 targetView: AppView.BRIEFS,
+                targetState: {
+                    prefillCaseId: activeCase.id,
+                    initialIssue: 'Whether the Claimant has proved its case on the balance of probabilities and is entitled to the reliefs sought.'
+                },
                 priority: 'High',
                 timestamp: new Date()
             });
@@ -540,7 +552,8 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       saveDocumentToCase, updateCaseDocument, addBillableItem, 
       addTask, updateTask, deleteTask, addEvidence, deleteEvidence, setActiveDoc, getAnalytics,
       auditLog, addAuditLogEntry,
-      suggestions, activeCaseId, setActiveCaseId, dismissSuggestion
+      suggestions,      activeCaseId, setActiveCaseId, dismissSuggestion,
+      activeSuggestion, setActiveSuggestion
     }}>
       {children}
     </LegalStoreContext.Provider>

@@ -1,6 +1,7 @@
-import React, { useState, Suspense, lazy } from 'react';
+import React, { useState, Suspense, lazy, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { LandingPage } from './components/LandingPage';
+import { CommandPalette } from './components/CommandPalette';
 const Dashboard = lazy(() => import('./components/Dashboard').then(m => ({ default: m.Dashboard })));
 const Research = lazy(() => import('./components/Research').then(m => ({ default: m.Research })));
 const Drafter = lazy(() => import('./components/Drafter').then(m => ({ default: m.Drafter })));
@@ -31,6 +32,18 @@ import { ToastProvider } from './contexts/ToastContext';
 
 function App() {
   const [currentView, setCurrentView] = useState<AppView>(AppView.LANDING);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const renderView = () => {
     switch (currentView) {
@@ -99,6 +112,11 @@ function App() {
               {renderView()}
             </Suspense>
           </main>
+          <CommandPalette 
+            isOpen={isCommandPaletteOpen}
+            onClose={() => setIsCommandPaletteOpen(false)}
+            onNavigate={(view) => setCurrentView(view)}
+          />
         </div>
       </ToastProvider>
     </LegalStoreProvider>

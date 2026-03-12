@@ -11,7 +11,7 @@ interface CounselAgentProps {
 }
 
 export const CounselAgent: React.FC<CounselAgentProps> = ({ onNavigate }) => {
-  const { suggestions, dismissSuggestion, activeCaseId, cases } = useLegalStore();
+  const { suggestions, dismissSuggestion, activeCaseId, cases, setActiveSuggestion } = useLegalStore();
   const activeCase = cases.find(c => c.id === activeCaseId);
 
   if (suggestions.length === 0) return null;
@@ -65,7 +65,10 @@ export const CounselAgent: React.FC<CounselAgentProps> = ({ onNavigate }) => {
                 <p className="text-xs text-slate-500 leading-relaxed font-medium mb-4">{s.description}</p>
                 
                 <button 
-                  onClick={() => onNavigate(s.targetView)}
+                  onClick={() => {
+                    setActiveSuggestion(s);
+                    onNavigate(s.targetView);
+                  }}
                   className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.15em] text-legal-900 hover:text-legal-gold transition-all group/btn"
                 >
                   {s.actionLabel} <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />

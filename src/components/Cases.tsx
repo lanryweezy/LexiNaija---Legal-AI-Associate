@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { Briefcase, Gavel, Calendar, Plus, Search, Filter, Pencil, Trash2, FileText, X, CreditCard, Banknote, Users, ChevronRight } from 'lucide-react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 import { Case, BillableItem } from '../types';
+import { ConfirmModal } from './ConfirmModal';
 
 export const Cases: React.FC = () => {
   const { cases, clients, addCase, updateCase, deleteCase, addBillableItem } = useLegalStore();
   const [showModal, setShowModal] = useState(false);
   const [showFeeModal, setShowFeeModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [caseToDelete, setCaseToDelete] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
@@ -38,9 +41,15 @@ export const Cases: React.FC = () => {
     setShowFeeModal(true);
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to close and delete this file? All associated notes will be lost.')) {
-      deleteCase(id);
+  const handleDeleteRequest = (id: string) => {
+    setCaseToDelete(id);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (caseToDelete) {
+      deleteCase(caseToDelete);
+      setCaseToDelete(null);
     }
   };
 
@@ -175,7 +184,7 @@ export const Cases: React.FC = () => {
                     <button onClick={() => handleOpenEdit(c)} className="p-3 text-slate-400 hover:text-legal-900 hover:bg-slate-100 rounded-xl transition-colors" title="Edit Case">
                         <Pencil size={18} />
                     </button>
-                    <button onClick={() => handleDelete(c.id)} className="p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors" title="Delete Case">
+                    <button onClick={() => handleDeleteRequest(c.id)} className="p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors" title="Delete Case">
                         <Trash2 size={18} />
                     </button>
                 </div>
@@ -380,6 +389,16 @@ export const Cases: React.FC = () => {
           </div>
         </div>
       )}
+
+      <ConfirmModal 
+        isOpen={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={handleConfirmDelete}
+        title="Sanitize Matter File"
+        message="Closing this matter will permanently excise it from the active roster. This operation cannot be reversed."
+        confirmLabel="Purge Matter"
+        variant="danger"
+      />
     </div>
   );
 };

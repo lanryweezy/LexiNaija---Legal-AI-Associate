@@ -3,7 +3,7 @@ import {
     Music, Film, Book, Sparkles, PenTool, Clipboard, ShieldCheck, 
     Zap, Save, Copy, HelpCircle, ChevronRight, Mic2, Tv, Gavel, ShieldAlert, FileSearch
 } from 'lucide-react';
-import { generateCopyrightInjunction, generateTalentAgreement, analyzePiracyCompliance } from '../services/geminiService';
+import { generateEntertainmentAdvice, draftEntertainmentContract } from '../services/geminiService';
 import { useToast } from '../contexts/ToastContext';
 
 export const Entertainment: React.FC = () => {
@@ -19,14 +19,14 @@ export const Entertainment: React.FC = () => {
         try {
             let res = '';
             if (activeTab === 'injunction') {
-                res = await generateCopyrightInjunction(query);
-                addToast('Copyright Injunction Motion drafted', 'success');
+                res = await generateEntertainmentAdvice(query, 'Copyright');
+                addToast('Copyright Injunction Strategy generated', 'success');
             } else if (activeTab === 'talent') {
-                res = await generateTalentAgreement('Talent Name', query);
-                addToast('Talent Agreement generated', 'success');
+                res = await draftEntertainmentContract('Talent/Management', 'Parties per input', query);
+                addToast('Entertainment Instrument drafted', 'success');
             } else {
-                res = await analyzePiracyCompliance(query);
-                addToast('Piracy Compliance Review completed', 'success');
+                res = await generateEntertainmentAdvice(query, 'Piracy/Anti-Counterfeiting');
+                addToast('Anti-Piracy Audit completed', 'success');
             }
             setResult(res);
         } catch (error) {

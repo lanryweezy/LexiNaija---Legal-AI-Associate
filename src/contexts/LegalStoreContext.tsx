@@ -344,7 +344,7 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
               id: b.id, description: b.description, amount: b.amount, type: b.type, date: new Date(b.date)
             }));
             const caseEvs = (evRes.data || []).filter((e: any) => e.case_id === c.id).map((e: any) => ({
-              id: e.id, description: e.description, type: e.type, dateObtained: new Date(e.date_obtained), isReliedUpon: e.is_relied_upon, custody_location: e.custody_location
+              id: e.id, description: e.description, type: e.type, dateObtained: new Date(e.date_obtained), isReliedUpon: e.is_relied_upon, custodyLocation: e.custody_location
             }));
             return {
               id: c.id, clientId: c.client_id, title: c.title, suit_number: c.suit_number, court: c.court, status: c.status,

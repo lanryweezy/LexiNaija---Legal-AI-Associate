@@ -42,12 +42,24 @@ export const Strategy: React.FC = () => {
         showToast("Insufficient Intelligence Credits.", "error");
         return;
     }
+
+    // RAG: Collect context from all documents in the matter folder
+    let caseContext = "";
+    if (selectedCaseId) {
+        const activeCase = cases.find(c => c.id === selectedCaseId);
+        if (activeCase && activeCase.documents) {
+            caseContext = activeCase.documents
+                .map(d => `Document: ${d.title}\nContent: ${d.content}`)
+                .join("\n\n---\n\n");
+        }
+    }
+
     setIsAnalyzing(true);
     setStrategyReport('');
     try {
-        const report = await generateCaseStrategy(facts, role, jurisdiction);
+        const report = await generateCaseStrategy(facts, role, jurisdiction, caseContext);
         setStrategyReport(report);
-        showToast("Strategic opinion synthesized successfully.", "success");
+        showToast("Strategic opinion synthesized with case context.", "success");
     } catch (e) {
         showToast("Strategy protocol failure.", "error");
     } finally {

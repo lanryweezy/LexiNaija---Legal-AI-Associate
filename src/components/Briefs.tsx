@@ -61,12 +61,30 @@ export const Briefs: React.FC = () => {
           showToast("Insufficient Intelligence Credits.", "error");
           return;
       }
+
+      // RAG: Collect context from all documents in the matter folder
+      let caseContext = "";
+      if (selectedCaseId) {
+          const activeCase = cases.find(c => c.id === selectedCaseId);
+          if (activeCase && activeCase.documents) {
+              caseContext = activeCase.documents
+                  .map(d => `Document: ${d.title}\nContent: ${d.content}`)
+                  .join("\n\n---\n\n");
+          }
+      }
+
       setIsGenerating(true);
       setArgument('');
       try {
-          const result = await generateLegalArgument(formData.issue, formData.stance, formData.facts, formData.jurisdiction);
+          const result = await generateLegalArgument(
+              formData.issue, 
+              formData.stance, 
+              formData.facts, 
+              formData.jurisdiction,
+              caseContext
+          );
           setArgument(result);
-          showToast("Legal argument drafted with citations.", "success");
+          showToast("Legal argument drafted with case context and citations.", "success");
       } catch (e) {
           showToast("Advocacy script generation failure.", "error");
       } finally {

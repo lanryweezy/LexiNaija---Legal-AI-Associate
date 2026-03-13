@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Gavel, Search, BookOpen, ExternalLink, Scale, Clock, ShieldCheck, AlertCircle } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import { Gavel, Search, BookOpen, ExternalLink, Scale, Clock, ShieldCheck, AlertCircle, ChevronRight } from 'lucide-react';
 
 interface CaseLaw {
   id: string;
@@ -70,63 +69,69 @@ export const CaseLawDatabase: React.FC = () => {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto h-[calc(100vh-2rem)] flex flex-col">
-      <div className="mb-8">
-        <h2 className="text-3xl font-serif font-bold text-legal-900 flex items-center gap-3">
-          <Gavel className="text-legal-gold" /> Nigerian Case Law Database
+    <div className="p-8 max-w-7xl mx-auto h-[calc(100vh-2rem)] flex flex-col animate-in fade-in duration-1000">
+      <header className="mb-10">
+        <div className="flex items-center gap-2 text-[10px] font-black text-legal-gold uppercase tracking-[0.3em] mb-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-legal-gold animate-pulse"></div>
+            Jurisprudence Engine
+        </div>
+        <h2 className="text-5xl font-serif font-black text-legal-900 italic tracking-tighter leading-tight">
+          Case Law Database
         </h2>
-        <p className="text-gray-600 mt-2">Access verified Supreme Court and Court of Appeal judgments (LPELR/NWLR Integrated).</p>
-      </div>
+        <p className="text-slate-400 font-medium mt-2">Access verified Supreme Court and Court of Appeal judgments (LPELR/NWLR Integrated).</p>
+      </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1 overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 flex-1 overflow-hidden">
         {/* Search Panel */}
-        <div className="lg:col-span-1 flex flex-col gap-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <form onSubmit={handleSearch} className="space-y-4">
+        <div className="lg:col-span-4 flex flex-col gap-8">
+          <div className="bg-white/70 backdrop-blur-xl rounded-[40px] border border-white shadow-2xl p-8 group transition-all hover:bg-white">
+            <form onSubmit={handleSearch} className="space-y-6">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-legal-gold transition-colors w-5 h-5" />
                 <input 
                   type="text" 
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search by Party Name, Citation, or Keyword..."
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-legal-gold outline-none"
+                  placeholder="Citation or Party Name..."
+                  className="w-full pl-14 pr-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/5 focus:border-legal-gold outline-none shadow-inner transition-all placeholder:font-normal placeholder:text-slate-300"
                 />
               </div>
               <button 
                 type="submit"
                 disabled={isSearching}
-                className="w-full bg-legal-900 text-white py-3 rounded-lg font-bold hover:bg-legal-800 transition-all flex items-center justify-center gap-2"
+                className="w-full bg-legal-900 text-white py-5 rounded-2xl font-black uppercase tracking-widest text-[11px] hover:bg-legal-gold hover:text-legal-900 transition-all flex items-center justify-center gap-3 shadow-xl shadow-legal-900/10 active:scale-95 disabled:opacity-50"
               >
-                {isSearching ? 'Searching...' : 'Search Database'}
+                {isSearching ? 'Synchronizing Archive...' : 'Initialize Search'}
               </button>
             </form>
           </div>
 
-          <div className="flex-1 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col overflow-hidden">
-            <div className="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
-              <span className="font-bold text-gray-700 text-sm uppercase tracking-wider">Search Results</span>
-              <span className="text-xs text-gray-500 font-medium">{results.length} found</span>
+          <div className="flex-1 bg-white/70 backdrop-blur-xl rounded-[40px] border border-white shadow-2xl flex flex-col overflow-hidden">
+            <div className="p-6 border-b border-slate-50 flex justify-between items-center bg-white/30">
+              <span className="text-[10px] font-black text-legal-900 uppercase tracking-widest">Search Results</span>
+              <span className="bg-legal-gold/20 text-legal-900 text-[10px] font-black px-3 py-1 rounded-full">{results.length} Found</span>
             </div>
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto scrollbar-hide">
               {results.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-gray-400 p-8 text-center">
-                  <BookOpen className="w-12 h-12 mb-3 opacity-20" />
-                  <p className="text-sm">Search the database to see authoritative law reports.</p>
+                <div className="h-full flex flex-col items-center justify-center text-slate-300 p-10 text-center">
+                  <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-6">
+                    <BookOpen className="w-8 h-8 opacity-20" />
+                  </div>
+                  <p className="text-xs font-black uppercase tracking-widest leading-relaxed">Search the database to see authoritative law reports.</p>
                 </div>
               ) : (
-                <div className="divide-y divide-gray-100">
+                <div className="divide-y divide-slate-50">
                   {results.map((c) => (
                     <button
                       key={c.id}
                       onClick={() => setSelectedCase(c)}
-                      className={`w-full text-left p-4 hover:bg-gray-50 transition-colors ${selectedCase?.id === c.id ? 'bg-legal-50' : ''}`}
+                      className={`w-full text-left p-6 hover:bg-white transition-all group ${selectedCase?.id === c.id ? 'bg-white' : ''}`}
                     >
-                      <h3 className="font-bold text-legal-900 mb-1">{c.title}</h3>
-                      <p className="text-xs text-legal-gold font-mono mb-2">{c.citation}</p>
-                      <div className="flex items-center gap-2 text-[10px] uppercase font-bold text-gray-400">
-                        <span className="bg-gray-100 px-1.5 py-0.5 rounded">{c.court}</span>
-                        <span>{c.year}</span>
+                      <h3 className="font-serif font-black italic text-lg text-legal-900 tracking-tight mb-2 group-hover:text-legal-gold transition-colors">{c.title}</h3>
+                      <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mb-3">{c.citation}</p>
+                      <div className="flex items-center gap-3">
+                        <span className="bg-slate-50 text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg border border-slate-100">{c.court}</span>
+                        <span className="text-[9px] font-black text-slate-300">{c.year}</span>
                       </div>
                     </button>
                   ))}
@@ -137,66 +142,75 @@ export const CaseLawDatabase: React.FC = () => {
         </div>
 
         {/* Display Panel */}
-        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col overflow-hidden">
+        <div className="lg:col-span-8 bg-white/30 backdrop-blur-xl rounded-[48px] border border-white shadow-2xl flex flex-col overflow-hidden relative">
           {selectedCase ? (
             <>
-              <div className="p-6 border-b border-gray-200 bg-gray-50 flex justify-between items-start">
+              {/* Background Accent */}
+              <div className="absolute top-0 right-0 w-96 h-96 bg-legal-gold/5 rounded-full blur-[100px] pointer-events-none"></div>
+              
+              <div className="p-10 border-b border-slate-100 bg-white/40 flex justify-between items-start relative z-10">
                 <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="bg-legal-900 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">{selectedCase.court}</span>
-                    <span className="text-gray-400 text-xs font-mono">{selectedCase.citation}</span>
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="bg-legal-900 text-white text-[9px] font-black px-3 py-1 rounded-xl uppercase tracking-widest">{selectedCase.court}</span>
+                    <span className="text-slate-300 text-[10px] font-black font-mono tracking-widest uppercase">{selectedCase.citation}</span>
                   </div>
-                  <h2 className="text-2xl font-serif font-bold text-legal-900">{selectedCase.title}</h2>
+                  <h2 className="text-4xl font-serif font-black text-legal-900 italic tracking-tighter leading-tight">{selectedCase.title}</h2>
                 </div>
-                <button className="p-2 text-legal-gold hover:bg-yellow-50 rounded-lg transition-colors border border-legal-gold">
-                  <ExternalLink size={20} />
+                <button className="w-14 h-14 bg-white border border-slate-100 text-legal-gold hover:text-legal-900 hover:border-legal-gold rounded-2xl flex items-center justify-center transition-all shadow-xl active:scale-95 group">
+                  <ExternalLink size={24} className="group-hover:rotate-12 transition-transform" />
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-8 space-y-8">
+              <div className="flex-1 overflow-y-auto p-12 space-y-12 relative z-10 scrollbar-hide">
                 <section>
-                  <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                    <Scale size={16} className="text-legal-gold" /> Ratio Decidendi
+                  <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6 flex items-center gap-4">
+                    <span className="w-8 h-[2px] bg-legal-gold"></span>
+                    Ratio Decidendi
                   </h4>
-                  <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-xl">
-                    <p className="text-lg text-legal-900 font-serif italic leading-relaxed">
+                  <div className="bg-legal-900 text-white p-10 rounded-[40px] relative overflow-hidden shadow-2xl">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-legal-gold/10 rounded-full translate-x-12 -translate-y-12 blur-2xl"></div>
+                    <Scale className="absolute bottom-6 right-8 text-white/5" size={80} />
+                    <p className="text-2xl text-white font-serif italic leading-relaxed tracking-tight relative z-10">
                       "{selectedCase.ratio}"
                     </p>
                   </div>
                 </section>
 
                 <section>
-                  <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3">Case Summary</h4>
-                  <p className="text-gray-700 leading-relaxed text-lg">
+                  <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6">Judgment Protocol Summary</h4>
+                  <p className="text-slate-600 leading-relaxed text-xl font-medium italic">
                     {selectedCase.summary}
                   </p>
                 </section>
 
-                <div className="pt-8 border-t border-gray-100 flex gap-4">
-                  <div className="flex-1 bg-gray-50 p-4 rounded-xl">
-                    <p className="text-xs font-bold text-gray-400 uppercase mb-2">Authenticated By</p>
-                    <div className="flex items-center gap-2 text-legal-900 font-bold">
-                      <ShieldCheck size={18} className="text-green-600" />
-                      LexiNaija Verification Engine
+                <div className="pt-12 border-t border-slate-50 grid grid-cols-2 gap-8">
+                  <div className="bg-slate-50 p-6 rounded-[32px] border border-slate-100">
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">Verification Hash</p>
+                    <div className="flex items-center gap-3 text-legal-900 font-black italic tracking-tighter">
+                      <ShieldCheck size={20} className="text-emerald-500" />
+                      LexiNaija Authenticated Protocol
                     </div>
                   </div>
-                  <div className="flex-1 bg-gray-50 p-4 rounded-xl">
-                    <p className="text-xs font-bold text-gray-400 uppercase mb-2">Last Updated</p>
-                    <div className="flex items-center gap-2 text-legal-900 font-bold">
-                      <Clock size={18} className="text-legal-gold" />
-                      March 2026
+                  <div className="bg-slate-50 p-6 rounded-[32px] border border-slate-100">
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">Institutional Update</p>
+                    <div className="flex items-center gap-3 text-legal-900 font-black italic tracking-tighter">
+                      <Clock size={20} className="text-legal-gold" />
+                      Protocol Sync: March 2026
                     </div>
                   </div>
                 </div>
               </div>
             </>
           ) : (
-            <div className="h-full flex flex-col items-center justify-center text-gray-300">
-              <Scale className="w-24 h-24 mb-4 opacity-10" />
-              <p className="text-lg font-medium">Select a judgment from the results to view details</p>
-              <div className="mt-6 flex items-center gap-2 bg-yellow-50 text-yellow-800 px-4 py-2 rounded-lg border border-yellow-200 text-sm">
-                <AlertCircle size={16} />
-                <span>AI Insights enabled for selected citations</span>
+            <div className="h-full flex flex-col items-center justify-center text-slate-200">
+              <Scale className="w-32 h-32 mb-8 opacity-5" />
+              <div className="text-center space-y-2">
+                <h4 className="text-xl font-serif font-black italic text-slate-300">Awaiting Search Protocol</h4>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">Select a judgment result to initialize intelligence display</p>
+              </div>
+              <div className="mt-10 flex items-center gap-3 bg-white border border-slate-100 text-slate-400 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl">
+                <AlertCircle size={16} className="text-legal-gold" />
+                <span>AI Deep-Read Synthesizer Active</span>
               </div>
             </div>
           )}

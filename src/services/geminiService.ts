@@ -89,13 +89,33 @@ export const generateDailyBrief = async (scheduleData: string): Promise<string> 
   return await run(prompt);
 };
 
-export const generateCaseStrategy = async (facts: string, role: string, jurisdiction: string): Promise<string> => {
-  const prompt = `Generate a Nigerian case strategy for a ${role} in ${jurisdiction}. Facts: ${facts}`;
+export const generateCaseStrategy = async (facts: string, role: string, jurisdiction: string, caseContext?: string): Promise<string> => {
+  const prompt = `CASE STRATEGY ADVISORY
+ROLE: ${role}
+JURISDICTION: ${jurisdiction}
+FACTS: ${facts}
+
+${caseContext ? `**ADDITIONAL MATTER CONTEXT (DOCUMENTS):**\n${caseContext}\n\n` : ''}
+**INSTRUCTIONS:**
+Provide a comprehensive strategic legal opinion under Nigerian law. Structure as:
+1. Executive Summary
+2. Merits of the Case (SWOT)
+3. Statutory & Judicial Framework
+4. Strategic Proposals (Action Plan)
+5. Risk Mitigation`;
   return await run(prompt);
 };
 
-export const generateLegalArgument = async (issue: string, stance: string, facts: string, jurisdiction: string): Promise<string> => {
-  const prompt = `Draft a Nigerian court argument for a Judge (address as "My Lord"). Issue: ${issue}, Stance: ${stance}, Facts: ${facts}`;
+export const generateLegalArgument = async (issue: string, stance: string, facts: string, jurisdiction: string, caseContext?: string): Promise<string> => {
+  const prompt = `LEGAL ARGUMENT & WRITTEN ADDRESS
+ISSUE: ${issue}
+STANCE: ${stance}
+FACTS: ${facts}
+JURISDICTION: ${jurisdiction}
+
+${caseContext ? `**ADDITIONAL MATTER CONTEXT (DOCUMENTS):**\n${caseContext}\n\n` : ''}
+**INSTRUCTIONS:**
+Draft a formal Nigerian court argument using the IRAC (Issue, Rule, Application, Conclusion) methodology. Address the Judge as "My Lord". Use authoritative citations from Nigerian statutes and recent Supreme Court or Court of Appeal case law.`;
   return await run(prompt);
 };
 

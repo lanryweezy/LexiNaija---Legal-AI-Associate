@@ -9,6 +9,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useToast } from '../contexts/ToastContext';
 import { MatterArchiveModal } from './MatterArchiveModal';
+import { AiDisclaimer } from './AiDisclaimer';
 
 export const Witness: React.FC = () => {
   const { showToast } = useToast();
@@ -109,7 +110,7 @@ export const Witness: React.FC = () => {
                 <span className="text-[10px] font-black text-legal-900 uppercase tracking-widest">Intelligence Notice</span>
               </div>
               <p className="text-[11px] text-slate-500 leading-relaxed font-bold italic relative">
-                Our synthesis protocol cross-references Section 126 of the Evidence Act 2011 to detect inadmissible hearsay and direct testimony gaps.
+                Our synthesis protocol cross-references Sections 37-39 of the Evidence Act 2011 (Hearsay Rule) and Section 84 (Admissibility of Electronic Evidence) to detect inadmissible statements and direct testimony gaps.
               </p>
             </div>
           </div>
@@ -165,7 +166,8 @@ export const Witness: React.FC = () => {
               </div>
 
               <div className="flex-1 overflow-y-auto p-12 bg-slate-50/10">
-                <div className="max-w-4xl mx-auto">
+                <div className="max-w-4xl mx-auto space-y-6">
+                    <AiDisclaimer />
                     <div className="prose prose-slate prose-lg max-w-none prose-headings:font-black prose-headings:italic prose-headings:tracking-tighter prose-p:font-serif prose-p:text-lg prose-p:leading-relaxed">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>{analysis}</ReactMarkdown>
                     </div>

@@ -2,14 +2,23 @@ import React, { useState } from 'react';
 import { Briefcase, Gavel, Calendar, Plus, Search, Filter, Pencil, Trash2, FileText, X, CreditCard, Banknote, Users, ChevronRight } from 'lucide-react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 import { Case, BillableItem } from '../types';
+import { ConfirmModal } from './ConfirmModal';
 
 export const Cases: React.FC = () => {
   const { cases, clients, addCase, updateCase, deleteCase, addBillableItem } = useLegalStore();
   const [showModal, setShowModal] = useState(false);
   const [showFeeModal, setShowFeeModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [caseToDelete, setCaseToDelete] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
+  const [showAdjournModal, setShowAdjournModal] = useState(false);
+  const [adjournData, setAdjournData] = useState<{caseId: string; nextHearing: string; notes: string}>({
+      caseId: '',
+      nextHearing: '',
+      notes: ''
+  });
   const [formData, setFormData] = useState<Partial<Case>>({ status: 'Open' });
   
   const [feeData, setFeeData] = useState<{description: string, amount: string, type: 'Professional Fee' | 'Expense'}>({
@@ -38,9 +47,24 @@ export const Cases: React.FC = () => {
     setShowFeeModal(true);
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to close and delete this file? All associated notes will be lost.')) {
-      deleteCase(id);
+  const handleOpenAdjourn = (caseItem: Case) => {
+    setAdjournData({
+      caseId: caseItem.id,
+      nextHearing: caseItem.nextHearing ? new Date(caseItem.nextHearing).toISOString().slice(0, 16) : '',
+      notes: `Adjourned ${caseItem.nextHearing ? `from ${new Date(caseItem.nextHearing).toDateString()} ` : ''}for: `
+    });
+    setShowAdjournModal(true);
+  };
+
+  const handleDeleteRequest = (id: string) => {
+    setCaseToDelete(id);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (caseToDelete) {
+      deleteCase(caseToDelete);
+      setCaseToDelete(null);
     }
   };
 
@@ -81,6 +105,17 @@ export const Cases: React.FC = () => {
         };
         addBillableItem(selectedCaseId, newItem);
         setShowFeeModal(false);
+    }
+  };
+
+  const handleSaveAdjournment = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (adjournData.caseId && adjournData.nextHearing) {
+      updateCase(adjournData.caseId, {
+          nextHearing: new Date(adjournData.nextHearing) as any,
+          notes: adjournData.notes ? `${new Date().toLocaleDateString()} - Adjournment Note: ${adjournData.notes}` : undefined
+      });
+      setShowAdjournModal(false);
     }
   };
 
@@ -169,13 +204,16 @@ export const Cases: React.FC = () => {
 
               <div className="md:w-72 flex flex-col justify-between border-l pl-0 md:pl-8 border-slate-100 relative z-10">
                 <div className="absolute top-0 right-0 md:relative flex justify-end gap-2 mb-6 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => handleOpenAdjourn(c)} className="p-3 text-legal-gold hover:bg-legal-gold hover:text-legal-900 rounded-xl transition-colors" title="Adjourn Matter">
+                        <Calendar size={18} />
+                    </button>
                     <button onClick={() => handleOpenFeeLog(c.id)} className="p-3 text-legal-gold hover:bg-legal-gold hover:text-legal-900 rounded-xl transition-colors" title="Log Fee/Expense">
                         <CreditCard size={18} />
                     </button>
                     <button onClick={() => handleOpenEdit(c)} className="p-3 text-slate-400 hover:text-legal-900 hover:bg-slate-100 rounded-xl transition-colors" title="Edit Case">
                         <Pencil size={18} />
                     </button>
-                    <button onClick={() => handleDelete(c.id)} className="p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors" title="Delete Case">
+                    <button onClick={() => handleDeleteRequest(c.id)} className="p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors" title="Delete Case">
                         <Trash2 size={18} />
                     </button>
                 </div>
@@ -380,6 +418,62 @@ export const Cases: React.FC = () => {
           </div>
         </div>
       )}
+
+      {showAdjournModal && (
+        <div className="fixed inset-0 bg-legal-900/40 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+          <div className="bg-white rounded-[40px] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.3)] w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center p-8 bg-amber-50/50 border-b border-amber-100/50">
+              <div>
+                  <h3 className="text-2xl font-serif font-black text-amber-900 italic tracking-tight flex items-center gap-3">
+                      <Calendar className="text-amber-500" size={24} /> Adjourn Matter
+                  </h3>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-amber-700/60 mt-2">Log New Court Date</p>
+              </div>
+              <button onClick={() => setShowAdjournModal(false)} className="text-amber-400 hover:text-amber-600 transition-colors p-2 rounded-full hover:bg-amber-50">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleSaveAdjournment} className="p-8 space-y-6">
+                <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Adjourned To <span className="text-rose-500">*</span></label>
+                    <input 
+                        required
+                        type="datetime-local" 
+                        value={adjournData.nextHearing}
+                        onChange={e => setAdjournData({...adjournData, nextHearing: e.target.value})}
+                        className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl font-bold text-legal-900 focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 outline-none transition-all shadow-inner text-sm"
+                    />
+                </div>
+                <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Adjournment Purpose</label>
+                    <textarea 
+                        value={adjournData.notes}
+                        onChange={e => setAdjournData({...adjournData, notes: e.target.value})}
+                        className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl font-bold leading-relaxed text-legal-900 focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 outline-none transition-all shadow-inner h-32 resize-none placeholder:text-slate-300 text-sm"
+                        placeholder="e.g. Adjourned for Continuation of Trial / Cross-examination of PW1..."
+                    />
+                </div>
+                <div className="pt-4 flex gap-4">
+                    <button type="button" onClick={() => setShowAdjournModal(false)} className="flex-1 text-[10px] font-black tracking-widest uppercase text-slate-400 hover:text-slate-600 transition-colors py-4">Cancel</button>
+                    <button type="submit" className="flex-[2] bg-amber-500 text-white text-[10px] uppercase font-black tracking-widest py-4 rounded-2xl hover:bg-amber-600 transition-all shadow-xl shadow-amber-500/20 group flex justify-center items-center gap-2">
+                        Log Adjournment <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    </button>
+                </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      <ConfirmModal 
+        isOpen={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={handleConfirmDelete}
+        title="Sanitize Matter File"
+        message="Closing this matter will permanently excise it from the active roster. This operation cannot be reversed."
+        confirmLabel="Purge Matter"
+        variant="danger"
+      />
     </div>
   );
 };

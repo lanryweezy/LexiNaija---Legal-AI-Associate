@@ -10,6 +10,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useToast } from '../contexts/ToastContext';
 
+import { AiDisclaimer } from './AiDisclaimer';
+
 type Step = 'type' | 'parties' | 'terms' | 'preview';
 
 export const Drafter: React.FC = () => {
@@ -66,6 +68,11 @@ export const Drafter: React.FC = () => {
     'Partnership Agreement',
     'Will and Codicil'
   ];
+
+  // Statutory alerts based on instrument type
+  const LAND_INSTRUMENTS = ['Deed of Assignment (Land)', 'Formal Contract of Sale of Land', 'Deed of Lease', 'Deed of Mortgage'];
+  const isLandInstrument = LAND_INSTRUMENTS.includes(params.type);
+  const isWill = params.type === 'Will and Codicil';
 
   const handlePrefillFromCase = (caseId: string) => {
     setPrefillCaseId(caseId);
@@ -449,7 +456,24 @@ export const Drafter: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="flex-1 bg-slate-50 rounded-[40px] p-12 overflow-y-auto border border-slate-100 font-serif leading-[2] text-slate-800 text-lg shadow-inner">
+                        <div className="flex-1 bg-slate-50 rounded-[40px] p-12 overflow-y-auto border border-slate-100 font-serif leading-[2] text-slate-800 text-lg shadow-inner space-y-6">
+                            <AiDisclaimer />
+                            {isLandInstrument && (
+                              <div className="flex items-start gap-3 px-4 py-3 bg-amber-50/80 border border-amber-200/50 rounded-xl text-[10px] text-amber-800">
+                                <span className="font-black leading-relaxed">
+                                  ⚠️ <strong>STATUTORY REMINDER:</strong> This land instrument requires Governor's Consent under Section 22 of the Land Use Act 1978. 
+                                  Stamp Duty is also payable under the Stamp Duties Act. Ensure perfection before delivery to client.
+                                </span>
+                              </div>
+                            )}
+                            {isWill && (
+                              <div className="flex items-start gap-3 px-4 py-3 bg-blue-50/80 border border-blue-200/50 rounded-xl text-[10px] text-blue-800">
+                                <span className="font-black leading-relaxed">
+                                  ℹ️ <strong>WILLS ACT REMINDER:</strong> This Will must be signed by the Testator in the presence of at least TWO witnesses, 
+                                  neither of whom may be a beneficiary under the Will (Wills Act / Wills Law of applicable state).
+                                </span>
+                              </div>
+                            )}
                             <div className="prose prose-slate prose-lg max-w-none prose-headings:font-black prose-headings:italic prose-headings:tracking-tighter">
                                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{generatedDraft}</ReactMarkdown>
                             </div>

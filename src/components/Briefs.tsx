@@ -9,6 +9,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useToast } from '../contexts/ToastContext';
 import { MatterArchiveModal } from './MatterArchiveModal';
+import { AiDisclaimer } from './AiDisclaimer';
 
 export const Briefs: React.FC = () => {
   const { showToast } = useToast();
@@ -61,12 +62,30 @@ export const Briefs: React.FC = () => {
           showToast("Insufficient Intelligence Credits.", "error");
           return;
       }
+
+      // RAG: Collect context from all documents in the matter folder
+      let caseContext = "";
+      if (selectedCaseId) {
+          const activeCase = cases.find(c => c.id === selectedCaseId);
+          if (activeCase && activeCase.documents) {
+              caseContext = activeCase.documents
+                  .map(d => `Document: ${d.title}\nContent: ${d.content}`)
+                  .join("\n\n---\n\n");
+          }
+      }
+
       setIsGenerating(true);
       setArgument('');
       try {
-          const result = await generateLegalArgument(formData.issue, formData.stance, formData.facts, formData.jurisdiction);
+          const result = await generateLegalArgument(
+              formData.issue, 
+              formData.stance, 
+              formData.facts, 
+              formData.jurisdiction,
+              caseContext
+          );
           setArgument(result);
-          showToast("Legal argument drafted with citations.", "success");
+          showToast("Legal argument drafted with case context and citations.", "success");
       } catch (e) {
           showToast("Advocacy script generation failure.", "error");
       } finally {
@@ -219,7 +238,8 @@ export const Briefs: React.FC = () => {
               </div>
 
               <div className="flex-1 overflow-y-auto p-12 bg-slate-50/10">
-                <div className="max-w-4xl mx-auto">
+                <div className="max-w-4xl mx-auto space-y-6">
+                    <AiDisclaimer />
                     <div className="prose prose-slate prose-lg max-w-none prose-headings:font-black prose-headings:italic prose-headings:tracking-tighter prose-p:font-serif prose-p:text-lg">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>{argument}</ReactMarkdown>
                     </div>

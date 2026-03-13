@@ -357,7 +357,7 @@ __________________________
 - Artist PRO: [COSON/MCSN]
 - Producer PRO: [COSON/MCSN]
 
-This split sheet is a binding agreement under the **Nigerian Copyright Act 2023**.
+This split sheet is a binding agreement under the **Nigerian Copyright Act 2022**.
 
 __________________________
 **ARTIST**

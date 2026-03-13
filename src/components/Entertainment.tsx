@@ -3,8 +3,9 @@ import {
     Music, Film, Book, Sparkles, PenTool, Clipboard, ShieldCheck, 
     Zap, Save, Copy, HelpCircle, ChevronRight, Mic2, Tv, Gavel, ShieldAlert, FileSearch
 } from 'lucide-react';
-import { generateCopyrightInjunction, generateTalentAgreement, analyzePiracyCompliance } from '../services/geminiService';
+import { generateEntertainmentAdvice, draftEntertainmentContract } from '../services/geminiService';
 import { useToast } from '../contexts/ToastContext';
+import { AiDisclaimer } from './AiDisclaimer';
 
 export const Entertainment: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'injunction' | 'talent' | 'piracy'>('injunction');
@@ -19,14 +20,14 @@ export const Entertainment: React.FC = () => {
         try {
             let res = '';
             if (activeTab === 'injunction') {
-                res = await generateCopyrightInjunction(query);
-                addToast('Copyright Injunction Motion drafted', 'success');
+                res = await generateEntertainmentAdvice(query, 'Copyright');
+                addToast('Copyright Injunction Strategy generated', 'success');
             } else if (activeTab === 'talent') {
-                res = await generateTalentAgreement('Talent Name', query);
-                addToast('Talent Agreement generated', 'success');
+                res = await draftEntertainmentContract('Talent/Management', 'Parties per input', query);
+                addToast('Entertainment Instrument drafted', 'success');
             } else {
-                res = await analyzePiracyCompliance(query);
-                addToast('Piracy Compliance Review completed', 'success');
+                res = await generateEntertainmentAdvice(query, 'Piracy/Anti-Counterfeiting');
+                addToast('Anti-Piracy Audit completed', 'success');
             }
             setResult(res);
         } catch (error) {
@@ -56,7 +57,7 @@ export const Entertainment: React.FC = () => {
                             <h2 className="text-3xl font-serif font-black text-legal-900 italic tracking-tighter">Entertainment Law Vertical</h2>
                             <div className="flex items-center gap-2 mt-1">
                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2 py-0.5 border border-slate-200 rounded-md">IP Shield v2.0</span>
-                                <span className="text-[10px] font-black text-legal-gold uppercase tracking-widest">Powered by Copyright Act 2023</span>
+                                <span className="text-[10px] font-black text-legal-gold uppercase tracking-widest">Powered by Copyright Act 2022</span>
                             </div>
                         </div>
                     </div>
@@ -131,7 +132,8 @@ export const Entertainment: React.FC = () => {
                                     <Save size={20} />
                                 </button>
                             </div>
-                            <div className="p-20 pt-24 prose prose-slate max-w-none relative">
+                            <div className="p-20 pt-24 prose prose-slate max-w-none relative space-y-6">
+                                <AiDisclaimer compact />
                                 <div className="absolute top-10 left-20">
                                     <div className="flex items-center gap-2">
                                         <div className="w-8 h-[2px] bg-legal-gold"></div>
@@ -158,7 +160,7 @@ export const Entertainment: React.FC = () => {
                             </div>
                             <h3 className="text-2xl font-serif font-black text-legal-900 italic tracking-tighter">Awaiting Creative Intel</h3>
                             <p className="text-xs font-bold text-slate-400 leading-relaxed mt-4">
-                                "In the creative economy, legal precision is the ultimate backbone of protection. Input your matter details to synthesize instruments grounded in the 2023 Copyright Act."
+                                "In the creative economy, legal precision is the ultimate backbone of protection. Input your matter details to synthesize instruments grounded in the Copyright Act 2022."
                             </p>
                         </div>
                     )}

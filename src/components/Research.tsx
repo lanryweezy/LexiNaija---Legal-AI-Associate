@@ -9,6 +9,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 import { useToast } from '../contexts/ToastContext';
+import { AiDisclaimer } from './AiDisclaimer';
 
 export const Research: React.FC = () => {
   const { showToast } = useToast();
@@ -173,7 +174,7 @@ export const Research: React.FC = () => {
                         {msg.role === 'model' && (
                             <div className="mt-8 pt-6 border-t border-slate-50 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity">
                                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">
-                                    {msg.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} • SOURCE: SUPREME COURT OF NIGERIA
+                                    {msg.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} • ⚠️ CITATIONS UNVERIFIED — Cross-check against NWLR/LawPavilion
                                 </span>
                                 <div className="flex gap-2">
                                     <button 
@@ -191,6 +192,11 @@ export const Research: React.FC = () => {
                                         <Clipboard size={16} />
                                     </button>
                                 </div>
+                            </div>
+                        )}
+                        {msg.role === 'model' && !msg.isError && (
+                            <div className="mt-4">
+                                <AiDisclaimer compact />
                             </div>
                         )}
                         {msg.role === 'user' && (

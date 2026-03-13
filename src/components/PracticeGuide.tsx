@@ -262,6 +262,23 @@ const GUIDES: Guide[] = [
       'Register with digital aggregators for DSP distribution.',
       'Confirm ISRC and UPC codes are correctly embedded.'
     ]
+  },
+  {
+    id: 'g12',
+    category: 'Litigation',
+    title: 'Substituted Service Procedure',
+    description: 'Process to serve papers when personal service is impossible (High Court/Magistrate).',
+    steps: [
+      'Document at least 3 failed attempts by the Bailiff/Process Server.',
+      'Obtain a "Return of Service" or "Non-Service Report" from the Bailiff.',
+      'Prepare an Ex-Parte Motion for Substituted Service.',
+      'Draft an Affidavit in Support detailing the failed personal service attempts.',
+      'Specify the mode of substituted service (e.g., Pasting on the front door, Newspaper publication, or Service on an adult relative).',
+      'Move the Ex-Parte Motion in Court.',
+      'Upon grant, obtain the Certified True Copy (CTC) of the Order.',
+      'Hand over the Order and processes to the Bailiff for execution.',
+      'Bailiff deposes to an Affidavit of Substituted Service.'
+    ]
   }
 ];
 

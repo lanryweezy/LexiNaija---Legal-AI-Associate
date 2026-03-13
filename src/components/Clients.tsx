@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { UserPlus, Search, Building2, User, Pencil, Trash2, X } from 'lucide-react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 import { Client } from '../types';
+import { ConfirmModal } from './ConfirmModal';
 
 export const Clients: React.FC = () => {
   const { clients, addClient, updateClient, deleteClient } = useLegalStore();
   const [showModal, setShowModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [clientToDelete, setClientToDelete] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<Client>>({ type: 'Individual' });
@@ -22,9 +25,15 @@ export const Clients: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this client? This action cannot be undone.')) {
-      deleteClient(id);
+  const handleDeleteRequest = (id: string) => {
+    setClientToDelete(id);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (clientToDelete) {
+      deleteClient(clientToDelete);
+      setClientToDelete(null);
     }
   };
 
@@ -99,7 +108,7 @@ export const Clients: React.FC = () => {
                   <Pencil size={16} />
                 </button>
                 <button 
-                  onClick={() => handleDelete(client.id)}
+                  onClick={() => handleDeleteRequest(client.id)}
                   className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
                   title="Delete Client"
                 >
@@ -235,6 +244,16 @@ export const Clients: React.FC = () => {
           </div>
         </div>
       )}
+
+      <ConfirmModal 
+        isOpen={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={handleConfirmDelete}
+        title="Purge Client Record"
+        message="This operation is irreversible. All metadata associated with this legal entity will be permanently excised from the vault."
+        confirmLabel="Confirm Purge"
+        variant="danger"
+      />
     </div>
   );
 };

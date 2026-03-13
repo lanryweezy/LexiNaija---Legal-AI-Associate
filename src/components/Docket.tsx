@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Calendar as CalendarIcon, CheckCircle2, Circle, Clock, Plus, AlertCircle, Gavel, Sparkles, Filter } from 'lucide-react';
+import { Calendar as CalendarIcon, CheckCircle2, Circle, Clock, Plus, AlertCircle, Gavel, Sparkles, Filter, FileOutput } from 'lucide-react';
+import jsPDF from 'jspdf';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 import { generateDailyBrief } from '../services/geminiService';
 import { Task } from '../types';
 import ReactMarkdown from 'react-markdown';
 
 export const Docket: React.FC = () => {
-  const { cases, tasks, addTask, updateTask, deleteTask } = useLegalStore();
+  const { cases, tasks, addTask, updateTask, deleteTask, firmProfile } = useLegalStore();
   const [showModal, setShowModal] = useState(false);
   const [brief, setBrief] = useState<string | null>(null);
   const [generatingBrief, setGeneratingBrief] = useState(false);
@@ -78,6 +79,56 @@ export const Docket: React.FC = () => {
     setGeneratingBrief(false);
   };
 
+  const generateCauseListPDF = () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    
+    doc.setFont("times", "bold");
+    doc.setFontSize(20);
+    doc.setTextColor(15, 23, 42); // slate-900
+    doc.text("CAUSE LIST", pageWidth / 2, 20, { align: "center" });
+    
+    doc.setFontSize(12);
+    doc.setFont("times", "normal");
+    doc.text(`${firmProfile?.name || 'LexiNaija Chambers'}`, pageWidth / 2, 28, { align: "center" });
+    doc.text(`Date of List: ${new Date().toLocaleDateString()}`, pageWidth / 2, 34, { align: "center" });
+    
+    doc.setDrawColor(226, 232, 240); // slate-200
+    doc.line(20, 40, pageWidth - 20, 40);
+
+    let yOffset = 50;
+
+    const hearings = filteredItems.filter(i => i.type === 'Hearing');
+
+    if (hearings.length === 0) {
+        doc.setFont("times", "italic");
+        doc.text("No upcoming hearings scheduled.", pageWidth / 2, yOffset, { align: "center" });
+    } else {
+        hearings.forEach((hearing, index) => {
+            if (yOffset > 270) {
+                doc.addPage();
+                yOffset = 20;
+            }
+
+            doc.setFont("times", "bold");
+            doc.setFontSize(12);
+            doc.text(`${index + 1}. ${(hearing as any).suitNumber || "SUIT NO: N/A"}`, 20, yOffset);
+            
+            doc.setFont("times", "normal");
+            doc.setFontSize(11);
+            doc.text(`Parties: ${hearing.title}`, 20, yOffset + 6);
+            doc.text(`Court: ${(hearing as any).court || "N/A"}`, 20, yOffset + 12);
+            
+            doc.setFont("times", "italic");
+            doc.text(`Date: ${hearing.date.toLocaleDateString()}`, 20, yOffset + 18);
+
+            yOffset += 30; // Spacing between items
+        });
+    }
+
+    doc.save(`CauseList_${new Date().getTime()}.pdf`);
+  };
+
   return (
     <div className="p-8 max-w-7xl mx-auto h-[calc(100vh-2rem)] flex flex-col">
       <div className="flex justify-between items-start mb-6 shrink-0">
@@ -86,6 +137,13 @@ export const Docket: React.FC = () => {
           <p className="text-gray-500 text-sm mt-1">Manage deadlines, court appearances, and administrative duties.</p>
         </div>
         <div className="flex gap-3">
+            <button 
+                onClick={generateCauseListPDF}
+                className="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-50 flex items-center gap-2 text-sm font-medium shadow-sm transition-all"
+            >
+                <FileOutput size={16} className="text-legal-900" />
+                Cause List PDF
+            </button>
             <button 
                 onClick={handleGenerateBrief}
                 disabled={generatingBrief}
@@ -175,8 +233,8 @@ export const Docket: React.FC = () => {
                                     <h3 className={`font-medium text-gray-900 truncate ${item.status === 'Completed' ? 'line-through text-gray-400' : ''}`}>
                                         {item.title}
                                     </h3>
-                                    {item.type === 'Hearing' && item.court && (
-                                        <p className="text-xs text-gray-500 mt-0.5">{item.court} • {item.suitNumber}</p>
+                                    {item.type === 'Hearing' && (
+                                        <p className="text-xs text-gray-500 mt-0.5">{(item as any).court} • {(item as any).suitNumber}</p>
                                     )}
                                 </div>
 

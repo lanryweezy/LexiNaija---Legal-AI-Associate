@@ -1,22 +1,27 @@
 import React, { useState } from 'react';
 import { 
     Archive, Plus, Trash2, FileText, Image as ImageIcon, MessageSquare, Box, FileCheck, 
-    ExternalLink, Printer, Shield, X, History, Clipboard, Bookmark, Lucide
+    ExternalLink, Printer, Shield, X, History, Clipboard, Bookmark, ChevronRight
 } from 'lucide-react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 import { EvidenceItem } from '../types';
 import { useToast } from '../contexts/ToastContext';
+import { ConfirmModal } from './ConfirmModal';
 
 export const Evidence: React.FC = () => {
   const { showToast } = useToast();
   const { cases, addEvidence, deleteEvidence, saveDocumentToCase, firmProfile, clients, creditsTotal, creditsUsed } = useLegalStore();
   const [selectedCaseId, setSelectedCaseId] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<string | null>(null);
   
   const [formData, setFormData] = useState<Partial<EvidenceItem>>({
     type: 'Document',
     isReliedUpon: true,
-    custodyLocation: 'Chambers Safe'
+    custodyLocation: 'Chambers Safe',
+    exhibitNumber: '',
+    evidenceClass: 'Primary'
   });
 
   const selectedCase = cases.find(c => c.id === selectedCaseId);
@@ -32,21 +37,28 @@ export const Evidence: React.FC = () => {
         dateObtained: formData.dateObtained ? new Date(formData.dateObtained) : new Date(),
         isReliedUpon: formData.isReliedUpon || false,
         custodyLocation: formData.custodyLocation,
-        notes: formData.notes
+        notes: formData.notes,
+        exhibitNumber: formData.exhibitNumber || undefined,
+        evidenceClass: (formData.evidenceClass as 'Primary' | 'Secondary') || 'Primary'
       });
       setShowModal(false);
-      setFormData({ type: 'Document', isReliedUpon: true, custodyLocation: 'Chambers Safe', description: '', notes: '' });
+      setFormData({ type: 'Document', isReliedUpon: true, custodyLocation: 'Chambers Safe', description: '', notes: '', exhibitNumber: '', evidenceClass: 'Primary' });
       showToast("Evidence logged to repository.", "success");
     }
   };
 
-  const handleDelete = (id: string) => {
-      // In a real app, we'd use a custom modal, but for now we replace alert/confirm with breadcrumb
-      if (confirm("Execute purge protocol for this evidence item?")) {
-          deleteEvidence(selectedCaseId, id);
-          showToast("Item purged from chain of custody.", "info");
-      }
-  }
+  const handleDeleteRequest = (id: string) => {
+    setItemToDelete(id);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (itemToDelete && selectedCaseId) {
+      deleteEvidence(selectedCaseId, itemToDelete);
+      showToast("Item purged from chain of custody.", "info");
+      setItemToDelete(null);
+    }
+  };
 
   const generateListofDocuments = () => {
     if (!selectedCase) return;
@@ -104,7 +116,16 @@ C/O THEIR COUNSEL
         createdAt: new Date()
     } as any);
 
-    showToast("Frontloading schedule archived to matter files.", "success");
+    // Trigger instant download for practitioner convenience
+    const blob = new Blob([content], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `List_of_Documents_${selectedCase.suitNumber?.replace(/[^a-zA-Z0-9]/g, '_') || 'Pending'}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    showToast("Frontloading schedule archived and downloaded.", "success");
   };
 
   return (
@@ -233,7 +254,7 @@ C/O THEIR COUNSEL
                                     <td className="px-8 py-6 text-right">
                                         <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
                                             <button 
-                                                onClick={() => handleDelete(item.id)}
+                                                onClick={() => handleDeleteRequest(item.id)}
                                                 className="p-3 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                                             >
                                                 <Trash2 size={18} />
@@ -331,12 +352,16 @@ C/O THEIR COUNSEL
               </div>
           </div>
       )}
+
+      <ConfirmModal 
+        isOpen={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={handleConfirmDelete}
+        title="Execute Purge Protocol"
+        message="This exhibit will be permanently excised from the chain of custody. This action is documented in the audit trail."
+        confirmLabel="Confirm Purge"
+        variant="danger"
+      />
     </div>
   );
 };
-
-const ChevronRight = ({ size, className }: { size: number, className: string }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-        <path d="m9 18 6-6-6-6"/>
-    </svg>
-);

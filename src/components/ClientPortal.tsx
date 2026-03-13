@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Share2, Mail, Link as LinkIcon, Shield, Copy, CheckCircle2, UserCheck, Clock, X } from 'lucide-react';
+import { Share2, Mail, Link as LinkIcon, Shield, Copy, CheckCircle2, UserCheck, Clock, X, ChevronRight, LayoutGrid } from 'lucide-react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 
 export const ClientPortal: React.FC = () => {
@@ -15,43 +15,52 @@ export const ClientPortal: React.FC = () => {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto h-[calc(100vh-2rem)] flex flex-col">
-      <div className="flex justify-between items-end mb-8">
-        <div>
-          <h2 className="text-3xl font-serif font-bold text-legal-900 flex items-center gap-3">
-            <Share2 className="text-legal-gold" /> Client Collaboration Portal
-          </h2>
-          <p className="text-gray-600 mt-2">Securely share case updates, documents, and invoices with your clients.</p>
+    <div className="p-8 max-w-7xl mx-auto h-[calc(100vh-2rem)] flex flex-col animate-in fade-in duration-1000">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 text-[10px] font-black text-legal-gold uppercase tracking-[0.3em] mb-1">
+              <div className="w-1.5 h-1.5 rounded-full bg-legal-gold animate-pulse"></div>
+              Collaboration Layer
+          </div>
+          <h2 className="text-5xl font-serif font-black text-legal-900 italic tracking-tighter leading-tight">Client Portal</h2>
+          <p className="text-slate-400 font-medium">Provision secure, encrypted workspace access for legal entities and private clients.</p>
         </div>
         <button 
           onClick={() => setShowInviteModal(true)}
-          className="bg-legal-900 text-white px-6 py-3 rounded-lg font-bold hover:bg-legal-800 shadow-lg flex items-center gap-2"
+          className="bg-legal-900 text-white px-10 py-5 rounded-[22px] font-black uppercase tracking-widest text-[11px] hover:bg-legal-gold hover:text-legal-900 shadow-xl shadow-legal-900/10 transition-all flex items-center gap-3 active:scale-95"
         >
-          <Mail size={18} /> Invite Client
+          <Mail size={18} /> Send Invitation
         </button>
-      </div>
+      </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1 overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 flex-1 overflow-hidden">
         {/* Active Shared Access */}
-        <div className="lg:col-span-1 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
-          <div className="p-4 bg-gray-50 border-b border-gray-200 font-bold text-gray-700 text-xs uppercase tracking-widest">
-            Clients with Portal Access
+        <div className="lg:col-span-4 bg-white/70 backdrop-blur-xl rounded-[48px] border border-white shadow-2xl flex flex-col overflow-hidden">
+          <div className="p-8 bg-slate-50/50 border-b border-slate-100 flex justify-between items-center">
+            <span className="text-[10px] font-black text-legal-900 uppercase tracking-widest">Authorized Terminals</span>
+            <span className="bg-emerald-50 text-emerald-600 text-[9px] font-black px-3 py-1 rounded-full border border-emerald-100">Live Traffic</span>
           </div>
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto scrollbar-hide">
             {clients.length === 0 ? (
-              <div className="p-8 text-center text-gray-400">No active portal invites.</div>
+              <div className="h-full flex flex-col items-center justify-center p-12 text-center text-slate-300">
+                <Share2 className="w-16 h-16 opacity-10 mb-6" />
+                <p className="text-[10px] font-black uppercase tracking-widest">No active portal authorizations detected.</p>
+              </div>
             ) : (
-              <div className="divide-y divide-gray-100">
-                {clients.slice(0, 3).map((client) => (
-                  <div key={client.id} className="p-4 hover:bg-gray-50 transition-colors cursor-pointer">
-                    <div className="flex justify-between items-start mb-1">
-                      <h3 className="font-bold text-legal-900">{client.name}</h3>
-                      <span className="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full font-black uppercase">Active</span>
+              <div className="divide-y divide-slate-50">
+                {clients.map((client) => (
+                  <div key={client.id} className="p-8 hover:bg-white transition-all cursor-pointer group relative">
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+                        <ChevronRight className="text-legal-gold" size={20} />
                     </div>
-                    <p className="text-xs text-gray-500 mb-3">{client.email}</p>
-                    <div className="flex items-center gap-4 text-[10px] font-bold text-gray-400">
-                      <span className="flex items-center gap-1"><UserCheck size={12} /> Last login: 2h ago</span>
-                      <span className="flex items-center gap-1"><Clock size={12} /> 3 shared docs</span>
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="font-serif font-black italic text-xl text-legal-900 tracking-tight group-hover:text-legal-gold transition-colors">{client.name}</h3>
+                      <span className="bg-slate-100 text-slate-400 text-[8px] px-2 py-0.5 rounded-full font-black uppercase">Ref-Auth</span>
+                    </div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.1em] text-slate-400 mb-6">{client.email}</p>
+                    <div className="flex items-center gap-6 text-[9px] font-black uppercase tracking-widest text-slate-400">
+                      <span className="flex items-center gap-2"><UserCheck size={14} className="text-emerald-500" /> Active Session</span>
+                      <span className="flex items-center gap-2"><Clock size={14} className="text-legal-gold" /> Persistent</span>
                     </div>
                   </div>
                 ))}
@@ -61,63 +70,87 @@ export const ClientPortal: React.FC = () => {
         </div>
 
         {/* Permission Manager */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
-          <div className="p-6 bg-legal-900 text-white flex justify-between items-center">
+        <div className="lg:col-span-8 bg-white/40 backdrop-blur-xl rounded-[56px] border border-white shadow-2xl flex flex-col overflow-hidden relative">
+          {/* Decorative Elements */}
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-legal-gold/5 rounded-full blur-[120px] pointer-events-none"></div>
+          
+          <div className="p-10 bg-legal-900 text-white flex justify-between items-center relative z-10 mx-6 mt-6 rounded-[32px] shadow-2xl">
             <div>
-              <h3 className="text-xl font-bold font-serif">Access Control Panel</h3>
-              <p className="text-xs text-gray-400 mt-1">Select a client to manage what they see in their portal.</p>
+              <div className="flex items-center gap-2 text-[10px] font-black text-legal-gold uppercase tracking-[0.3em] mb-2">
+                <Shield size={14} /> Critical Access Control
+              </div>
+              <h3 className="text-3xl font-serif font-black italic tracking-tighter">Command Panel</h3>
             </div>
-            <Shield className="text-legal-gold" size={24} />
+            <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md">
+                <LayoutGrid className="text-legal-gold" size={24} />
+            </div>
           </div>
           
-          <div className="p-8 flex-1 flex flex-col items-center justify-center text-center">
-            <Share2 className="w-20 h-20 text-gray-100 mb-4" />
-            <h4 className="text-lg font-bold text-gray-400">No Client Selected</h4>
-            <p className="text-sm text-gray-400 max-w-xs mt-2">
-              Onboard a client to the portal to start sharing case folders and automating status updates.
+          <div className="p-12 flex-1 flex flex-col items-center justify-center text-center relative z-10">
+            <div className="w-24 h-24 bg-white rounded-[32px] shadow-sm flex items-center justify-center mb-8">
+                <Share2 className="w-12 h-12 text-slate-100" />
+            </div>
+            <h4 className="text-2xl font-serif font-black italic text-slate-300 tracking-tight mb-4">Awaiting Client Selection</h4>
+            <p className="text-xs font-black uppercase tracking-widest text-slate-400 max-w-sm leading-relaxed mx-auto">
+              Select an authorized terminal from the registry to initialize folder permissions and data-room protocols.
             </p>
           </div>
         </div>
       </div>
 
       {showInviteModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
-            <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-              <h3 className="font-bold text-xl text-legal-900">Portal Invitation</h3>
-              <button onClick={() => setShowInviteModal(false)} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
-            </div>
-            <div className="p-6 space-y-6">
+        <div className="fixed inset-0 bg-legal-900/40 backdrop-blur-sm flex items-center justify-center z-[1000] p-4">
+          <div className="bg-white rounded-[48px] w-full max-w-lg shadow-[0_80px_120px_-20px_rgba(0,0,0,0.4)] animate-in fade-in zoom-in-95 duration-500 overflow-hidden text-left">
+            <div className="p-10 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Select Client</label>
-                <select 
-                  className="w-full border border-gray-300 p-3 rounded-xl outline-none focus:ring-2 focus:ring-legal-gold"
-                  value={selectedClient}
-                  onChange={(e) => setSelectedClient(e.target.value)}
-                >
-                  <option value="">-- Choose Client --</option>
-                  {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                </select>
+                <h3 className="font-serif font-black italic text-3xl text-legal-900 tracking-tight">Onboard Entity</h3>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Portal Provisioning Protocol</p>
+              </div>
+              <button onClick={() => setShowInviteModal(false)} className="w-12 h-12 flex items-center justify-center bg-white rounded-full text-slate-300 hover:text-legal-900 transition-all shadow-sm border border-slate-50">
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-10 space-y-8">
+              <div>
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Select Target Client</label>
+                <div className="relative group">
+                    <select 
+                      className="w-full bg-slate-50 border border-slate-100 p-6 rounded-3xl font-black text-legal-900 outline-none focus:ring-4 focus:ring-legal-gold/5 focus:border-legal-gold appearance-none transition-all cursor-pointer shadow-inner"
+                      value={selectedClient}
+                      onChange={(e) => setSelectedClient(e.target.value)}
+                    >
+                      <option value="">-- Elect Client Record --</option>
+                      {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    </select>
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-300 group-hover:text-legal-gold transition-colors">
+                        <ChevronRight className="rotate-90" size={20} />
+                    </div>
+                </div>
               </div>
 
-              <div className="bg-legal-50 rounded-2xl p-4 border border-legal-100">
-                <p className="text-xs font-bold text-legal-800 uppercase mb-3 tracking-widest">Secret Invite Link</p>
-                <div className="flex gap-2">
-                  <div className="flex-1 bg-white border border-gray-200 px-3 py-2 rounded-lg text-xs text-gray-500 font-mono truncate">
-                    https://lexinaija.com/portal/invite-7728...
+              <div className="bg-slate-50/50 rounded-[40px] p-8 border border-slate-100 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-legal-gold/5 rounded-full blur-2xl"></div>
+                <p className="text-[10px] font-black text-legal-900 uppercase mb-4 tracking-widest flex items-center gap-2">
+                    <LinkIcon size={12} className="text-legal-gold" /> Encrypted Credentials Link
+                </p>
+                <div className="flex gap-3 relative z-10">
+                  <div className="flex-1 bg-white border border-slate-100 px-5 py-4 rounded-2xl text-[11px] text-slate-400 font-mono truncate shadow-sm">
+                    https://lexinaija.com/portal/auth-7728-x92...
                   </div>
                   <button 
                     onClick={handleCopyLink}
-                    className="p-2 bg-legal-900 text-white rounded-lg hover:bg-legal-800 transition-colors"
+                    className="w-14 h-14 bg-legal-900 text-white rounded-2xl hover:bg-legal-gold hover:text-legal-900 transition-all flex items-center justify-center shadow-lg active:scale-95"
                   >
-                    {copied ? <CheckCircle2 size={16} /> : <Copy size={16} />}
+                    {copied ? <CheckCircle2 size={20} /> : <Copy size={20} />}
                   </button>
                 </div>
               </div>
 
-              <button className="w-full bg-legal-900 text-white py-4 rounded-xl font-black shadow-lg flex items-center justify-center gap-3">
-                <Mail size={20} /> Send Invitation Email
-              </button>
+              <div className="pt-4">
+                <button className="w-full bg-legal-900 text-white py-6 rounded-3xl font-black uppercase tracking-widest text-xs shadow-2xl shadow-legal-900/20 flex items-center justify-center gap-4 hover:bg-legal-gold hover:text-legal-900 transition-all active:scale-[0.98] group">
+                  <Mail size={22} className="group-hover:-translate-y-1 transition-transform" /> Dispatch Access Protocol
+                </button>
+              </div>
             </div>
           </div>
         </div>

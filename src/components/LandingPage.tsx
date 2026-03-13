@@ -224,8 +224,117 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                           </div>
                         ))}
                      </div>
-                  </div>
+                   </div>
+                </div>
+             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="py-32 px-6 bg-white relative">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center max-w-2xl mx-auto mb-20">
+            <span className="text-[10px] font-black text-legal-gold uppercase tracking-[.3em] mb-6 inline-block">Institutional Pricing</span>
+            <h2 className="text-4xl md:text-5xl font-serif font-black text-legal-900 italic tracking-tighter leading-tight">Scale your practice with precision.</h2>
+            <p className="text-slate-500 mt-6 font-medium">Choose the tier that matches your firm's ambition.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Solo Tier */}
+            <div className="bg-slate-50 rounded-[40px] p-10 border border-slate-100 flex flex-col group hover:bg-white hover:shadow-2xl transition-all duration-500">
+               <div className="mb-8">
+                  <h3 className="text-xl font-serif font-black text-legal-900 mb-2">Solo Practice</h3>
+                  <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">For New Wigs & Solos</p>
                </div>
+               <div className="mb-8">
+                  <span className="text-5xl font-serif font-black text-legal-900">₦5,000</span>
+                  <span className="text-slate-400 font-bold ml-2">/mo</span>
+               </div>
+               <ul className="space-y-4 mb-10 flex-1">
+                  <li className="flex items-center gap-3 text-sm text-slate-600 font-medium">
+                    <CheckCircle2 className="text-legal-900 w-4 h-4" /> 5 AI Drafts Per Month
+                  </li>
+                  <li className="flex items-center gap-3 text-sm text-slate-600 font-medium">
+                    <CheckCircle2 className="text-legal-900 w-4 h-4" /> Basic Case Management
+                  </li>
+                  <li className="flex items-center gap-3 text-sm text-slate-600 font-medium">
+                    <CheckCircle2 className="text-legal-900 w-4 h-4" /> Cause List Generation
+                  </li>
+                  <li className="flex items-center gap-3 text-sm text-slate-600 font-medium opacity-40">
+                    <CheckCircle2 className="text-slate-300 w-4 h-4" /> Deep Research Suite
+                  </li>
+               </ul>
+               <button 
+                  onClick={onGetStarted}
+                  className="w-full py-4 bg-white border border-slate-200 rounded-full text-[10px] font-black uppercase tracking-widest hover:border-legal-900 transition-all font-bold"
+               >
+                 Start Trial
+               </button>
+            </div>
+
+            {/* Pro Tier */}
+            <div className="bg-legal-900 rounded-[40px] p-10 flex flex-col relative overflow-hidden shadow-2xl scale-105 z-10">
+               <div className="absolute top-0 right-0 px-6 py-2 bg-legal-gold text-legal-900 font-black text-[9px] uppercase tracking-widest rounded-bl-2xl">Most Popular</div>
+               <div className="mb-8">
+                  <h3 className="text-xl font-serif font-black text-white mb-2">Professional</h3>
+                  <p className="text-xs text-white/50 font-bold uppercase tracking-widest">For Growing Firms</p>
+               </div>
+               <div className="mb-8">
+                  <span className="text-5xl font-serif font-black text-white">₦15,000</span>
+                  <span className="text-white/50 font-bold ml-2">/mo</span>
+               </div>
+               <ul className="space-y-4 mb-10 flex-1">
+                  <li className="flex items-center gap-3 text-sm text-white/80 font-medium">
+                    <CheckCircle2 className="text-legal-gold w-4 h-4" /> Unlimited AI Drafting
+                  </li>
+                  <li className="flex items-center gap-3 text-sm text-white/80 font-medium">
+                    <CheckCircle2 className="text-legal-gold w-4 h-4" /> Deep Research Suite
+                  </li>
+                  <li className="flex items-center gap-3 text-sm text-white/80 font-medium">
+                    <CheckCircle2 className="text-legal-gold w-4 h-4" /> Bailiff & Process Tracker
+                  </li>
+                  <li className="flex items-center gap-3 text-sm text-white/80 font-medium">
+                    <CheckCircle2 className="text-legal-gold w-4 h-4" /> Corporate Filing Automation
+                  </li>
+               </ul>
+               <button 
+                  onClick={onGetStarted}
+                  className="w-full py-4 bg-legal-gold text-legal-900 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all shadow-xl font-bold"
+               >
+                 Go Professional
+               </button>
+            </div>
+
+            {/* Enterprise Tier */}
+            <div className="bg-slate-50 rounded-[40px] p-10 border border-slate-100 flex flex-col group hover:bg-white hover:shadow-2xl transition-all duration-500">
+               <div className="mb-8">
+                  <h3 className="text-xl font-serif font-black text-legal-900 mb-2">Firm/Enterprise</h3>
+                  <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">For SAN Chambers</p>
+               </div>
+               <div className="mb-8">
+                  <span className="text-5xl font-serif font-black text-legal-900">₦100k+</span>
+               </div>
+               <ul className="space-y-4 mb-10 flex-1">
+                  <li className="flex items-center gap-3 text-sm text-slate-600 font-medium">
+                    <CheckCircle2 className="text-legal-900 w-4 h-4" /> Multi-user Sync
+                  </li>
+                  <li className="flex items-center gap-3 text-sm text-slate-600 font-medium">
+                    <CheckCircle2 className="text-legal-900 w-4 h-4" /> Custom Precedent Library
+                  </li>
+                  <li className="flex items-center gap-3 text-sm text-slate-600 font-medium">
+                    <CheckCircle2 className="text-legal-900 w-4 h-4" /> Immutable Compliance Audit
+                  </li>
+                  <li className="flex items-center gap-3 text-sm text-slate-600 font-medium">
+                    <CheckCircle2 className="text-legal-900 w-4 h-4" /> Dedicated Support Agent
+                  </li>
+               </ul>
+               <button 
+                  onClick={onGetStarted}
+                  className="w-full py-4 bg-white border border-slate-200 rounded-full text-[10px] font-black uppercase tracking-widest hover:border-legal-900 transition-all font-bold"
+               >
+                 Consult Sales
+               </button>
             </div>
           </div>
         </div>

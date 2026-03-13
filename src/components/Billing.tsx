@@ -39,12 +39,15 @@ export const Billing: React.FC = () => {
 
   const handleSave = () => {
     if (newInvoice.clientId && newInvoice.amount && newInvoice.finalDescription) {
+      const baseAmount = parseFloat(newInvoice.amount);
+      const vatAmount = baseAmount * 0.075; // 7.5% VAT (FIRS)
+      const totalAmount = baseAmount + vatAmount;
       addInvoice({
         id: Date.now().toString(),
         clientId: newInvoice.clientId,
         caseId: newInvoice.caseId,
-        amount: parseFloat(newInvoice.amount),
-        description: newInvoice.finalDescription,
+        amount: totalAmount,
+        description: newInvoice.finalDescription + `\n\n[Professional Fees: ₦${baseAmount.toLocaleString()} | VAT @ 7.5%: ₦${vatAmount.toLocaleString()} | Total: ₦${totalAmount.toLocaleString()}]`,
         status: 'Draft',
         date: new Date()
       });
@@ -131,7 +134,8 @@ export const Billing: React.FC = () => {
     doc.setFontSize(10);
     doc.setFont("times", "italic");
     doc.text("Payment terms: Due upon receipt.", 20, totalY + 40);
-    doc.text("Thank you for your instructions.", 20, totalY + 45);
+    doc.text("Note: This fee note includes VAT @ 7.5% as required by FIRS.", 20, totalY + 45);
+    doc.text("Thank you for your instructions.", 20, totalY + 50);
     
     if (firmProfile.solicitorName) {
         doc.setFont("times", "normal");
@@ -204,13 +208,15 @@ export const Billing: React.FC = () => {
           <div className="bg-legal-900 p-8 rounded-[40px] shadow-xl text-white relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-legal-gold opacity-10 rounded-full translate-x-16 -translate-y-16 blur-2xl"></div>
             <h3 className="font-serif font-black italic text-2xl text-legal-gold mb-4 flex items-center gap-3"><CreditCard size={24}/> Scale of Charges</h3>
-            <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Quick reference guide (Property)</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Reference: LPRO (Non-Contentious)</p>
             <ul className="text-sm space-y-4 font-medium text-slate-300">
               <li className="flex justify-between items-center border-b border-legal-800 pb-3"><span>Conveyance (State Land)</span> <span className="text-legal-gold font-bold">10%</span></li>
               <li className="flex justify-between items-center border-b border-legal-800 pb-3"><span>Conveyance (Private)</span> <span className="text-legal-gold font-bold">10-15%</span></li>
               <li className="flex justify-between items-center border-b border-legal-800 pb-3"><span>Tenancy (Solicitor)</span> <span className="text-legal-gold font-bold">10%</span></li>
-              <li className="flex justify-between items-center pt-1"><span>Mortgages</span> <span className="text-legal-gold font-bold">Varies</span></li>
+              <li className="flex justify-between items-center border-b border-legal-800 pb-3"><span>Mortgages</span> <span className="text-legal-gold font-bold">Varies</span></li>
+              <li className="flex justify-between items-center pt-1"><span>VAT (All Fees)</span> <span className="text-amber-400 font-bold">+ 7.5%</span></li>
             </ul>
+            <p className="text-[10px] text-slate-500 mt-4 leading-relaxed">Contentious matters: Fees determined by counsel. All professional fees attract 7.5% VAT per FIRS regulations.</p>
           </div>
         </div>
       </div>

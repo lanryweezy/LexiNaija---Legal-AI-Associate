@@ -60,6 +60,13 @@ export interface Client {
   phone: string;
   address: string;
   dateAdded: Date;
+  // KYC/AML Compliance Fields
+  rcNumber?: string; // Corporate Registration (CAMA 2020)
+  tin?: string; // Tax Identification Number (FIRS)
+  idType?: 'BVN' | 'NIN' | 'International Passport' | 'Drivers License';
+  idNumber?: string; // Identification document number
+  retainerRef?: string; // Reference to signed retainer/engagement letter
+  conflictCleared?: boolean; // Confirms conflict check was performed
 }
 
 export interface BillableItem {
@@ -79,6 +86,13 @@ export interface Task {
   caseId?: string; // Optional link to a case
 }
 
+export interface CustodyEvent {
+  timestamp: Date;
+  handler: string;
+  action: 'Received' | 'Transferred' | 'Stored' | 'Returned to Client' | 'Tendered in Court';
+  location: string;
+}
+
 export interface EvidenceItem {
   id: string;
   description: string;
@@ -87,6 +101,11 @@ export interface EvidenceItem {
   isReliedUpon: boolean; // For "List of Documents to be Relied Upon"
   custodyLocation?: string; // e.g., "Client Safe" or "Chambers Safe"
   notes?: string;
+  // Legal Professional Enhancements
+  exhibitNumber?: string; // Court exhibit label (e.g., "Exhibit A", "Exhibit P1")
+  evidenceClass?: 'Primary' | 'Secondary'; // Sections 85-89 Evidence Act 2011
+  custodyChain?: CustodyEvent[]; // Chain-of-custody log
+  requiresS84Certificate?: boolean; // Section 84 Evidence Act 2011 (electronic evidence)
 }
 
 export interface Case {
@@ -102,7 +121,13 @@ export interface Case {
   documents: SavedDocument[];
   billableItems: BillableItem[];
   evidence: EvidenceItem[];
-  outcome?: 'Won' | 'Lost' | 'Settled' | 'Dismissed' | 'Pending'; // New outcome field
+  outcome?: 'Won' | 'Lost' | 'Settled' | 'Dismissed' | 'Pending';
+  // Legal Workflow Enhancements
+  causeOfAction?: string; // e.g., Breach of Contract, Tort, Land Dispute
+  limitationDate?: string; // Statute of limitations expiry date
+  judgeName?: string; // Assigned Judge/Magistrate
+  filingDate?: string; // Date Writ/Originating Process was filed
+  opposingCounsel?: string; // Name of opposing legal practitioner
 }
 
 export interface DocumentVersion {

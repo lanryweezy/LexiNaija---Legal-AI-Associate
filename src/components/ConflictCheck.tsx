@@ -7,15 +7,23 @@ export const ConflictCheck: React.FC = () => {
   const [query, setQuery] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
 
-  // Logic to find matches
-  const clientMatches = query ? clients.filter(c => c.name.toLowerCase().includes(query.toLowerCase())) : [];
+  // Logic to find matches — expanded per RPC Rule 19
+  const q = query.toLowerCase();
+  const clientMatches = query ? clients.filter(c => 
+    c.name.toLowerCase().includes(q) ||
+    (c.rcNumber && c.rcNumber.toLowerCase().includes(q)) ||
+    (c.address && c.address.toLowerCase().includes(q)) ||
+    (c.email && c.email.toLowerCase().includes(q))
+  ) : [];
   
   const opposingPartyMatches = query ? cases.filter(c => 
-    c.opposingParty && c.opposingParty.toLowerCase().includes(query.toLowerCase())
+    (c.opposingParty && c.opposingParty.toLowerCase().includes(q)) ||
+    (c.opposingCounsel && c.opposingCounsel.toLowerCase().includes(q))
   ) : [];
   
   const caseMatches = query ? cases.filter(c => 
-    c.title.toLowerCase().includes(query.toLowerCase())
+    c.title.toLowerCase().includes(q) ||
+    (c.suitNumber && c.suitNumber.toLowerCase().includes(q))
   ) : [];
 
   const totalMatches = clientMatches.length + opposingPartyMatches.length + caseMatches.length;

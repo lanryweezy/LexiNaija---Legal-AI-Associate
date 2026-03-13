@@ -15,14 +15,14 @@ export const ComplianceAudit: React.FC = () => {
   const { auditLog } = useLegalStore();
   const [filter, setFilter] = useState('All');
 
-  // Simulated detailed audit logs based on the core audit entries
+  // Detailed audit logs based on the core audit entries
   const detailedLogs: AuditEntry[] = auditLog.map(entry => ({
     id: entry.id,
     action: entry.eventType.replace('_', ' '),
     user: entry.userId || 'System',
     details: entry.details || 'No additional details.',
     timestamp: new Date(entry.timestamp).toLocaleString(),
-    ipAddress: '192.168.1.' + (Math.floor(Math.random() * 255))
+    ipAddress: 'Local Session'
   }));
 
   return (

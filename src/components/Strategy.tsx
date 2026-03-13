@@ -9,6 +9,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useToast } from '../contexts/ToastContext';
 import { MatterArchiveModal } from './MatterArchiveModal';
+import { AiDisclaimer } from './AiDisclaimer';
 
 export const Strategy: React.FC = () => {
   const { showToast } = useToast();
@@ -214,7 +215,8 @@ export const Strategy: React.FC = () => {
               </div>
 
               <div className="flex-1 overflow-y-auto p-12 bg-slate-50/10">
-                <div className="max-w-4xl mx-auto">
+                <div className="max-w-4xl mx-auto space-y-6">
+                    <AiDisclaimer />
                     <div className="prose prose-slate prose-lg max-w-none prose-headings:font-black prose-headings:italic prose-headings:tracking-tighter prose-p:font-serif prose-p:text-lg prose-p:leading-relaxed">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>{strategyReport}</ReactMarkdown>
                     </div>

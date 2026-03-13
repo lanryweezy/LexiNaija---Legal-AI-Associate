@@ -19,7 +19,9 @@ export const Evidence: React.FC = () => {
   const [formData, setFormData] = useState<Partial<EvidenceItem>>({
     type: 'Document',
     isReliedUpon: true,
-    custodyLocation: 'Chambers Safe'
+    custodyLocation: 'Chambers Safe',
+    exhibitNumber: '',
+    evidenceClass: 'Primary'
   });
 
   const selectedCase = cases.find(c => c.id === selectedCaseId);
@@ -35,10 +37,12 @@ export const Evidence: React.FC = () => {
         dateObtained: formData.dateObtained ? new Date(formData.dateObtained) : new Date(),
         isReliedUpon: formData.isReliedUpon || false,
         custodyLocation: formData.custodyLocation,
-        notes: formData.notes
+        notes: formData.notes,
+        exhibitNumber: formData.exhibitNumber || undefined,
+        evidenceClass: (formData.evidenceClass as 'Primary' | 'Secondary') || 'Primary'
       });
       setShowModal(false);
-      setFormData({ type: 'Document', isReliedUpon: true, custodyLocation: 'Chambers Safe', description: '', notes: '' });
+      setFormData({ type: 'Document', isReliedUpon: true, custodyLocation: 'Chambers Safe', description: '', notes: '', exhibitNumber: '', evidenceClass: 'Primary' });
       showToast("Evidence logged to repository.", "success");
     }
   };

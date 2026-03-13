@@ -11,6 +11,8 @@ interface BailiffEntry {
   dateGiven: string;
   dateServed?: string;
   status: 'In Progress' | 'Served' | 'Returned' | 'Defective';
+  attempts: number;
+  isSubstituted: boolean;
   affidavitUrl?: string;
 }
 
@@ -20,7 +22,9 @@ export const BailiffTracker: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [newEntry, setNewEntry] = useState<Partial<BailiffEntry>>({
     status: 'In Progress',
-    dateGiven: new Date().toISOString().split('T')[0]
+    dateGiven: new Date().toISOString().split('T')[0],
+    attempts: 0,
+    isSubstituted: false
   });
 
   const onDrop = (acceptedFiles: File[]) => {
@@ -138,15 +142,21 @@ export const BailiffTracker: React.FC = () => {
                       }`}>
                         {entry.status}
                       </span>
+                      {entry.isSubstituted && (
+                        <span className="ml-2 px-2 py-0.5 bg-amber-50 text-amber-600 border border-amber-100 rounded text-[9px] font-black uppercase tracking-tighter">Substituted</span>
+                      )}
                     </td>
                     <td className="px-6 py-4">
-                      {entry.affidavitUrl ? (
-                        <button className="text-legal-gold flex items-center gap-1.5 hover:underline font-bold text-xs">
-                          <FileText size={14} /> View Document
-                        </button>
-                      ) : (
-                        <span className="text-gray-300 text-xs italic">Not Uploaded</span>
-                      )}
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Attempts: {entry.attempts}</span>
+                        {entry.affidavitUrl ? (
+                          <button className="text-legal-gold flex items-center gap-1.5 hover:underline font-bold text-xs text-left">
+                            <FileText size={14} /> View Document
+                          </button>
+                        ) : (
+                          <span className="text-gray-300 text-xs italic">No Proof</span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button className="p-2 text-gray-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-all">
@@ -217,6 +227,29 @@ export const BailiffTracker: React.FC = () => {
                   value={newEntry.bailiffName}
                   onChange={e => setNewEntry({...newEntry, bailiffName: e.target.value})}
                 />
+              </div>
+
+              <div className="flex items-center gap-6 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <div className="flex items-center gap-2">
+                    <input 
+                        type="checkbox" 
+                        id="isSub"
+                        checked={newEntry.isSubstituted}
+                        onChange={e => setNewEntry({...newEntry, isSubstituted: e.target.checked})}
+                        className="w-4 h-4 rounded border-gray-300 text-legal-gold focus:ring-legal-gold"
+                    />
+                    <label htmlFor="isSub" className="text-xs font-bold text-gray-700">Substituted Service?</label>
+                </div>
+                <div className="flex-1 flex items-center gap-3">
+                    <label className="text-[10px] font-black text-slate-400 uppercase">Attempts:</label>
+                    <input 
+                        type="number"
+                        min="0"
+                        value={newEntry.attempts}
+                        onChange={e => setNewEntry({...newEntry, attempts: parseInt(e.target.value) || 0})}
+                        className="w-16 border-b border-gray-300 bg-transparent py-1 text-sm font-bold text-legal-900 outline-none focus:border-legal-gold"
+                    />
+                </div>
               </div>
 
               <div>

@@ -130,21 +130,27 @@ export const generateCorporateObjects = async (description: string): Promise<str
 };
 
 export const generateCorporateResolution = async (action: string, companyName: string, directors: string, type: 'Board' | 'General'): Promise<string> => {
-  const prompt = `Draft a Nigerian ${type} Resolution for ${companyName}. Action: ${action}, Directors: ${directors}`;
+  const prompt = `Draft a Nigerian ${type} Resolution for ${companyName} compliant with CAMA 2020. 
+  ACTION: ${action}
+  ATTENDANCE: ${directors}
+  INSTRUCTIONS: Use formal legal language. Include a preamble about the meeting being duly convened, the specific resolution text, and a signature block for a Director and the Company Secretary.`;
   return await run(prompt);
 };
 
 export const generateComplianceAdvice = async (query: string): Promise<string> => {
-  const prompt = `Provide Nigerian compliance advice for: "${query}". Identify framework (CAMA, Tax, etc).`;
+  const prompt = `Provide Nigerian compliance advice for: "${query}". 
+  Identify relevant framework (CAMA 2020, Finance Act, Tax laws, etc). 
+  Reference specific sections where possible (e.g., Section 370-433 for Annual Returns). 
+  Provide a 'Compliance Checklist' for the next 12 months.`;
   return await run(prompt);
 };
 
 export const generateEntertainmentAdvice = async (query: string, category: string): Promise<string> => {
-  const prompt = `You are a Nigerian Entertainment Lawyer. Provide advice on "${query}" (Category: ${category}) using Copyright Act 2023 logic. Structure: Legal Basis, Analysis, Recommendations, Pitfalls.`;
+  const prompt = `You are a Nigerian Entertainment Lawyer. Provide advice on "${query}" (Category: ${category}) using Copyright Act 2022 logic. Structure: Legal Basis, Analysis, Recommendations, Pitfalls.`;
   return await run(prompt);
 };
 
 export const draftEntertainmentContract = async (type: string, parties: string, keyTerms: string): Promise<string> => {
-  const prompt = `Draft a Nigerian ${type} agreement between ${parties} with terms: ${keyTerms}. Use Copyright Act 2023 and industry standards.`;
+  const prompt = `Draft a Nigerian ${type} agreement between ${parties} with terms: ${keyTerms}. Use Copyright Act 2022 and industry standards.`;
   return await run(prompt);
 };

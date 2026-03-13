@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Calculator, Calendar, AlertTriangle, CheckCircle2, Coins, Clock, ShieldCheck } from 'lucide-react';
+import { Calculator, Calendar, AlertTriangle, CheckCircle2, Coins, Clock, ShieldCheck, Feather } from 'lucide-react';
 
 export const Calculators: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'limitation' | 'tenancy' | 'fees'>('limitation');
+  const [activeTab, setActiveTab] = useState<'limitation' | 'tenancy' | 'fees' | 'probate'>('limitation');
 
   // Limitation State
   const [limitationDate, setLimitationDate] = useState('');
@@ -93,8 +93,8 @@ export const Calculators: React.FC = () => {
               lengthText = "3 Months Notice";
               break;
           case 'half-yearly':
-              expiry.setMonth(expiry.getMonth() + 3); // Commonly 3 months also, sometimes 6. Using 3 based on Lagos Law default for half-yearly.
-              lengthText = "3 Months Notice (Lagos Tenancy Law)";
+              expiry.setMonth(expiry.getMonth() + 6); 
+              lengthText = "6 Months Notice (Yearly/Half-yearly Standard)";
               break;
           case 'yearly':
               expiry.setMonth(expiry.getMonth() + 6);
@@ -161,6 +161,15 @@ export const Calculators: React.FC = () => {
                     <Coins size={16} />
                 </div>
                 Scale of Charges
+            </button>
+            <button 
+                onClick={() => setActiveTab('probate')}
+                className={`w-full text-left px-6 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center gap-4 transition-all ${activeTab === 'probate' ? 'bg-legal-900 text-white shadow-[0_20px_40px_-10px_rgba(26,35,46,0.3)]' : 'bg-white/50 text-slate-400 hover:bg-white hover:text-legal-900'}`}
+            >
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${activeTab === 'probate' ? 'bg-legal-gold text-legal-900' : 'bg-slate-100'}`}>
+                    <Feather size={16} />
+                </div>
+                Probate Fees
             </button>
         </div>
 
@@ -339,6 +348,49 @@ export const Calculators: React.FC = () => {
                             <p className="text-5xl font-serif font-black text-legal-900 mb-4 tracking-tighter">₦{feeResult.toLocaleString()}</p>
                             <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-[9px] font-black uppercase tracking-widest">Scale I: 10% Weighted Avg.</div>
                             <p className="text-[10px] text-slate-400 mt-6 italic">* This is a digital approximation. Professional fees are subject to complexity and negotiation within the Order boundaries.</p>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {activeTab === 'probate' && (
+                <div className="bg-white/80 backdrop-blur-xl rounded-[32px] border border-white shadow-xl p-10 animate-in fade-in slide-in-from-right-4">
+                    <div className="flex items-center justify-between mb-10">
+                        <h3 className="text-2xl font-serif font-black text-legal-900 italic flex items-center gap-3">
+                            <Feather className="text-legal-gold" /> Probate Inventory Auditor
+                        </h3>
+                        <div className="px-4 py-2 bg-slate-900 rounded-full text-[9px] font-black text-legal-gold uppercase tracking-widest">High Court Registry Standard</div>
+                    </div>
+
+                    <div className="mb-10">
+                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-2">Total Estate Value (₦)</label>
+                        <input 
+                            type="number" 
+                            value={propertyValue}
+                            onChange={e => setPropertyValue(e.target.value)}
+                            className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-6 font-mono text-2xl font-black text-legal-900 focus:bg-white focus:ring-4 focus:ring-legal-gold/5 outline-none transition-all"
+                            placeholder="100,000,000"
+                        />
+                    </div>
+
+                    <button 
+                        onClick={() => {
+                            const val = parseFloat(propertyValue);
+                            if (!val) return;
+                            // Standard 10% for large estates, sliding for smaller.
+                            // Simplified for practitioner guidance.
+                            setFeeResult(val * 0.10);
+                        }}
+                        className="bg-legal-900 text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-2xl shadow-legal-900/20 hover:bg-legal-gold hover:text-legal-900 transition-all active:scale-95"
+                    >
+                        Project Probate Fee (10%)
+                    </button>
+
+                    {feeResult !== null && (
+                        <div className="mt-10 p-10 rounded-[32px] bg-amber-50 border border-amber-100 text-center">
+                            <p className="text-[10px] text-amber-700 uppercase font-black tracking-[0.2em] mb-4">Estimated Estate Duty (10%)</p>
+                            <p className="text-5xl font-serif font-black text-amber-900 mb-4 tracking-tighter">₦{feeResult.toLocaleString()}</p>
+                            <p className="text-[10px] text-amber-600 mt-6 italic">* Calculated as a flat 10% of total assets for estimation. Subject to Registry valuation.</p>
                         </div>
                     )}
                 </div>

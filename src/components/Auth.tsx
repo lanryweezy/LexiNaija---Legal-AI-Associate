@@ -37,6 +37,20 @@ export const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
     }
   };
 
+  const handleSSO = async (provider: 'google' | 'azure') => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+      if (error) throw error;
+    } catch (error: any) {
+      showToast(error.message, "error");
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-legal-900 p-8 overflow-hidden relative">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-legal-gold/10 rounded-full blur-[120px] pointer-events-none"></div>
@@ -92,6 +106,29 @@ export const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
             {loading ? 'Authenticating...' : isSignUp ? 'Initialize AI Workspace' : 'Authorize Session'}
           </button>
         </form>
+
+        <div className="my-8 flex items-center gap-4">
+          <div className="h-px flex-1 bg-slate-100"></div>
+          <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Enterprise SSO</span>
+          <div className="h-px flex-1 bg-slate-100"></div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <button 
+            onClick={() => handleSSO('google')}
+            className="flex items-center justify-center gap-3 py-4 bg-slate-50 border border-slate-100 rounded-2xl hover:bg-white transition-all text-[10px] font-black uppercase tracking-widest text-slate-600"
+          >
+            <img src="https://www.gstatic.com/images/branding/product/1x/googleg_48dp.png" className="w-5 h-5 opacity-70" alt="Google" />
+            Google
+          </button>
+          <button 
+            onClick={() => handleSSO('azure')}
+            className="flex items-center justify-center gap-3 py-4 bg-slate-50 border border-slate-100 rounded-2xl hover:bg-white transition-all text-[10px] font-black uppercase tracking-widest text-slate-600"
+          >
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" className="w-5 h-5 opacity-70" alt="Microsoft" />
+            Firm SSO
+          </button>
+        </div>
 
         <div className="mt-10 text-center">
           <button

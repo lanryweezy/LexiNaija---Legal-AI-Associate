@@ -159,19 +159,8 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const [activeDoc, setActiveDoc] = useState<{ caseId: string; docId: string } | null>(null);
 
-  const [creditsTotal, setCreditsTotal] = useState<number>(() => {
-    try {
-      const saved = localStorage.getItem('lexinaija_credits_total');
-      return saved ? parseInt(saved) : 1000;
-    } catch (e) { return 1000; }
-  });
-
-  const [creditsUsed, setCreditsUsed] = useState<number>(() => {
-    try {
-      const saved = localStorage.getItem('lexinaija_credits_used');
-      return saved ? parseInt(saved) : 0;
-    } catch (e) { return 0; }
-  });
+  const [creditsTotal, setCreditsTotal] = useState<number>(1000);
+  const [creditsUsed, setCreditsUsed] = useState<number>(0);
 
   const [auditLog, setAuditLog] = useState<AuditLogEntry[]>(() => {
     try {
@@ -199,7 +188,10 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       if (action !== 'delete') data.user_id = session.user.id;
 
       if (action === 'insert') await supabase.from(table).insert([data]);
-      else if (action === 'update') await supabase.from(table).update(data).match({ id });
+      else if (action === 'update') {
+        if (table === 'profiles') await supabase.from(table).update(data).eq('id', session.user.id);
+        else await supabase.from(table).update(data).match({ id });
+      }
       else if (action === 'delete') await supabase.from(table).delete().match({ id });
     } catch (err) {
       console.warn(`Cloud sync failed for ${table}, using fallback mode.`);
@@ -362,6 +354,20 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
             id: t.id, title: t.title, dueDate: t.due_date ? new Date(t.due_date) : undefined, priority: t.priority, status: t.status, caseId: t.case_id
           })));
         }
+
+        // Initialize Profile and Credits from Cloud
+        const { data: profile } = await supabase.from('profiles').select('*').single();
+        if (profile) {
+          setFirmProfile({
+            name: profile.firm_name || DEFAULT_FIRM_PROFILE.name,
+            address: profile.address || DEFAULT_FIRM_PROFILE.address,
+            email: profile.email || session.user.email || '',
+            phone: profile.phone || DEFAULT_FIRM_PROFILE.phone,
+            solicitorName: profile.solicitor_name || DEFAULT_FIRM_PROFILE.solicitorName
+          });
+          setCreditsTotal(profile.credits_total ?? 1000);
+          setCreditsUsed(profile.credits_used ?? 0);
+        }
       } catch (e) {
         console.warn('Cloud sync failed, using LocalStorage fallback.', e);
       }
@@ -375,8 +381,7 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   useEffect(() => { localStorage.setItem('lexinaija_cases', JSON.stringify(cases)); }, [cases]);
   useEffect(() => { localStorage.setItem('lexinaija_invoices', JSON.stringify(invoices)); }, [invoices]);
   useEffect(() => { localStorage.setItem('lexinaija_tasks', JSON.stringify(tasks)); }, [tasks]);
-  useEffect(() => { localStorage.setItem('lexinaija_credits_total', String(creditsTotal)); }, [creditsTotal]);
-  useEffect(() => { localStorage.setItem('lexinaija_credits_used', String(creditsUsed)); }, [creditsUsed]);
+  useEffect(() => { localStorage.setItem('lexinaija_tasks', JSON.stringify(tasks)); }, [tasks]);
   useEffect(() => { localStorage.setItem('lexinaija_auditLog', JSON.stringify(auditLog)); }, [auditLog]);
   useEffect(() => { localStorage.setItem('lexinaija_knowledgeItems', JSON.stringify(knowledgeItems)); }, [knowledgeItems]);
 
@@ -388,7 +393,9 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const consumeCredits = (units: number) => {
     if (creditsUsed + units > creditsTotal) return false;
-    setCreditsUsed(creditsUsed + units);
+    const newUsed = creditsUsed + units;
+    setCreditsUsed(newUsed);
+    pushToCloud('profiles', 'update', { credits_used: newUsed }, ''); // Empty ID because RLS/auth handles single profile
     return true;
   };
 

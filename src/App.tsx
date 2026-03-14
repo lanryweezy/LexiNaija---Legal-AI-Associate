@@ -33,6 +33,8 @@ import { AppView } from './types';
 import { LegalStoreProvider, useLegalStore } from './contexts/LegalStoreContext';
 import { ToastProvider } from './contexts/ToastContext';
 
+import { ErrorBoundary } from './components/ErrorBoundary';
+
 function AppContent() {
   const { currentView, setView } = useLegalStore();
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
@@ -112,19 +114,21 @@ function AppContent() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-slate-50 font-sans text-slate-900">
-      {(currentView !== AppView.LANDING && currentView !== AppView.AUTH) && <Sidebar currentView={currentView} setView={setView} />}
-      <main className={`flex-1 ${(currentView !== AppView.LANDING && currentView !== AppView.AUTH) ? 'ml-64' : ''} overflow-auto scrollbar-hide ${currentView === AppView.EDITOR || currentView === AppView.DOCKET || currentView === AppView.EVIDENCE || currentView === AppView.WITNESS || currentView === AppView.BRIEFS || currentView === AppView.CORPORATE ? 'bg-white' : ''}`}>
-        <Suspense fallback={<div className="p-6 text-sm text-gray-600">Loading…</div>}>
-          {renderView()}
-        </Suspense>
-      </main>
-      <CommandPalette 
-        isOpen={isCommandPaletteOpen}
-        onClose={() => setIsCommandPaletteOpen(false)}
-        onNavigate={(view) => setView(view)}
-      />
-    </div>
+    <ErrorBoundary>
+      <div className="flex h-screen w-full bg-slate-50 font-sans text-slate-900">
+        {(currentView !== AppView.LANDING && currentView !== AppView.AUTH) && <Sidebar currentView={currentView} setView={setView} />}
+        <main className={`flex-1 ${(currentView !== AppView.LANDING && currentView !== AppView.AUTH) ? 'ml-64' : ''} overflow-auto scrollbar-hide ${currentView === AppView.EDITOR || currentView === AppView.DOCKET || currentView === AppView.EVIDENCE || currentView === AppView.WITNESS || currentView === AppView.BRIEFS || currentView === AppView.CORPORATE ? 'bg-white' : ''}`}>
+          <Suspense fallback={<div className="p-6 text-sm text-gray-600">Loading…</div>}>
+            {renderView()}
+          </Suspense>
+        </main>
+        <CommandPalette 
+          isOpen={isCommandPaletteOpen}
+          onClose={() => setIsCommandPaletteOpen(false)}
+          onNavigate={(view) => setView(view)}
+        />
+      </div>
+    </ErrorBoundary>
   );
 }
 

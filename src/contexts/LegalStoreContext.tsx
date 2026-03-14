@@ -315,12 +315,12 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         if (!session) return;
         
         const [clientsRes, casesRes, docsRes, billRes, evRes, taskRes] = await Promise.all([
-          supabase.from('clients').select('*'),
-          supabase.from('cases').select('*'),
-          supabase.from('documents').select('*, document_versions(*)'),
-          supabase.from('billable_items').select('*'),
-          supabase.from('evidence').select('*'),
-          supabase.from('tasks').select('*')
+          supabase.from('clients').select('*').limit(100).order('date_added', { ascending: false }),
+          supabase.from('cases').select('*').limit(50).order('created_at', { ascending: false }),
+          supabase.from('documents').select('*, document_versions(*)').limit(100).order('updated_at', { ascending: false }),
+          supabase.from('billable_items').select('*').limit(200).order('date', { ascending: false }),
+          supabase.from('evidence').select('*').limit(200).order('created_at', { ascending: false }),
+          supabase.from('tasks').select('*').limit(100).order('due_date', { ascending: false })
         ]);
 
         if (clientsRes.data?.length) {

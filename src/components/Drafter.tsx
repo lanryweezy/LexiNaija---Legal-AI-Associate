@@ -42,6 +42,7 @@ export const Drafter: React.FC = () => {
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [prefillCaseId, setPrefillCaseId] = useState('');
   const [selectedContextId, setSelectedContextId] = useState<string>('');
+  const [lastDraftTime, setLastDraftTime] = useState<number>(0);
 
   // Handle Actionable Intelligence (Injected State)
   useEffect(() => {
@@ -97,6 +98,12 @@ export const Drafter: React.FC = () => {
   };
 
   const handleDraft = async () => {
+    const now = Date.now();
+    if (now - lastDraftTime < 5000) {
+      showToast("Intelligence protocols require 5s stabilization between drafts.", "info");
+      return;
+    }
+    setLastDraftTime(now);
     setIsDrafting(true);
     setGeneratedDraft('');
     setCurrentStep('preview');

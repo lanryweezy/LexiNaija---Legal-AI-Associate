@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Share2, Mail, Link as LinkIcon, Shield, Copy, CheckCircle2, UserCheck, Clock, X, ChevronRight, LayoutGrid } from 'lucide-react';
+import { Share2, Mail, Link as LinkIcon, Shield, Copy, CheckCircle2, UserCheck, Clock, X, ChevronRight, LayoutGrid, TrendingUp, Calendar, FileCheck } from 'lucide-react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
+import { generateMilestones, calculateProgress, getCurrentMilestone, getNextMilestone, formatMilestoneDate, getMilestoneStatusColor } from '../services/milestoneService';
 
 export const ClientPortal: React.FC = () => {
   const { clients, cases } = useLegalStore();
@@ -112,42 +113,98 @@ export const ClientPortal: React.FC = () => {
                             {cases.filter(c => c.clientId === selectedClient).length === 0 ? (
                                 <p className="text-slate-400 font-medium italic">No active matters linked to this portal.</p>
                             ) : (
-                                cases.filter(c => c.clientId === selectedClient).map(c => (
+                                cases.filter(c => c.clientId === selectedClient).map(c => {
+                                    // Generate milestones for this case
+                                    const milestones = generateMilestones(c.id, c.title);
+                                    const progress = calculateProgress(milestones);
+                                    const currentMilestone = getCurrentMilestone(milestones);
+                                    const nextMilestone = getNextMilestone(milestones);
+                                    
+                                    return (
                                     <div key={c.id} className="bg-white border border-slate-100 rounded-[32px] p-8 shadow-sm">
                                         <div className="flex justify-between items-start mb-6">
                                             <div>
                                                 <h5 className="text-xl font-serif font-black text-legal-900 italic tracking-tight">{c.title}</h5>
                                                 <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">{c.suitNumber || 'Suit Number Pending'}</p>
                                             </div>
-                                            <span className="px-4 py-2 bg-slate-100 rounded-xl text-[10px] font-black text-slate-500 uppercase tracking-widest">{c.status}</span>
+                                            <span className="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-emerald-100 flex items-center gap-2">
+                                                <TrendingUp size={14} /> {progress}% Complete
+                                            </span>
                                         </div>
-                                        
+
+                                        {/* Current Milestone */}
+                                        {currentMilestone && (
+                                            <div className="mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Current Stage</p>
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-3 h-3 rounded-full bg-legal-gold animate-pulse"></div>
+                                                    <p className="text-sm font-bold text-legal-900">{currentMilestone.title}</p>
+                                                </div>
+                                                <p className="text-xs text-slate-500 mt-1">{currentMilestone.description}</p>
+                                            </div>
+                                        )}
+
                                         {/* Progress Bar */}
                                         <div className="relative pt-6 pb-2">
-                                            <div className="flex justify-between mb-4 relative z-10">
-                                                {['Open', 'Drafting', 'Pending Court', 'Closed'].map((step, idx) => {
-                                                    const steps = ['Open', 'Drafting', 'Pending Court', 'Closed'];
-                                                    const currentIdx = steps.indexOf(c.status);
-                                                    const isCompleted = idx <= currentIdx;
-                                                    
+                                            <div className="flex justify-between mb-2">
+                                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Progress</span>
+                                                <span className="text-[9px] font-black text-legal-gold uppercase tracking-widest">{progress}%</span>
+                                            </div>
+                                            <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                                                <div
+                                                    className="h-full bg-gradient-to-r from-legal-gold to-legal-gold/70 transition-all duration-1000"
+                                                    style={{ width: `${progress}%` }}
+                                                ></div>
+                                            </div>
+                                        </div>
+
+                                        {/* Next Milestone */}
+                                        {nextMilestone && (
+                                            <div className="mt-6 pt-6 border-t border-slate-100">
+                                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                                    <Calendar size={12} /> Next Up
+                                                </p>
+                                                <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-slate-100">
+                                                    <FileCheck size={16} className="text-slate-300" />
+                                                    <div>
+                                                        <p className="text-sm font-bold text-legal-900">{nextMilestone.title}</p>
+                                                        <p className="text-xs text-slate-500">{nextMilestone.description}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* All Milestones */}
+                                        <div className="mt-6 pt-6 border-t border-slate-100">
+                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-4">All Stages</p>
+                                            <div className="space-y-2">
+                                                {milestones.map((m, idx) => {
+                                                    const statusColor = getMilestoneStatusColor(m.status);
                                                     return (
-                                                        <div key={step} className="flex flex-col items-center gap-2">
-                                                            <div className={`w-4 h-4 rounded-full border-2 ${isCompleted ? 'bg-legal-gold border-legal-gold' : 'bg-white border-slate-200'} transition-all duration-1000`}></div>
-                                                            <span className={`text-[9px] font-black uppercase tracking-widest ${isCompleted ? 'text-legal-900' : 'text-slate-300'}`}>{step}</span>
+                                                        <div key={m.id} className="flex items-center gap-3">
+                                                            <div className={`w-2.5 h-2.5 rounded-full border-2 ${
+                                                                m.status === 'completed' ? 'bg-emerald-500 border-emerald-500' :
+                                                                m.status === 'pending' ? 'bg-white border-slate-300' :
+                                                                'bg-white border-rose-300'
+                                                            } transition-all`}></div>
+                                                            <div className="flex-1">
+                                                                <p className={`text-xs font-bold ${
+                                                                    m.status === 'completed' ? 'text-emerald-600' :
+                                                                    m.status === 'pending' ? 'text-slate-600' :
+                                                                    'text-rose-600'
+                                                                }`}>{m.title}</p>
+                                                            </div>
+                                                            {m.status === 'completed' && (
+                                                                <CheckCircle2 size={14} className="text-emerald-500" />
+                                                            )}
                                                         </div>
                                                     );
                                                 })}
                                             </div>
-                                            <div className="absolute top-8 left-0 w-full h-0.5 bg-slate-100 -z-0">
-                                                <div 
-                                                    className="h-full bg-legal-gold transition-all duration-1000"
-                                                    style={{ width: `${(Math.max(0, ['Open', 'Drafting', 'Pending Court', 'Closed'].indexOf(c.status)) / 3) * 100}%` }}
-                                                ></div>
-                                            </div>
                                         </div>
                                     </div>
-                                ))
-                            )}
+                                    );
+                                })
                         </div>
                     </div>
                 </div>

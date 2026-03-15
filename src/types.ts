@@ -236,3 +236,24 @@ export interface KnowledgeItem {
   tags?: string[];
   dateAdded: Date;
 }
+
+export interface CaseMilestone {
+  id: string;
+  caseId: string;
+  title: string;
+  description: string;
+  status: 'pending' | 'completed' | 'overdue';
+  completedAt?: Date;
+  dueDate?: Date;
+  visibleToClient: boolean;
+  order: number;
+}
+
+export interface MilestoneTemplate {
+  caseType: string;
+  milestones: Array<{
+    title: string;
+    description: string;
+    defaultOrder: number;
+  }>;
+}

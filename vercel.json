@@ -1,12 +1,34 @@
 {
+  "name": "LexiNaija - Legal AI Associate",
+  "framework": "vite",
+  "installCommand": "npm install",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "installCommand": "npm install",
-  "framework": "vite",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/"
+  "devCommand": "npm run dev",
+  "dev": {
+    "port": 5173,
+    "env": {
+      "VITE_SUPABASE_URL": "@vite_supabase_url",
+      "VITE_SUPABASE_ANON_KEY": "@vite_supabase_anon_key"
     }
-  ]
+  },
+  "env": {
+    "VITE_SUPABASE_URL": "@vite_supabase_url",
+    "VITE_SUPABASE_ANON_KEY": "@vite_supabase_anon_key",
+    "VITE_PAYSTACK_PUBLIC_KEY": "@vite_paystack_public_key",
+    "VITE_SENTRY_DSN": "@vite_sentry_dsn",
+    "VITE_APP_VERSION": "1.0.0",
+    "GEMINI_API_KEY": "@gemini_api_key",
+    "GROQ_API_KEY": "@groq_api_key"
+  },
+  "regions": [
+    "fra1"
+  ],
+  "functions": {
+    "api/*.ts": {
+      "runtime": "nodejs18.x",
+      "memory": 512,
+      "timeout": 30
+    }
+  }
 }

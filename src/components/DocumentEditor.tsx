@@ -423,6 +423,16 @@ export const DocumentEditor: React.FC = () => {
                 </div>
 
                 <div className="h-8 w-px bg-gray-100"></div>
+                
+                {/* Enterprise Collaboration Simulation */}
+                <div className="flex -space-x-2">
+                    <div className="w-8 h-8 rounded-full bg-legal-900 border-2 border-white text-white flex items-center justify-center text-[10px] font-black" title="You">ME</div>
+                    {selectedDoc.status === 'Under Review' && (
+                        <div className="w-8 h-8 rounded-full bg-amber-500 border-2 border-white text-white flex items-center justify-center text-[10px] font-black" title="Senior Partner">SP</div>
+                    )}
+                </div>
+
+                <div className="h-8 w-px bg-gray-100"></div>
 
                 <div className="flex gap-1">
                     <button 

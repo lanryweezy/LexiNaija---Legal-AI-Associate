@@ -1,4 +1,5 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { captureException, setContext } from '../services/errorTracker';
 
 interface Props {
   children: ReactNode;
@@ -7,6 +8,7 @@ interface Props {
 
 interface State {
   hasError: boolean;
+  error?: Error;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
@@ -14,12 +16,24 @@ export class ErrorBoundary extends Component<Props, State> {
     hasError: false
   };
 
-  public static getDerivedStateFromError(_: Error): State {
-    return { hasError: true };
+  public static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error };
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Uncaught error:', error, errorInfo);
+    
+    // Log to Sentry
+    setContext('componentStack', { componentStack: errorInfo.componentStack });
+    captureException(error, {
+      tags: {
+        component: this.constructor.name,
+        fatal: 'true'
+      },
+      extra: {
+        componentStack: errorInfo.componentStack,
+      }
+    });
   }
 
   public render() {
@@ -34,7 +48,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <p className="text-slate-500 text-sm mb-8 leading-relaxed">
               Synthesizing legal intelligence encountered an unexpected variance. Please refresh the interface to re-initialize the workspace.
             </p>
-            <button 
+            <button
               onClick={() => window.location.reload()}
               className="w-full py-4 bg-legal-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-legal-gold hover:text-legal-900 transition-all shadow-xl"
             >

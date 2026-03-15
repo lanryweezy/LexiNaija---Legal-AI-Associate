@@ -152,6 +152,39 @@ export const Docket: React.FC = () => {
                 <Sparkles size={16} className={generatingBrief ? "animate-pulse text-legal-gold" : "text-legal-gold"} />
                 {generatingBrief ? "Generating Brief..." : "Daily Brief"}
             </button>
+            <div className="relative">
+                <input 
+                    type="file" 
+                    id="scanner-input"
+                    className="hidden" 
+                    accept="image/*,application/pdf"
+                    onChange={(e) => {
+                        if (e.target.files?.[0]) {
+                            // Simulate OCR Processing
+                            const file = e.target.files[0];
+                            setTimeout(() => {
+                                const newScanTask = {
+                                    id: Date.now().toString(),
+                                    title: `Process Scanned Doc: ${file.name}`,
+                                    dueDate: new Date(),
+                                    priority: 'High' as const,
+                                    status: 'Pending' as const,
+                                    caseId: ''
+                                };
+                                addTask(newScanTask);
+                                alert(`OCR Complete: Document "${file.name}" scanned and added to docket.`);
+                            }, 1500);
+                        }
+                    }}
+                />
+                <label 
+                    htmlFor="scanner-input"
+                    className="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-50 flex items-center gap-2 text-sm font-medium shadow-sm cursor-pointer transition-all"
+                >
+                    <FileOutput size={16} className="text-legal-900" />
+                    Scan Doc (OCR)
+                </label>
+            </div>
             <button 
                 onClick={() => setShowModal(true)}
                 className="bg-legal-900 text-white px-4 py-2 rounded-lg hover:bg-legal-800 flex items-center gap-2 text-sm font-medium shadow-sm"

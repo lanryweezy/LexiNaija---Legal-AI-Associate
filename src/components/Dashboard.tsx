@@ -46,6 +46,26 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* Statute Barred Alert Widget */}
+        {cases.some(c => c.limitationDate && new Date(c.limitationDate) < new Date(new Date().setDate(new Date().getDate() + 90))) && (
+            <div className="bg-rose-50 p-6 rounded-[24px] shadow-sm border border-rose-100 md:col-span-3 flex items-center justify-between animate-pulse">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center text-rose-600 shrink-0">
+                        <AlertCircle size={24} />
+                    </div>
+                    <div>
+                        <h3 className="text-rose-900 font-black text-lg font-serif italic tracking-tight">Statute of Limitations Warning</h3>
+                        <p className="text-rose-700 text-xs font-medium">
+                            {cases.filter(c => c.limitationDate && new Date(c.limitationDate) < new Date(new Date().setDate(new Date().getDate() + 90))).length} matter(s) approaching statute bar within 90 days. Immediate action required.
+                        </p>
+                    </div>
+                </div>
+                <button onClick={() => onNavigate('CASES')} className="bg-rose-600 text-white px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-700 transition-colors shadow-lg shadow-rose-600/20">
+                    Review Docket
+                </button>
+            </div>
+        )}
+
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-500 font-medium text-sm">Active Matters</h3>

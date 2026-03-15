@@ -427,7 +427,6 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   useEffect(() => { localStorage.setItem('lexinaija_cases', JSON.stringify(cases)); }, [cases]);
   useEffect(() => { localStorage.setItem('lexinaija_invoices', JSON.stringify(invoices)); }, [invoices]);
   useEffect(() => { localStorage.setItem('lexinaija_tasks', JSON.stringify(tasks)); }, [tasks]);
-  useEffect(() => { localStorage.setItem('lexinaija_tasks', JSON.stringify(tasks)); }, [tasks]);
   useEffect(() => { localStorage.setItem('lexinaija_auditLog', JSON.stringify(auditLog)); }, [auditLog]);
   useEffect(() => { localStorage.setItem('lexinaija_knowledgeItems', JSON.stringify(knowledgeItems)); }, [knowledgeItems]);
 

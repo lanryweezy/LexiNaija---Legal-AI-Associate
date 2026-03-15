@@ -39,7 +39,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,#fff,transparent_80%)] opacity-50"></div>
       </div>
       {/* Navigation */}
-      <nav className={`fixed top-0 w-full z-[100] transition-all duration-500 ${scrolled ? 'bg-white/90 backdrop-blur-xl shadow-sm py-4' : 'bg-transparent py-6'}`}>
+      <nav className="fixed top-0 w-full z-[100] bg-white shadow-sm py-4">
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-legal-900 rounded-xl flex items-center justify-center shadow-lg">
@@ -57,7 +57,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               onClick={onGetStarted}
               className="px-8 py-4 bg-legal-900 text-white rounded-full text-[10px] font-black uppercase tracking-[.2em] shadow-[0_10px_40px_-10px_rgba(26,35,46,0.5)] hover:bg-legal-gold hover:text-legal-900 transition-all active:scale-95 flex items-center gap-2 group"
             >
-              Access System <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              Login <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
         </div>
@@ -69,23 +69,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left Content */}
             <div className="relative z-10">
-              <div className="inline-flex items-center gap-3 px-4 py-2 bg-white rounded-full border border-slate-200 shadow-sm mb-8 animate-in slide-in-from-bottom flex-wrap">
-                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-legal-gold/20 text-legal-gold">
-                  <Zap size={12} className="animate-pulse" />
-                </span>
-                <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">LexiNaija Pro OS is Live</span>
-                <div className="w-px h-3 bg-slate-300 mx-2 hidden sm:block"></div>
-                <span className="text-[10px] font-bold text-legal-gold uppercase tracking-widest hidden sm:inline">Agentic capabilities engaged</span>
-              </div>
               
               <h1 className="text-6xl md:text-7xl lg:text-[90px] font-serif font-black text-legal-900 leading-[0.9] tracking-tighter mb-8 animate-in slide-in-from-bottom delay-100">
-                Stop <span className="text-legal-gold italic">Drafting.</span><br />
-                Start <span className="text-legal-900">Streaming.</span><br />
-                The Premier OS.
+                The AI associate<br />
+                <span className="text-legal-gold italic">For Your Chambers.</span>
               </h1>
               
               <p className="text-lg md:text-xl text-slate-500 font-medium leading-relaxed max-w-lg mb-10 animate-in slide-in-from-bottom delay-200">
-                The first **Streaming-First AI Associate** for the Nigerian Bar. Engineered for 5,000+ practitioners, featuring institutional drafting, CAMA 2020 compliance, and immutable Evidence Act audit logs.
+                LexiNaija is the hyper-intelligent associate suite designed specifically for the Nigerian legal landscape. Automate research, draft high-fidelity briefs, and manage your practice with institutional precision.
               </p>
               
               <div className="flex flex-col sm:flex-row items-center gap-6 animate-in slide-in-from-bottom delay-300">
@@ -93,7 +84,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                   onClick={onGetStarted}
                   className="w-full sm:w-auto px-10 py-5 bg-legal-900 text-white rounded-full font-black uppercase tracking-[.2em] text-[11px] shadow-2xl hover:bg-legal-gold hover:text-legal-900 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-4"
                 >
-                  Deploy AI Associate
+                  Get Started
                 </button>
                 <button className="w-full sm:w-auto px-10 py-5 bg-white text-legal-900 border border-slate-200 rounded-full font-black uppercase tracking-[.2em] text-[11px] hover:border-legal-900 transition-all flex items-center justify-center gap-3 group">
                   <Play size={14} className="group-hover:text-legal-gold transition-colors" /> Watch Demo
@@ -168,139 +159,79 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         </div>
       </section>
 
-      {/* Bento Grid Features */}
+      {/* Features Section */}
       <section id="features" className="py-32 px-6 bg-slate-50 relative">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-2xl mx-auto mb-20">
-            <span className="text-[10px] font-black text-legal-gold uppercase tracking-widest px-4 py-1 border border-legal-gold/30 rounded-full bg-legal-gold/5 mb-6 inline-block">App Capabilities</span>
-            <h2 className="text-4xl md:text-5xl font-serif font-black text-legal-900 italic tracking-tighter leading-tight">Everything a modern firm needs, integrated into one core.</h2>
+            <span className="text-[10px] font-black text-legal-gold uppercase tracking-widest px-4 py-1 border border-legal-gold/30 rounded-full bg-legal-gold/5 mb-6 inline-block">AI Legal Associate</span>
+            <h2 className="text-4xl md:text-5xl font-serif font-black text-legal-900 italic tracking-tighter leading-tight">Built for your Chambers.</h2>
+            <p className="text-slate-500 mt-4 font-medium">Simple tools to manage every part of your legal practice.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Bento Item 1 */}
-            <div className="md:col-span-2 bg-white rounded-[40px] p-10 border border-slate-100 shadow-sm relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-br from-legal-900/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <div className="relative z-10 w-full md:w-2/3">
-                <div className="w-14 h-14 bg-legal-gold/10 text-legal-gold rounded-2xl flex items-center justify-center mb-6">
-                  <PenTool size={24} />
-                </div>
-                <h3 className="text-3xl font-serif font-black text-legal-900 mb-4 tracking-tight italic">Drafting Protocol Pro</h3>
-                <p className="text-slate-500 leading-relaxed font-medium mb-8">Deploy ultra-high-fidelity court processes, from Originating Summons to complex Interrogatories. Our engine adapts to current NLS standards and High Court rules in real-time.</p>
-                <button className="text-[10px] font-black uppercase tracking-widest text-legal-900 flex items-center gap-2 group/btn">
-                  View Drafting Suite <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
-                </button>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Feature 1: Legal Research */}
+            <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+              <div className="w-12 h-12 bg-legal-gold/10 text-legal-gold rounded-2xl flex items-center justify-center mb-6">
+                <Scale size={20} />
               </div>
-              <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=800" alt="Office" className="hidden md:block absolute right-0 bottom-0 w-1/2 object-cover rounded-tl-[40px] border-t-8 border-l-8 border-white shadow-2xl translate-y-8 translate-x-8 group-hover:translate-y-4 transition-transform duration-700 h-full" />
+              <h3 className="text-xl font-serif font-black text-legal-900 mb-3 italic">Legal Research</h3>
+              <p className="text-sm text-slate-500 leading-relaxed font-medium">Access deep insights on the Evidence Act, CAMA 2020, and Supreme Court rulings instantly.</p>
             </div>
 
-            {/* Bento Item 2 */}
-            <div className="bg-legal-900 rounded-[40px] p-10 text-white relative overflow-hidden group">
-              <div className="w-14 h-14 bg-white/10 text-legal-gold rounded-2xl flex items-center justify-center mb-6 border border-white/10">
-                <Scale size={24} />
+            {/* Feature 2: Smart Drafter */}
+            <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+              <div className="w-12 h-12 bg-legal-gold/10 text-legal-gold rounded-2xl flex items-center justify-center mb-6">
+                <PenTool size={20} />
               </div>
-              <h3 className="text-3xl font-serif font-black mb-4 tracking-tight italic">Sovereign Research</h3>
-              <p className="text-slate-400 leading-relaxed font-medium mb-8">Perform nuanced research across the Evidence Act 2011, CAMA 2020, and a deep repository of Supreme Court Rulings. Find the winning ratio instantly.</p>
-              <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-legal-gold opacity-20 blur-[50px]"></div>
+              <h3 className="text-xl font-serif font-black text-legal-900 mb-3 italic">Smart Drafter</h3>
+              <p className="text-sm text-slate-500 leading-relaxed font-medium">Generate high-fidelity contracts, tenancy agreements, and court processes in seconds.</p>
             </div>
 
-            {/* Bento Item 3 */}
-            <div className="bg-slate-200 rounded-[40px] p-10 relative overflow-hidden group">
-              <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=600" alt="Meeting" className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-40 group-hover:scale-110 transition-transform duration-1000" />
-              <div className="relative z-10">
-                <div className="w-14 h-14 bg-white text-legal-900 rounded-2xl flex items-center justify-center mb-6 shadow-xl">
-                  <CheckCircle2 size={24} />
-                </div>
-                <h3 className="text-3xl font-serif font-black text-legal-900 mb-4 tracking-tight italic">Conflict Shield</h3>
-                <p className="text-legal-900/70 font-bold leading-relaxed">Instant scan across adverse parties to protect your firm's professional integrity.</p>
+            {/* Feature 3: Brief Generator */}
+            <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+              <div className="w-12 h-12 bg-legal-gold/10 text-legal-gold rounded-2xl flex items-center justify-center mb-6">
+                <FileText size={20} />
               </div>
+              <h3 className="text-xl font-serif font-black text-legal-900 mb-3 italic">Brief Generator</h3>
+              <p className="text-sm text-slate-500 leading-relaxed font-medium">Transform complex facts into structured IRAC-style briefs for superior court appearances.</p>
             </div>
 
-            {/* Bento Item 4 */}
-            <div className="md:col-span-2 bg-white rounded-[40px] p-10 border border-slate-100 shadow-sm relative overflow-hidden">
-               <div className="flex flex-col md:flex-row gap-10 items-center h-full">
-                  <div className="flex-1">
-                    <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-6">
-                      <FileText size={24} />
-                    </div>
-                    <h3 className="text-3xl font-serif font-black text-legal-900 mb-4 tracking-tight italic">Automated Billing</h3>
-                    <p className="text-slate-500 leading-relaxed font-medium">Generate LPRO compliant Fee Notes instantly, track retainers, and calculate your firm's total active revenue.</p>
-                  </div>
-                  <div className="flex-1 w-full bg-slate-50 rounded-[30px] p-6 border border-slate-100">
-                     <div className="space-y-4">
-                        {[1, 2].map(i => (
-                          <div key={i} className="flex items-center justify-between p-4 bg-white rounded-2xl shadow-sm border border-slate-50">
-                             <div>
-                               <div className="w-20 h-2 bg-slate-200 rounded-full mb-2"></div>
-                               <div className="w-12 h-2 bg-slate-100 rounded-full"></div>
-                             </div>
-                             <div className="text-emerald-500 font-black">₦{i * 150},000</div>
-                          </div>
-                        ))}
-                     </div>
-                   </div>
+            {/* Feature 4: Conflict Check */}
+            <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+              <div className="w-12 h-12 bg-legal-gold/10 text-legal-gold rounded-2xl flex items-center justify-center mb-6">
+                <ShieldCheck size={20} />
+              </div>
+              <h3 className="text-xl font-serif font-black text-legal-900 mb-3 italic">Conflict Check</h3>
+              <p className="text-sm text-slate-500 leading-relaxed font-medium">Automated institutional scanning to identify potential conflicts of interest across your entire vault.</p>
+            </div>
+
+            {/* Minor Features Grid */}
+            <div className="lg:col-span-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {[
+                { title: "DOCKET SYNC", icon: <Share2 size={16} /> },
+                { title: "Court Diary", icon: <Calendar size={16} /> },
+                { title: "COLLABORATION", icon: <MessageSquare size={16} /> },
+                { title: "Client Portal", icon: <Archive size={16} /> },
+                { title: "VAULT STORAGE", icon: <Zap size={16} /> },
+                { title: "Evidence Locker", icon: <CheckCircle2 size={16} /> }
+              ].map((f, i) => (
+                <div key={i} className="bg-slate-100 p-6 rounded-3xl border border-slate-200 flex flex-col items-center text-center gap-3 group hover:bg-white hover:border-legal-gold/30 hover:shadow-md transition-all">
+                  <div className="text-legal-900 group-hover:text-legal-gold transition-colors">{f.icon}</div>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-slate-600">{f.title}</span>
                 </div>
-             </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Trust & Security Section */}
-      <section className="py-32 px-6 bg-slate-900 text-white overflow-hidden relative">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <div>
-              <span className="text-[10px] font-black text-legal-gold uppercase tracking-[.3em] mb-6 inline-block">Sovereign Compliance</span>
-              <h2 className="text-4xl md:text-6xl font-serif font-black mb-8 leading-tight italic">Institutional Grade Security for the Nigerian Bar.</h2>
-              
-              <div className="space-y-8">
-                <div className="flex gap-6">
-                   <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-                      <ShieldCheck className="text-legal-gold" />
-                   </div>
-                   <div>
-                      <h4 className="text-xl font-bold mb-2">Immutable Audit Integrity</h4>
-                      <p className="text-slate-400 text-sm leading-relaxed">Cryptographically signed logs compliant with Section 84 of the Evidence Act 2011 for judicial admissibility.</p>
-                   </div>
-                </div>
-                <div className="flex gap-6">
-                   <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-                      <Archive className="text-legal-gold" />
-                   </div>
-                   <div>
-                      <h4 className="text-xl font-bold mb-2">SCUML Reporting Readiness</h4>
-                      <p className="text-slate-400 text-sm leading-relaxed">Automated tracking of high-value transactions to simplify your AML/KYC compliance obligations.</p>
-                   </div>
-                </div>
-                <div className="flex gap-6">
-                   <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-                      <Zap className="text-legal-gold" />
-                   </div>
-                   <div>
-                      <h4 className="text-xl font-bold mb-2">Agentic Legal Reasoning</h4>
-                      <p className="text-slate-400 text-sm leading-relaxed">Go beyond simple chatbots. Our digital associates perform autonomous cross-referencing against CAMA 2020 and Supreme Court precedents.</p>
-                   </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="relative">
-               <div className="absolute inset-0 bg-legal-gold/20 blur-[120px]"></div>
-               <img 
-                 src="file:///C:/Users/USER/.gemini/antigravity/brain/ded6e2a8-4e02-4241-b662-cc14fb24817f/secure_legal_vault_abstract_1773488579668.png" 
-                 alt="LexiNaija Secure Vault" 
-                 className="relative z-10 rounded-[40px] border border-white/10 shadow-3xl"
-               />
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Pricing Section */}
       <section id="pricing" className="py-32 px-6 bg-white relative">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-2xl mx-auto mb-20">
-            <span className="text-[10px] font-black text-legal-gold uppercase tracking-[.3em] mb-6 inline-block">Institutional Pricing</span>
-            <h2 className="text-4xl md:text-5xl font-serif font-black text-legal-900 italic tracking-tighter leading-tight">Scale your practice with precision.</h2>
+            <span className="text-[10px] font-black text-legal-gold uppercase tracking-[.3em] mb-6 inline-block">AI Legal Associate</span>
+            <h2 className="text-4xl md:text-5xl font-serif font-black text-legal-900 italic tracking-tighter leading-tight">Choose a plan that fits your chambers.</h2>
             <p className="text-slate-500 mt-6 font-medium">Choose the tier that matches your firm's ambition.</p>
           </div>
 
@@ -373,7 +304,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
             {/* Enterprise Tier */}
             <div className="bg-slate-50 rounded-[40px] p-10 border border-slate-100 flex flex-col group hover:bg-white hover:shadow-2xl transition-all duration-500">
                <div className="mb-8">
-                  <h3 className="text-xl font-serif font-black text-legal-900 mb-2">Firm/Enterprise</h3>
+                  <h3 className="text-xl font-serif font-black text-legal-900 mb-2">Chambers AI</h3>
                   <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">For SAN Chambers</p>
                </div>
                <div className="mb-8">
@@ -427,7 +358,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               onClick={onGetStarted}
               className="w-full sm:w-auto px-12 py-6 bg-legal-gold text-legal-900 rounded-full font-black uppercase tracking-[.2em] shadow-2xl shadow-legal-gold/20 hover:bg-white hover:-translate-y-1 transition-all active:scale-95"
             >
-              Get Started Now
+              Register now
             </button>
             <button 
               className="w-full sm:w-auto px-12 py-6 bg-white/10 text-white border border-white/20 rounded-full font-black uppercase tracking-[.2em] hover:bg-white/20 transition-all font-medium"

@@ -1,21 +1,38 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+/**
+ * Gemini Core Service - Server-side primary
+ * This service now routes through the serverless API for security.
+ * Direct client-side calls are disabled for production safety.
+ */
 
-const apiKey = (import.meta as any).env.VITE_GEMINI_API_KEY;
-if (!apiKey) {
-  throw new Error("VITE_GEMINI_API_KEY is not set in the environment variables");
-}
-const genAI = new GoogleGenerativeAI(apiKey);
-
-const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+const API_ENDPOINT = '/api/ai';
 
 export async function runGemini(prompt: string): Promise<string> {
   try {
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = await response.text();
-    return text;
+    const response = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        prompt, 
+        provider: 'gemini' 
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      
+      if (response.status === 429) {
+        throw new Error('Rate limit exceeded. Please try again later.');
+      }
+      
+      throw error; // Rethrow to allow orchestrator to handle failover
+    }
+
+    const data = await response.json();
+    return data.result || '';
   } catch (error) {
-    console.error("Gemini Core Error:", error);
+    console.error("Gemini API Error:", error);
     throw error; // Rethrow to allow orchestrator to handle failover
   }
 }

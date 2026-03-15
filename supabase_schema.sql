@@ -195,6 +195,12 @@ CREATE TABLE service_of_process (
   notes TEXT
 );
 
+-- 6. AI Vector Search (pgvector)
+-- EXTENSION: vector
+-- CREATE EXTENSION IF NOT EXISTS vector;
+-- ALTER TABLE knowledge_items ADD COLUMN embedding vector(1536);
+-- CREATE INDEX ON knowledge_items USING hnsw (embedding vector_cosine_ops);
+
 -- 14. Master Audit Log (Evidence Act Sec 84 Compliance)
 -- Immutable trail of data entry/modifications
 CREATE TABLE audit_logs (

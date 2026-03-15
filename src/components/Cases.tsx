@@ -348,12 +348,26 @@ export const Cases: React.FC = () => {
 
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Limitation / Next Appearance</label>
-                <input 
-                  type="date" 
-                  value={formData.nextHearing}
-                  className="w-full border border-slate-200 p-4 rounded-2xl bg-white text-sm font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm" 
-                  onChange={e => setFormData({...formData, nextHearing: e.target.value})} 
-                />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <span className="block text-[9px] font-bold text-slate-300 uppercase mb-2">Next Hearing</span>
+                    <input 
+                      type="date" 
+                      value={formData.nextHearing}
+                      className="w-full border border-slate-200 p-4 rounded-2xl bg-white text-sm font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm" 
+                      onChange={e => setFormData({...formData, nextHearing: e.target.value})} 
+                    />
+                  </div>
+                  <div>
+                    <span className="block text-[9px] font-bold text-slate-300 uppercase mb-2 text-rose-300">Statute Bar Date</span>
+                    <input 
+                      type="date" 
+                      value={formData.limitationDate}
+                      className="w-full border border-rose-100 p-4 rounded-2xl bg-rose-50/50 text-sm font-bold text-rose-900 focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 outline-none transition-all shadow-sm" 
+                      onChange={e => setFormData({...formData, limitationDate: e.target.value})} 
+                    />
+                  </div>
+                </div>
               </div>
 
               <div>

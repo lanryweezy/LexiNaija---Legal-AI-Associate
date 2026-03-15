@@ -20,6 +20,26 @@ export const Billing: React.FC = () => {
     finalDescription: ''
   });
 
+  const [showLproCalc, setShowLproCalc] = useState(false);
+  const [lproInput, setLproInput] = useState({ value: '', scale: '10' });
+  const [lproResult, setLproResult] = useState<number | null>(null);
+
+  const calculateLpro = () => {
+      const val = parseFloat(lproInput.value);
+      if (val) {
+          const fee = val * (parseFloat(lproInput.scale) / 100);
+          setLproResult(fee);
+      }
+  };
+
+  const applyLpro = () => {
+      if (lproResult) {
+          setNewInvoice(prev => ({ ...prev, amount: lproResult.toString() }));
+          setShowLproCalc(false);
+          showToast("LPRO Statutory Fee applied.", "success");
+      }
+  };
+
   const handleAiRefine = async () => {
     if (!newInvoice.rawDescription) return;
     if (!consumeCredits(1)) {
@@ -257,13 +277,75 @@ export const Billing: React.FC = () => {
 
               <div>
                 <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Professional Fees Minimum (₦)</label>
-                <input 
-                  type="number" 
-                  className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl text-2xl font-mono text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all" 
-                  placeholder="0.00" 
-                  onChange={e => setNewInvoice({...newInvoice, amount: e.target.value})} 
-                />
+                <div className="relative">
+                    <input 
+                    type="number" 
+                    className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl text-2xl font-mono text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all" 
+                    placeholder="0.00" 
+                    value={newInvoice.amount}
+                    onChange={e => setNewInvoice({...newInvoice, amount: e.target.value})} 
+                    />
+                    <button 
+                        onClick={() => setShowLproCalc(true)}
+                        className="absolute right-2 top-2 bottom-2 px-4 bg-legal-900 text-legal-gold rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-legal-gold hover:text-legal-900 transition-all flex items-center gap-2"
+                    >
+                        <Sparkles size={14} /> LPRO Scale
+                    </button>
+                </div>
               </div>
+
+              {showLproCalc && (
+                  <div className="bg-slate-900 p-6 rounded-3xl border border-legal-800 animate-in zoom-in-95">
+                      <div className="flex justify-between items-center mb-6">
+                        <h4 className="text-legal-gold font-serif font-black italic text-lg tracking-tight">LPRO 2023 Statutory Calculator</h4>
+                        <button onClick={() => setShowLproCalc(false)} className="text-white/40 hover:text-white"><X size={18}/></button>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4 mb-6">
+                          <div>
+                              <label className="block text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2">Transaction Value (₦)</label>
+                              <input 
+                                type="number" 
+                                value={lproInput.value}
+                                onChange={e => setLproInput({...lproInput, value: e.target.value})}
+                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white font-mono focus:border-legal-gold outline-none"
+                                placeholder="Value..."
+                              />
+                          </div>
+                          <div>
+                              <label className="block text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2">Scale Type</label>
+                              <select 
+                                value={lproInput.scale}
+                                onChange={e => setLproInput({...lproInput, scale: e.target.value})}
+                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white text-xs font-bold outline-none cursor-pointer"
+                              >
+                                  <option value="10" className="text-legal-900">Standard Conveyance (10%)</option>
+                                  <option value="15" className="text-legal-900">Private Agreement (15%)</option>
+                                  <option value="7.5" className="text-legal-900">Mortgage/Lease (7.5%)</option>
+                              </select>
+                          </div>
+                      </div>
+                      <button 
+                        onClick={calculateLpro}
+                        className="w-full bg-legal-gold text-legal-900 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest mb-4"
+                      >
+                        Calculate Statutory Quantum
+                      </button>
+                      {lproResult !== null && (
+                          <div className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-2xl">
+                              <div>
+                                  <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Statutory Fee</p>
+                                  <p className="text-xl font-black text-white italic tracking-tight">₦{lproResult.toLocaleString()}</p>
+                              </div>
+                              <button 
+                                onClick={applyLpro}
+                                className="px-6 py-2 bg-emerald-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-600 transition-all"
+                              >
+                                Apply to Invoice
+                              </button>
+                          </div>
+                      )}
+                  </div>
+              )}
 
               <div>
                 <div className="flex justify-between items-center mb-3">

@@ -27,3 +27,23 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# Personal folders (not for repository)
+cac document/
+Entertainment law/
+G.M IBRU/
+LAW SCHOOL/
+
+# Testing
+coverage/
+*.lcov
+.nyc_output/
+
+# Vercel
+.vercel
+
+# Sentry
+.sentryclirc
+
+# OS
+Thumbs.db

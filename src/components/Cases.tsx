@@ -5,7 +5,7 @@ import { Case, BillableItem } from '../types';
 import { ConfirmModal } from './ConfirmModal';
 
 export const Cases: React.FC = () => {
-  const { cases, clients, addCase, updateCase, deleteCase, addBillableItem } = useLegalStore();
+  const { cases, clients, addCase, updateCase, deleteCase, addBillableItem, loadMoreCases, hasMoreCases, isLoadingMore } = useLegalStore();
   const [showModal, setShowModal] = useState(false);
   const [showFeeModal, setShowFeeModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -241,6 +241,23 @@ export const Cases: React.FC = () => {
             {searchQuery && <button onClick={() => setSearchQuery('')} className="text-[10px] font-black uppercase tracking-widest text-legal-gold mt-4 hover:opacity-80 transition-opacity">Clear Search Filters</button>}
           </div>
         )}
+
+        {hasMoreCases && !searchQuery && (
+            <div className="flex justify-center py-12">
+                <button 
+                    onClick={loadMoreCases}
+                    disabled={isLoadingMore}
+                    className="group flex flex-col items-center gap-4 text-slate-400 hover:text-legal-900 transition-all"
+                >
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border border-slate-100 bg-white shadow-sm group-hover:shadow-md group-hover:border-legal-gold transition-all ${isLoadingMore ? 'animate-spin' : ''}`}>
+                        <Plus size={20} className={isLoadingMore ? 'opacity-20' : ''} />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em]">
+                        {isLoadingMore ? 'Accessing Archive...' : 'Load More Matters'}
+                    </span>
+                </button>
+            </div>
+        )}
       </div>
 
       {showModal && (
@@ -331,12 +348,26 @@ export const Cases: React.FC = () => {
 
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Limitation / Next Appearance</label>
-                <input 
-                  type="date" 
-                  value={formData.nextHearing}
-                  className="w-full border border-slate-200 p-4 rounded-2xl bg-white text-sm font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm" 
-                  onChange={e => setFormData({...formData, nextHearing: e.target.value})} 
-                />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <span className="block text-[9px] font-bold text-slate-300 uppercase mb-2">Next Hearing</span>
+                    <input 
+                      type="date" 
+                      value={formData.nextHearing}
+                      className="w-full border border-slate-200 p-4 rounded-2xl bg-white text-sm font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm" 
+                      onChange={e => setFormData({...formData, nextHearing: e.target.value})} 
+                    />
+                  </div>
+                  <div>
+                    <span className="block text-[9px] font-bold text-slate-300 uppercase mb-2 text-rose-300">Statute Bar Date</span>
+                    <input 
+                      type="date" 
+                      value={formData.limitationDate}
+                      className="w-full border border-rose-100 p-4 rounded-2xl bg-rose-50/50 text-sm font-bold text-rose-900 focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 outline-none transition-all shadow-sm" 
+                      onChange={e => setFormData({...formData, limitationDate: e.target.value})} 
+                    />
+                  </div>
+                </div>
               </div>
 
               <div>

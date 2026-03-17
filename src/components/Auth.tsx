@@ -22,18 +22,32 @@ export const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
       if (isSignUp) {
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        showToast("Authorization link dispatched. Check your mailbox.", "success");
+        showToast("Verification mail sent. Check your email.", "success");
         onAuthSuccess?.();
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        showToast("Identity verified. Welcome back, Counsel.", "success");
+        showToast("Logged in successfully. Welcome back!", "success");
         onAuthSuccess?.();
       }
     } catch (error: any) {
       showToast(error.message, "error");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSSO = async (provider: 'google' | 'azure') => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+      if (error) throw error;
+    } catch (error: any) {
+      showToast(error.message, "error");
     }
   };
 
@@ -48,13 +62,13 @@ export const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
           </div>
           <h2 className="text-4xl font-serif font-black text-legal-900 italic tracking-tighter">LexiNaija</h2>
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-3">
-            {isSignUp ? 'Initialize Chambers Workspace' : 'Secure Practitioner Gateway'}
+            {isSignUp ? 'Create New Account' : 'Login to your account'}
           </p>
         </div>
 
         <form onSubmit={handleAuth} className="space-y-6">
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2">Digital Identification (Email)</label>
+            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2">Email Address</label>
             <div className="relative group">
               <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-200 group-focus-within:text-legal-gold transition-colors" size={20} />
               <input
@@ -63,13 +77,13 @@ export const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-14 pr-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-legal-900 focus:bg-white focus:ring-4 focus:ring-legal-gold/5 outline-none transition-all placeholder-slate-300"
-                placeholder="counsel@firm.com"
+                placeholder="yourname@example.com"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2">Access Cipher (Password)</label>
+            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2">Password</label>
             <div className="relative group">
               <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-200 group-focus-within:text-legal-gold transition-colors" size={20} />
               <input
@@ -89,9 +103,24 @@ export const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
             className="group w-full bg-legal-900 text-white py-5 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-2xl shadow-legal-900/20 hover:bg-legal-gold hover:text-legal-900 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
           >
             {loading ? <Loader2 className="animate-spin" size={20} /> : <Sparkles size={18} className="group-hover:scale-110 transition-transform" />}
-            {loading ? 'Authenticating...' : isSignUp ? 'Initialize AI Workspace' : 'Authorize Session'}
+            {loading ? 'Processing...' : isSignUp ? 'Create Account' : 'Login'}
           </button>
         </form>
+
+        <div className="my-8 flex items-center gap-4">
+          <div className="h-px flex-1 bg-slate-100"></div>
+          <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Normal SSO</span>
+          <div className="h-px flex-1 bg-slate-100"></div>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          <button 
+            onClick={() => handleSSO('google')}
+            className="flex items-center justify-center gap-3 py-4 bg-slate-50 border border-slate-100 rounded-2xl hover:bg-white transition-all text-[10px] font-black uppercase tracking-widest text-slate-600 w-full"
+          >
+            Launch with SSO
+          </button>
+        </div>
 
         <div className="mt-10 text-center">
           <button
@@ -99,9 +128,9 @@ export const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
             className="text-[10px] font-black text-slate-400 hover:text-legal-gold uppercase tracking-widest transition-colors flex items-center justify-center gap-2 mx-auto"
           >
             {isSignUp ? (
-              <>Already Registered? <span className="text-legal-900">Authorize Login</span></>
+              <>Have an account? <span className="text-legal-900">Login</span></>
             ) : (
-              <>New Practitioner? <span className="text-legal-900">Register Chambers</span></>
+              <>New to LexiNaija? <span className="text-legal-900">Register now</span></>
             )}
           </button>
         </div>

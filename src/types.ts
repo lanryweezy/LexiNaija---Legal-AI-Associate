@@ -60,11 +60,7 @@ export interface Client {
   phone: string;
   address: string;
   dateAdded: Date;
-  // KYC/AML Compliance Fields
   rcNumber?: string; // Corporate Registration (CAMA 2020)
-  tin?: string; // Tax Identification Number (FIRS)
-  idType?: 'BVN' | 'NIN' | 'International Passport' | 'Drivers License';
-  idNumber?: string; // Identification document number
   retainerRef?: string; // Reference to signed retainer/engagement letter
   conflictCleared?: boolean; // Confirms conflict check was performed
 }
@@ -106,6 +102,7 @@ export interface EvidenceItem {
   evidenceClass?: 'Primary' | 'Secondary'; // Sections 85-89 Evidence Act 2011
   custodyChain?: CustodyEvent[]; // Chain-of-custody log
   requiresS84Certificate?: boolean; // Section 84 Evidence Act 2011 (electronic evidence)
+  s84CertificateId?: string; // Link to generated Certificate of Compliance
 }
 
 export interface Case {
@@ -145,6 +142,7 @@ export interface SavedDocument {
   createdAt: Date;
   versions?: DocumentVersion[];
   status: 'Draft' | 'Under Review' | 'Approved' | 'Signed' | 'Rejected' | 'Archived';
+  collaborators?: string[]; // User IDs of active editors
 }
 
 export interface Invoice {
@@ -163,6 +161,9 @@ export interface FirmProfile {
   email: string;
   phone: string;
   solicitorName: string;
+  firmLogoUrl?: string;
+  firmId?: string; // Unified identifier for Enterprise collaboration
+  isEnterprise?: boolean;
 }
 
 export interface LegalAnalytics {
@@ -234,4 +235,25 @@ export interface KnowledgeItem {
   sourceFile?: string;
   tags?: string[];
   dateAdded: Date;
+}
+
+export interface CaseMilestone {
+  id: string;
+  caseId: string;
+  title: string;
+  description: string;
+  status: 'pending' | 'completed' | 'overdue';
+  completedAt?: Date;
+  dueDate?: Date;
+  visibleToClient: boolean;
+  order: number;
+}
+
+export interface MilestoneTemplate {
+  caseType: string;
+  milestones: Array<{
+    title: string;
+    description: string;
+    defaultOrder: number;
+  }>;
 }

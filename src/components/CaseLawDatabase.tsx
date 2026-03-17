@@ -10,6 +10,7 @@ interface CaseLaw {
   summary: string;
   ratio: string;
   link: string;
+  status?: 'Good Law' | 'Overruled' | 'Distinguished';
 }
 
 const MOCK_CASE_LAW: CaseLaw[] = [
@@ -21,7 +22,8 @@ const MOCK_CASE_LAW: CaseLaw[] = [
     year: '2007',
     summary: 'A landmark case on the immunity of the President and Vice President and the powers of the Attorney General.',
     ratio: 'The immunity granted to the President and Vice President under Section 308 of the 1999 Constitution is absolute during their tenure.',
-    link: 'https://lawpavilion.com'
+    link: 'https://lawpavilion.com',
+    status: 'Good Law'
   },
   {
     id: '2',
@@ -31,7 +33,8 @@ const MOCK_CASE_LAW: CaseLaw[] = [
     year: '1989',
     summary: 'A leading authority on the Land Use Act and the requirement of Governor\'s consent for alienation of land.',
     ratio: 'Any alienation of land without the prior consent of the Governor as required by Section 22 of the Land Use Act is null and void.',
-    link: 'https://lawpavilion.com'
+    link: 'https://lawpavilion.com',
+    status: 'Good Law'
   },
   {
     id: '3',
@@ -41,7 +44,8 @@ const MOCK_CASE_LAW: CaseLaw[] = [
     year: '2000',
     summary: 'A case on the principles of res judicata and the finality of judgments.',
     ratio: 'Once a matter has been finally decided by a court of competent jurisdiction, the parties are estopped from litigating the same issue again.',
-    link: 'https://lawpavilion.com'
+    link: 'https://lawpavilion.com',
+    status: 'Good Law'
   }
 ];
 
@@ -50,6 +54,8 @@ export const CaseLawDatabase: React.FC = () => {
   const [results, setResults] = useState<CaseLaw[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [selectedCase, setSelectedCase] = useState<CaseLaw | null>(null);
+  const [shepardizing, setShepardizing] = useState(false);
+  const [citatorResult, setCitatorResult] = useState<any>(null);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -182,6 +188,41 @@ export const CaseLawDatabase: React.FC = () => {
                     {selectedCase.summary}
                   </p>
                 </section>
+
+                <div className="flex gap-4">
+                    <button 
+                        onClick={() => handleShepardize(selectedCase)}
+                        disabled={shepardizing}
+                        className="flex-1 bg-legal-900 text-legal-gold py-5 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-legal-gold hover:text-legal-900 transition-all flex items-center justify-center gap-3 shadow-xl disabled:opacity-50"
+                    >
+                        {shepardizing ? <Clock className="animate-spin" size={18} /> : <Scale size={18} />}
+                        {shepardizing ? 'Citator Analysis...' : 'Shepardize (Verify Status)'}
+                    </button>
+                    <a 
+                      href={selectedCase.link} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex-1 bg-slate-100 text-slate-500 py-5 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all flex items-center justify-center gap-3"
+                    >
+                        <ExternalLink size={18} /> Law Report Link
+                    </a>
+                </div>
+
+                {citatorResult && (
+                    <div className="p-8 bg-emerald-50 border border-emerald-100 rounded-[32px] animate-in fade-in slide-in-from-top-4">
+                        <div className="flex items-center gap-3 mb-4">
+                            <ShieldCheck className="text-emerald-500" size={20} />
+                            <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest italic">CITATOR VERDICT: {citatorResult.status}</span>
+                        </div>
+                        <p className="text-sm text-slate-700 leading-relaxed font-serif mb-6 italic">
+                            "{citatorResult.legalPrinciple}"
+                        </p>
+                        <div className="pt-6 border-t border-emerald-100 flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-emerald-600/60">
+                            <span>Cited By: {citatorResult.citedBy} Cases</span>
+                            <span>Latest: {citatorResult.latestFollowedBy}</span>
+                        </div>
+                    </div>
+                )}
 
                 <div className="pt-12 border-t border-slate-50 grid grid-cols-2 gap-8">
                   <div className="bg-slate-50 p-6 rounded-[32px] border border-slate-100">

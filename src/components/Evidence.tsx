@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
-import { 
-    Archive, Plus, Trash2, FileText, Image as ImageIcon, MessageSquare, Box, FileCheck, 
-    ExternalLink, Printer, Shield, X, History, Clipboard, Bookmark, ChevronRight
+import {
+    Archive, Plus, Trash2, FileText, Image as ImageIcon, MessageSquare, Box, FileCheck,
+    ExternalLink, Printer, Shield, X, History, Clipboard, Bookmark, ChevronRight, Laptop,
+    Download, CheckCircle
 } from 'lucide-react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 import { EvidenceItem } from '../types';
 import { useToast } from '../contexts/ToastContext';
 import { ConfirmModal } from './ConfirmModal';
+import { 
+    generateS84Certificate, 
+    getDeviceFingerprint, 
+    generateIntegrityHash,
+    downloadS84Certificate 
+} from '../services/s84Generator';
 
 export const Evidence: React.FC = () => {
   const { showToast } = useToast();
@@ -21,7 +28,8 @@ export const Evidence: React.FC = () => {
     isReliedUpon: true,
     custodyLocation: 'Chambers Safe',
     exhibitNumber: '',
-    evidenceClass: 'Primary'
+    evidenceClass: 'Primary',
+    requiresS84Certificate: false
   });
 
   const selectedCase = cases.find(c => c.id === selectedCaseId);
@@ -39,10 +47,11 @@ export const Evidence: React.FC = () => {
         custodyLocation: formData.custodyLocation,
         notes: formData.notes,
         exhibitNumber: formData.exhibitNumber || undefined,
-        evidenceClass: (formData.evidenceClass as 'Primary' | 'Secondary') || 'Primary'
+        evidenceClass: (formData.evidenceClass as 'Primary' | 'Secondary') || 'Primary',
+        requiresS84Certificate: formData.requiresS84Certificate
       });
       setShowModal(false);
-      setFormData({ type: 'Document', isReliedUpon: true, custodyLocation: 'Chambers Safe', description: '', notes: '', exhibitNumber: '', evidenceClass: 'Primary' });
+      setFormData({ type: 'Document', isReliedUpon: true, custodyLocation: 'Chambers Safe', description: '', notes: '', exhibitNumber: '', evidenceClass: 'Primary', requiresS84Certificate: false });
       showToast("Evidence logged to repository.", "success");
     }
   };
@@ -58,6 +67,52 @@ export const Evidence: React.FC = () => {
       showToast("Item purged from chain of custody.", "info");
       setItemToDelete(null);
     }
+  };
+
+  const handleGenerateS84Certificate = async (item: EvidenceItem) => {
+      if (!selectedCase) return;
+      const client = clients.find(c => c.id === selectedCase.clientId);
+      
+      try {
+        // Generate device fingerprint
+        const deviceDetails = getDeviceFingerprint();
+        
+        // Generate integrity hash
+        const integrityHash = await generateIntegrityHash({
+          description: item.description,
+          dateObtained: item.dateObtained,
+          type: item.type,
+          custodyLocation: item.custodyLocation || 'Unknown',
+          caseNumber: selectedCase.suitNumber
+        });
+        
+        // Generate certificate content
+        const content = generateS84Certificate(
+          item,
+          selectedCase,
+          client,
+          firmProfile,
+          deviceDetails,
+          integrityHash
+        );
+        
+        // Save to case documents
+        saveDocumentToCase(selectedCase.id, {
+          id: Date.now().toString(),
+          title: `S.84 Certificate - ${item.description.substring(0, 30)}`,
+          content: content,
+          type: 'Draft',
+          createdAt: new Date()
+        });
+        
+        // Download for convenience
+        downloadS84Certificate(content, selectedCase.title, item.description);
+        
+        showToast("S.84 Certificate generated with integrity hash. Downloading...", "success");
+      } catch (error) {
+        console.error('S.84 Generation Error:', error);
+        showToast("Failed to generate S.84 Certificate. Please try again.", "error");
+      }
   };
 
   const generateListofDocuments = () => {
@@ -240,6 +295,11 @@ C/O THEIR COUNSEL
                                                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{new Date(item.dateObtained).toLocaleDateString()}</span>
                                                     <span className="w-1 h-1 bg-slate-200 rounded-full"></span>
                                                     <span className="text-[10px] font-black text-legal-gold uppercase tracking-widest">{item.custodyLocation}</span>
+                                                    {item.requiresS84Certificate && (
+                                                        <span className="flex items-center gap-1 text-[9px] font-black text-blue-500 uppercase tracking-widest ml-2 border border-blue-100 px-2 py-0.5 rounded-full">
+                                                            <Laptop size={10} /> S.84 Required
+                                                        </span>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -253,11 +313,40 @@ C/O THEIR COUNSEL
                                     </td>
                                     <td className="px-8 py-6 text-right">
                                         <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
-                                            <button 
+                                            {item.requiresS84Certificate && (
+                                                <button
+                                                    onClick={() => handleGenerateS84Certificate(item)}
+                                                    className="p-3 text-slate-300 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-all flex items-center gap-2"
+                                                    title="Generate S.84 Certificate with Integrity Hash"
+                                                >
+                                                    <Shield size={18} />
+                                                    <span className="text-[9px] font-black uppercase tracking-widest">Generate S.84</span>
+                                                </button>
+                                            )}
+                                            <button
                                                 onClick={() => handleDeleteRequest(item.id)}
                                                 className="p-3 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                                                title="Delete Evidence"
                                             >
                                                 <Trash2 size={18} />
+                                            </button>
+                                            <button
+                                                onClick={() => downloadS84Certificate(
+                                                    generateS84Certificate(
+                                                        item,
+                                                        selectedCase!,
+                                                        clients.find(c => c.id === selectedCase!.clientId),
+                                                        firmProfile,
+                                                        getDeviceFingerprint(),
+                                                        'preview'
+                                                    ),
+                                                    selectedCase!.title,
+                                                    item.description
+                                                )}
+                                                className="p-3 text-slate-300 hover:text-legal-gold hover:bg-legal-50 rounded-xl transition-all"
+                                                title="Download Certificate"
+                                            >
+                                                <Download size={18} />
                                             </button>
                                         </div>
                                     </td>
@@ -341,6 +430,21 @@ C/O THEIR COUNSEL
                           />
                           <label htmlFor="relied" className="text-[10px] font-black text-slate-400 uppercase tracking-widest cursor-pointer">Mark for Frontloading</label>
                       </div>
+
+                      {(formData.type === 'Document' || formData.type === 'Image' || formData.type === 'Audio') && (
+                          <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl">
+                              <input 
+                                  type="checkbox" 
+                                  id="s84"
+                                  checked={formData.requiresS84Certificate}
+                                  onChange={e => setFormData({...formData, requiresS84Certificate: e.target.checked})}
+                                  className="w-5 h-5 accent-blue-500 border-slate-100 rounded-lg cursor-pointer"
+                              />
+                              <label htmlFor="s84" className="text-[10px] font-black text-slate-400 uppercase tracking-widest cursor-pointer flex items-center gap-2">
+                                  <Laptop size={12} className="text-blue-500"/> Requires S.84 Certificate (Electronic)
+                              </label>
+                          </div>
+                      )}
 
                       <div className="flex gap-4 pt-4">
                           <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-4 text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-600">Cancel</button>

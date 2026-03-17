@@ -1,5 +1,9 @@
-import React from 'react';
-import { Check, Zap, Building2, Users, ShieldCheck, CreditCard } from 'lucide-react';
+import React, { useState } from 'react';
+import { Check, Zap, Building2, Users, ShieldCheck, CreditCard, Loader2 } from 'lucide-react';
+import PaystackPop from '@paystack/inline-js';
+import { useLegalStore } from '../contexts/LegalStoreContext';
+import { useToast } from '../contexts/ToastContext';
+import { supabase } from '../services/supabaseClient';
 
 interface PricingPlan {
   name: string;
@@ -10,63 +14,112 @@ interface PricingPlan {
   cta: string;
   highlighted?: boolean;
   credits: string;
+  amount: number;
+  credits_num?: number;
 }
 
 const PLANS: PricingPlan[] = [
   {
-    name: 'Solo Practitioner',
-    price: '₦15,000',
+    name: 'Solo Practice',
+    price: '₦5,000',
     period: '/month',
-    description: 'Perfect for independent lawyers starting their digital practice.',
+    description: 'Perfect for new wigs and independent practitioners.',
     credits: '500 AI Credits',
     features: [
       'Single User Access',
       'Unlimited Case Files',
-      'Smart Contract Drafter',
+      '5 AI Drafts Per Month',
       'Basic Legal Research',
-      'PWA Mobile Installation',
+      'Cause List Generation',
       'Local Storage Sync'
     ],
-    cta: 'Start Solo'
+    cta: 'Start Solo',
+    amount: 5000,
+    credits_num: 500
   },
   {
-    name: 'Chambers Pro',
-    price: '₦45,000',
+    name: 'Professional',
+    price: '₦15,000',
     period: '/month',
-    description: 'Designed for small to medium law firms building an empire.',
-    credits: '2,000 AI Credits',
+    description: 'The standard for growing firms and active practitioners.',
+    credits: 'Unlimited AI Usage',
     highlighted: true,
     features: [
       'Up to 5 User Accounts',
-      'Real-time Collaboration',
-      'Advanced IRAC Brief Generator',
-      'Full Precedents Library',
-      'Custom Letterhead Invoicing',
+      'Unlimited AI Drafting',
+      'Deep Research Suite',
+      'Bailiff & Process Tracker',
+      'Corporate Filing Automation',
       'Priority Email Support',
       'Cloud Backup & Sync'
     ],
-    cta: 'Upgrade Chambers'
+    cta: 'Upgrade Professional',
+    amount: 15000,
+    credits_num: 999999 // Representing unlimited
   },
   {
-    name: 'Enterprise / SAN',
-    price: 'Custom',
-    period: '',
-    description: 'Scalable solutions for large firms and Senior Advocates.',
-    credits: 'Unlimited AI Usage',
+    name: 'Firm/Enterprise',
+    price: '₦100,000+',
+    period: '/month',
+    description: 'Scalable solutions for SAN chambers and large institutions.',
+    credits: 'Institutional Grade',
     features: [
       'Unlimited User Accounts',
-      'White-label Brand Portal',
-      'Dedicated Account Manager',
-      'On-premise AI Integration',
-      'Custom Document Automation',
-      '24/7 Phone Support',
-      'API Access'
+      'Multi-user Case Sync',
+      'Custom Precedent Library',
+      'Immutable Compliance Audit',
+      'Dedicated Account Liaison',
+      'High-Concurrency Architecture',
+      '24/7 Phone Support'
     ],
-    cta: 'Contact Sales'
+    cta: 'Consult Sales',
+    amount: 0
   }
 ];
 
 export const Subscription: React.FC = () => {
+  const { showToast } = useToast();
+  const [loading, setLoading] = React.useState<string | null>(null);
+
+  const handlePaystackPayment = async (plan: any) => {
+    if (plan.price === 'Custom') {
+      showToast("Enterprise protocol requires manual consultation.", "info");
+      return;
+    }
+
+    setLoading(plan.name);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        showToast("Authentication required for payment protocols.", "error");
+        return;
+      }
+
+      const paystack = new PaystackPop();
+      paystack.newTransaction({
+        key: (import.meta as any).env.VITE_PAYSTACK_PUBLIC_KEY,
+        email: session.user.email || '',
+        amount: plan.amount * 100, // in kobo
+        currency: 'NGN',
+        metadata: {
+          plan_name: plan.name,
+          credits: plan.credits_num,
+          user_id: session.user.id
+        },
+        onSuccess: (transaction: any) => {
+          showToast(`Protocol success. Transaction ${transaction.reference} verified.`, "success");
+          setLoading(null);
+        },
+        onCancel: () => {
+          showToast("Payment directive cancelled.", "info");
+          setLoading(null);
+        }
+      });
+    } catch (error: any) {
+      showToast(error.message, "error");
+      setLoading(null);
+    }
+  };
   return (
     <div className="bg-gray-50 py-12 px-6 min-h-screen">
       <div className="max-w-7xl mx-auto text-center mb-16">
@@ -117,13 +170,15 @@ export const Subscription: React.FC = () => {
             </div>
 
             <button 
-              className={`w-full py-4 rounded-xl font-bold transition-all ${
+              onClick={() => handlePaystackPayment(plan)}
+              disabled={loading !== null}
+              className={`w-full py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${
                 plan.highlighted
                   ? 'bg-legal-900 text-white hover:bg-legal-800 shadow-lg'
                   : 'bg-white border-2 border-legal-900 text-legal-900 hover:bg-legal-50'
-              }`}
+              } disabled:opacity-50`}
             >
-              {plan.cta}
+              {loading === plan.name ? <Loader2 className="animate-spin" size={20} /> : plan.cta}
             </button>
           </div>
         ))}

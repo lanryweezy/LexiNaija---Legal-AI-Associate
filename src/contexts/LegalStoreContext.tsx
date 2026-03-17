@@ -42,6 +42,11 @@ interface LegalStoreContextType {
   knowledgeItems: KnowledgeItem[];
   addKnowledgeItem: (item: KnowledgeItem) => void;
   deleteKnowledgeItem: (id: string) => void;
+  currentView: AppView;
+  setView: (view: AppView) => void;
+  loadMoreCases: () => Promise<void>;
+  hasMoreCases: boolean;
+  isLoadingMore: boolean;
 }
 
 const LegalStoreContext = createContext<LegalStoreContextType | undefined>(undefined);
@@ -157,19 +162,8 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const [activeDoc, setActiveDoc] = useState<{ caseId: string; docId: string } | null>(null);
 
-  const [creditsTotal, setCreditsTotal] = useState<number>(() => {
-    try {
-      const saved = localStorage.getItem('lexinaija_credits_total');
-      return saved ? parseInt(saved) : 1000;
-    } catch (e) { return 1000; }
-  });
-
-  const [creditsUsed, setCreditsUsed] = useState<number>(() => {
-    try {
-      const saved = localStorage.getItem('lexinaija_credits_used');
-      return saved ? parseInt(saved) : 0;
-    } catch (e) { return 0; }
-  });
+  const [creditsTotal, setCreditsTotal] = useState<number>(1000);
+  const [creditsUsed, setCreditsUsed] = useState<number>(0);
 
   const [auditLog, setAuditLog] = useState<AuditLogEntry[]>(() => {
     try {
@@ -181,6 +175,7 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [activeCaseId, setActiveCaseId] = useState<string | null>(null);
   const [activeSuggestion, setActiveSuggestion] = useState<Suggestion | null>(null);
+  const [currentView, setView] = useState<AppView>(AppView.LANDING);
 
   const [knowledgeItems, setKnowledgeItems] = useState<KnowledgeItem[]>(() => {
     try {
@@ -189,14 +184,29 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     } catch (e) { return []; }
   });
 
+  const [hasMoreCases, setHasMoreCases] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [casesPage, setCasesPage] = useState(0);
+  const PAGE_SIZE = 20;
+
   const pushToCloud = async (table: string, action: 'insert'|'update'|'delete', data: any, id?: string) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
-      if (action !== 'delete') data.user_id = session.user.id;
+      
+      if (action !== 'delete') {
+        data.user_id = session.user.id;
+        // Inject firm_id for institutional collaboration if Enterprise mode is active
+        if (firmProfile.isEnterprise && firmProfile.firmId) {
+          data.firm_id = firmProfile.firmId;
+        }
+      }
 
       if (action === 'insert') await supabase.from(table).insert([data]);
-      else if (action === 'update') await supabase.from(table).update(data).match({ id });
+      else if (action === 'update') {
+        if (table === 'profiles') await supabase.from(table).update(data).eq('id', session.user.id);
+        else await supabase.from(table).update(data).match({ id });
+      }
       else if (action === 'delete') await supabase.from(table).delete().match({ id });
     } catch (err) {
       console.warn(`Cloud sync failed for ${table}, using fallback mode.`);
@@ -310,6 +320,33 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setSuggestions(prev => prev.filter(s => s.id !== id));
   };
 
+  const loadMoreCases = async () => {
+    if (isLoadingMore || !hasMoreCases) return;
+    setIsLoadingMore(true);
+    const nextPage = casesPage + 1;
+    
+    try {
+        const from = nextPage * PAGE_SIZE;
+        const to = from + PAGE_SIZE - 1;
+        const { data } = await supabase.from('cases').select('*').range(from, to).order('created_at', { ascending: false });
+        
+        if (data) {
+            const newCases = data.map((c: any) => ({
+                id: c.id, clientId: c.client_id, title: c.title, suitNumber: c.suit_number, court: c.court, status: c.status,
+                nextHearing: c.next_hearing, notes: c.notes, opposingParty: c.opposing_party, outcome: c.outcome,
+                documents: [], billableItems: [], evidence: []
+            }));
+            setCases(prev => [...prev, ...newCases]);
+            setHasMoreCases(data.length === PAGE_SIZE);
+            setCasesPage(nextPage);
+        }
+    } catch (e) {
+        console.error('Failed to load more cases', e);
+    } finally {
+        setIsLoadingMore(false);
+    }
+  };
+
   useEffect(() => {
     const v = localStorage.getItem('lexinaija_store_version');
     if (!v) localStorage.setItem('lexinaija_store_version', STORE_VERSION);
@@ -320,12 +357,12 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         if (!session) return;
         
         const [clientsRes, casesRes, docsRes, billRes, evRes, taskRes] = await Promise.all([
-          supabase.from('clients').select('*'),
-          supabase.from('cases').select('*'),
-          supabase.from('documents').select('*, document_versions(*)'),
-          supabase.from('billable_items').select('*'),
-          supabase.from('evidence').select('*'),
-          supabase.from('tasks').select('*')
+          supabase.from('clients').select('*').limit(100).order('date_added', { ascending: false }),
+          supabase.from('cases').select('*').range(0, PAGE_SIZE - 1).order('created_at', { ascending: false }),
+          supabase.from('documents').select('*, document_versions(*)').limit(100).order('updated_at', { ascending: false }),
+          supabase.from('billable_items').select('*').limit(200).order('date', { ascending: false }),
+          supabase.from('evidence').select('*').limit(200).order('created_at', { ascending: false }),
+          supabase.from('tasks').select('*').limit(100).order('due_date', { ascending: false })
         ]);
 
         if (clientsRes.data?.length) {
@@ -335,6 +372,7 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         }
 
         if (casesRes.data?.length) {
+          setHasMoreCases(casesRes.data.length === PAGE_SIZE);
           setCases(casesRes.data.map((c: any) => {
             const caseDocs = (docsRes.data || []).filter((d: any) => d.case_id === c.id).map((d: any) => ({
               id: d.id, title: d.title, content: d.content, type: d.type, status: d.status, timestamp: new Date(d.updated_at), createdAt: new Date(d.created_at),
@@ -347,7 +385,7 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
               id: e.id, description: e.description, type: e.type, dateObtained: new Date(e.date_obtained), isReliedUpon: e.is_relied_upon, custodyLocation: e.custody_location
             }));
             return {
-              id: c.id, clientId: c.client_id, title: c.title, suit_number: c.suit_number, court: c.court, status: c.status,
+              id: c.id, clientId: c.client_id, title: c.title, suitNumber: c.suit_number, court: c.court, status: c.status,
               nextHearing: c.next_hearing, notes: c.notes, opposingParty: c.opposing_party, outcome: c.outcome,
               documents: caseDocs, billableItems: caseBills, evidence: caseEvs
             };
@@ -358,6 +396,23 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
           setTasks(taskRes.data.map((t: any) => ({
             id: t.id, title: t.title, dueDate: t.due_date ? new Date(t.due_date) : undefined, priority: t.priority, status: t.status, caseId: t.case_id
           })));
+        }
+
+        // Initialize Profile and Credits from Cloud
+        const { data: profile } = await supabase.from('profiles').select('*').single();
+        if (profile) {
+          setFirmProfile({
+            name: profile.firm_name || DEFAULT_FIRM_PROFILE.name,
+            address: profile.address || DEFAULT_FIRM_PROFILE.address,
+            email: profile.email || session.user.email || '',
+            phone: profile.phone || DEFAULT_FIRM_PROFILE.phone,
+            solicitorName: profile.solicitor_name || DEFAULT_FIRM_PROFILE.solicitorName,
+            firmLogoUrl: profile.firm_logo_url,
+            firmId: profile.firm_id,
+            isEnterprise: profile.is_enterprise
+          });
+          setCreditsTotal(profile.credits_total ?? 1000);
+          setCreditsUsed(profile.credits_used ?? 0);
         }
       } catch (e) {
         console.warn('Cloud sync failed, using LocalStorage fallback.', e);
@@ -372,24 +427,47 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   useEffect(() => { localStorage.setItem('lexinaija_cases', JSON.stringify(cases)); }, [cases]);
   useEffect(() => { localStorage.setItem('lexinaija_invoices', JSON.stringify(invoices)); }, [invoices]);
   useEffect(() => { localStorage.setItem('lexinaija_tasks', JSON.stringify(tasks)); }, [tasks]);
-  useEffect(() => { localStorage.setItem('lexinaija_credits_total', String(creditsTotal)); }, [creditsTotal]);
-  useEffect(() => { localStorage.setItem('lexinaija_credits_used', String(creditsUsed)); }, [creditsUsed]);
   useEffect(() => { localStorage.setItem('lexinaija_auditLog', JSON.stringify(auditLog)); }, [auditLog]);
   useEffect(() => { localStorage.setItem('lexinaija_knowledgeItems', JSON.stringify(knowledgeItems)); }, [knowledgeItems]);
 
   const addAuditLogEntry = (entry: Omit<AuditLogEntry, 'id' | 'timestamp'>) => {
-    setAuditLog(prevLog => [...prevLog, { id: Date.now().toString(), timestamp: new Date(), ...entry }]);
+    const newEntry: AuditLogEntry = { id: Date.now().toString(), timestamp: new Date(), ...entry };
+    setAuditLog(prevLog => [...prevLog, newEntry]);
+    pushToCloud('audit_logs', 'insert', { 
+      id: newEntry.id, 
+      event_type: newEntry.eventType, 
+      document_id: newEntry.documentId, 
+      case_id: newEntry.caseId, 
+      details: newEntry.details 
+    });
   };
 
-  const updateFirmProfile = (profile: FirmProfile) => setFirmProfile(profile);
+  const updateFirmProfile = (profile: FirmProfile) => {
+    setFirmProfile(profile);
+    pushToCloud('profiles', 'update', { 
+        firm_name: profile.name,
+        address: profile.address,
+        email: profile.email,
+        phone: profile.phone,
+        solicitor_name: profile.solicitorName,
+        firm_logo_url: profile.firmLogoUrl,
+        is_enterprise: profile.isEnterprise
+    }, '');
+  };
 
   const consumeCredits = (units: number) => {
     if (creditsUsed + units > creditsTotal) return false;
-    setCreditsUsed(creditsUsed + units);
+    const newUsed = creditsUsed + units;
+    setCreditsUsed(newUsed);
+    pushToCloud('profiles', 'update', { credits_used: newUsed }, ''); // Empty ID because RLS/auth handles single profile
     return true;
   };
 
-  const addCredits = (units: number) => setCreditsTotal(creditsTotal + units);
+  const addCredits = (units: number) => {
+    const newTotal = creditsTotal + units;
+    setCreditsTotal(newTotal);
+    pushToCloud('profiles', 'update', { credits_total: newTotal }, '');
+  };
 
   const addClient = (client: Client) => {
     setClients([...clients, client]);
@@ -417,8 +495,6 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setCases(cases.map(c => c.id === id ? { ...c, ...data } : c));
     const dbData: any = { ...data };
     if (data.clientId) dbData.client_id = data.clientId; delete dbData.clientId;
-    if (data.suitNumber) dbData.suit_number = data.suitNumber; delete dbData.suitNumber;
-    if (data.nextHearing) dbData.next_hearing = data.nextHearing; delete dbData.nextHearing;
     if (data.opposingParty) dbData.opposing_party = data.opposingParty; delete dbData.opposingParty;
     pushToCloud('cases', 'update', dbData, id);
   };
@@ -428,7 +504,18 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     pushToCloud('cases', 'delete', {}, id);
   };
 
-  const addInvoice = (invoice: Invoice) => setInvoices([...invoices, invoice]);
+  const addInvoice = (invoice: Invoice) => {
+    setInvoices([...invoices, invoice]);
+    pushToCloud('invoices', 'insert', { 
+      id: invoice.id, 
+      client_id: invoice.clientId, 
+      case_id: invoice.caseId, 
+      amount: invoice.amount, 
+      description: invoice.description, 
+      status: invoice.status, 
+      date: invoice.date 
+    });
+  };
   
   const saveDocumentToCase = (caseId: string, doc: Omit<SavedDocument, 'status'>) => {
     setCases(cases.map(c => {
@@ -597,7 +684,9 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       auditLog, addAuditLogEntry,
       suggestions,      activeCaseId, setActiveCaseId, dismissSuggestion,
       activeSuggestion, setActiveSuggestion,
-      knowledgeItems, addKnowledgeItem, deleteKnowledgeItem
+      knowledgeItems, addKnowledgeItem, deleteKnowledgeItem,
+      currentView, setView,
+      loadMoreCases, hasMoreCases, isLoadingMore
     }}>
       {children}
     </LegalStoreContext.Provider>

@@ -4,6 +4,7 @@
  */
 
 import { EvidenceItem, Case, FirmProfile, Client } from '../types';
+import jsPDF from 'jspdf';
 
 export interface S84CertificateData {
   id: string;
@@ -180,18 +181,46 @@ ${new Date().getFullYear()}
 };
 
 /**
- * Download S.84 Certificate as PDF-ready document
+ * Download S.84 Certificate as PDF
  */
 export const downloadS84Certificate = (content: string, caseTitle: string, evidenceDescription: string) => {
-  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `S.84_Certificate_${caseTitle.substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_')}_${evidenceDescription.substring(0, 20).replace(/[^a-zA-Z0-9]/g, '_')}.txt`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const margin = 20;
+  const maxLineWidth = pageWidth - margin * 2;
+
+  doc.setFont("times", "bold");
+  doc.setFontSize(12);
+
+  // Split content by new lines
+  const lines = content.split('\n');
+  let y = 20;
+
+  lines.forEach(line => {
+    if (y > 270) {
+      doc.addPage();
+      y = 20;
+    }
+
+    // Simple center alignment for headers
+    const isHeader = line.includes('IN THE') || line.includes('SUIT NO') || line.includes('BETWEEN') || line.includes('AND') || line.includes('CERTIFICATE OF COMPLIANCE');
+
+    if (isHeader) {
+      doc.setFont("times", "bold");
+      doc.text(line, pageWidth / 2, y, { align: 'center' });
+      y += 7;
+    } else if (line.trim() === '') {
+      y += 5;
+    } else {
+      doc.setFont("times", "normal");
+      const wrappedText = doc.splitTextToSize(line, maxLineWidth);
+      doc.text(wrappedText, margin, y);
+      y += (wrappedText.length * 6);
+    }
+  });
+
+  const fileName = `S.84_Certificate_${caseTitle.substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_')}_${evidenceDescription.substring(0, 20).replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+  doc.save(fileName);
 };
 
 /**

@@ -136,8 +136,9 @@ export const Research: React.FC = () => {
             </button>
             <div className="h-10 w-px bg-slate-100 mx-2"></div>
             <div className="flex flex-col items-start">
-              <label className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Background Knowledge</label>
+              <label htmlFor="context-selector" className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Background Knowledge</label>
               <select 
+                id="context-selector"
                 value={selectedContextId}
                 onChange={e => setSelectedContextId(e.target.value)}
                 className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-[10px] font-bold text-legal-900 outline-none focus:ring-2 focus:ring-legal-gold/20"
@@ -258,6 +259,7 @@ export const Research: React.FC = () => {
                         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
                     }}
                     placeholder="Specify legal query (e.g. 'Validity of oral tenancy in Lagos')..."
+                    aria-label="Legal research query"
                     className="w-full bg-slate-50 border border-slate-100 rounded-[32px] pl-8 pr-20 py-8 text-lg font-serif italic text-legal-900 focus:bg-white focus:ring-4 focus:ring-legal-gold/5 focus:border-legal-gold/20 outline-none transition-all resize-none shadow-inner placeholder-slate-300"
                     rows={1}
                 />
@@ -291,8 +293,9 @@ export const Research: React.FC = () => {
                   
                   <div className="space-y-6">
                     <div>
-                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 text-left">Matter File</label>
+                      <label htmlFor="save-matter-select" className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 text-left">Matter File</label>
                       <select 
+                          id="save-matter-select"
                           className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl font-bold text-legal-900 focus:ring-2 focus:ring-legal-gold/20 outline-none appearance-none"
                           value={selectedCase}
                           onChange={e => setSelectedCase(e.target.value)}
@@ -305,8 +308,9 @@ export const Research: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 text-left">Document Title</label>
+                      <label htmlFor="save-doc-title" className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 text-left">Document Title</label>
                       <input 
+                        id="save-doc-title"
                         type="text" 
                         className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl font-bold text-legal-900 focus:ring-2 focus:ring-legal-gold/20 outline-none"
                         value={saveTitle}

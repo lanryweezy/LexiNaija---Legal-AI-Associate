@@ -205,6 +205,7 @@ export const ClientPortal: React.FC = () => {
                                     </div>
                                     );
                                 })
+                            )}
                         </div>
                     </div>
                 </div>

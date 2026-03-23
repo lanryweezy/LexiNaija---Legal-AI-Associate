@@ -33,8 +33,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         <div className="flex flex-col items-end shrink-0">
             <div className="bg-legal-900 text-white rounded-[32px] p-1.5 flex items-center shadow-2xl ring-4 ring-legal-900/5">
                 <div className="px-6 py-3">
-                    <label className="block text-[8px] font-black text-legal-gold uppercase tracking-[0.2em] mb-1 opacity-70">Case Focus Selector</label>
+                    <label htmlFor="case-focus-selector" className="block text-[8px] font-black text-legal-gold uppercase tracking-[0.2em] mb-1 opacity-70">Case Focus Selector</label>
                     <select 
+                        id="case-focus-selector"
                         value={activeCaseId || ''} 
                         onChange={e => setActiveCaseId(e.target.value)}
                         className="bg-transparent text-sm font-black text-white outline-none cursor-pointer appearance-none min-w-[200px]"

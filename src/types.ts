@@ -26,7 +26,9 @@ export enum AppView {
   AUDIT = 'AUDIT',
   PORTAL = 'PORTAL',
   LANDING = 'LANDING',
-  AUTH = 'AUTH'
+  AUTH = 'AUTH',
+  PRIVACY = 'PRIVACY',
+  TERMS = 'TERMS'
 }
 
 export interface ChatMessage {

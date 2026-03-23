@@ -103,7 +103,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onNaviga
               
               <div className="relative rounded-[40px] overflow-hidden shadow-2xl border-8 border-white group">
                 <img 
-                  src="file:///C:/Users/USER/.gemini/antigravity/brain/ded6e2a8-4e02-4241-b662-cc14fb24817f/lexinaija_hero_visual_1773488549630.png" 
+                  src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=2000"
                   alt="LexiNaija AI Legal Dashboard - Nigerian Law Firm Management"
                   className="w-full object-cover aspect-[4/5] group-hover:scale-105 transition-transform duration-1000"
                 />
@@ -129,7 +129,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onNaviga
               {/* Secondary Floating Image */}
               <div className="absolute -bottom-10 -left-10 w-64 rounded-3xl overflow-hidden shadow-2xl border-4 border-white hidden md:block animate-bounce-slow bg-white">
                 <img 
-                   src="file:///C:/Users/USER/.gemini/antigravity/brain/ded6e2a8-4e02-4241-b662-cc14fb24817f/digital_lawyer_dashboard_mockup_1773488564501.png" 
+                   src="https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=800"
                    alt="Nigerian Legal AI Research Tool Interface"
                    className="w-full object-cover aspect-video"
                 />

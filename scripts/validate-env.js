@@ -48,7 +48,7 @@ try {
 console.log('📋 Checking required VITE_* variables:');
 REQUIRED_VARS.forEach((variable) => {
   const value = process.env[variable];
-  if (!value || value === 'your_') {
+  if (!value || value === 'your_' || value.startsWith('your_')) {
     console.log(`   ❌ ${variable}: Not set or invalid`);
     hasErrors = true;
   } else if (value.length < 20) {
@@ -63,7 +63,7 @@ REQUIRED_VARS.forEach((variable) => {
 console.log('\n🔐 Checking server-side variables (for API routes):');
 SERVER_REQUIRED_VARS.forEach((variable) => {
   const value = process.env[variable];
-  if (!value || value === 'your_') {
+  if (!value || value === 'your_' || value.startsWith('your_')) {
     console.log(`   ⚠️  ${variable}: Not set - AI features will use fallback mode`);
     hasWarnings = true;
   } else {

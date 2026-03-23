@@ -5,7 +5,7 @@
  * Automatically calculates statutory legal fees based on transaction type and value
  */
 
-export type TransactionType = 'Sale' | 'Lease' | 'Mortgage' | 'Assignment' | 'Sublease';
+export type TransactionType = 'Sale' | 'Lease' | 'Mortgage' | 'Assignment' | 'Sublease' | 'Power of Attorney' | 'Deed of Gift';
 
 export interface LPROConfig {
   transactionType: TransactionType;
@@ -34,25 +34,25 @@ export const calculateLPROFee = (config: LPROConfig): LPROResult => {
   
   let professionalFee = 0;
   
-  // LPRO 2023 Scale for Sale of Property
+  // LPRO 2023 Scale for Sale of Property (Scale 1)
   if (transactionType === 'Sale') {
     if (propertyValue <= 50_000_000) {
       professionalFee = propertyValue * 0.10; // 10%
       breakdown.push(`10% on first ₦50M: ₦${(propertyValue * 0.10).toLocaleString()}`);
-    } else if (propertyValue <= 200_000_000) {
+    } else if (propertyValue <= 250_000_000) { // Next 200M
       const firstTier = 50_000_000 * 0.10; // ₦5M
       const secondTier = (propertyValue - 50_000_000) * 0.05; // 5% on excess
       professionalFee = firstTier + secondTier;
       breakdown.push(`10% on first ₦50M: ₦${firstTier.toLocaleString()}`);
-      breakdown.push(`5% on ₦${(propertyValue - 50_000_000).toLocaleString()}: ₦${secondTier.toLocaleString()}`);
+      breakdown.push(`5% on next ₦${(propertyValue - 50_000_000).toLocaleString()}: ₦${secondTier.toLocaleString()}`);
     } else {
       const firstTier = 50_000_000 * 0.10; // ₦5M
-      const secondTier = 150_000_000 * 0.05; // ₦7.5M
-      const thirdTier = (propertyValue - 200_000_000) * 0.03; // 3% on excess
+      const secondTier = 200_000_000 * 0.05; // ₦10M
+      const thirdTier = (propertyValue - 250_000_000) * 0.03; // 3% on balance
       professionalFee = firstTier + secondTier + thirdTier;
       breakdown.push(`10% on first ₦50M: ₦${firstTier.toLocaleString()}`);
-      breakdown.push(`5% on next ₦150M: ₦${secondTier.toLocaleString()}`);
-      breakdown.push(`3% on ₦${(propertyValue - 200_000_000).toLocaleString()}: ₦${thirdTier.toLocaleString()}`);
+      breakdown.push(`5% on next ₦200M: ₦${secondTier.toLocaleString()}`);
+      breakdown.push(`3% on balance ₦${(propertyValue - 250_000_000).toLocaleString()}: ₦${thirdTier.toLocaleString()}`);
     }
   }
   
@@ -88,6 +88,18 @@ export const calculateLPROFee = (config: LPROConfig): LPROResult => {
   else if (transactionType === 'Assignment') {
     professionalFee = propertyValue * 0.075; // 7.5%
     breakdown.push(`7.5% on ₦${propertyValue.toLocaleString()}: ₦${professionalFee.toLocaleString()}`);
+  }
+
+  // Power of Attorney
+  else if (transactionType === 'Power of Attorney') {
+    professionalFee = 50_000; // Flat minimum for POA (Typical)
+    breakdown.push(`Flat fee for Power of Attorney: ₦50,000`);
+  }
+
+  // Deed of Gift
+  else if (transactionType === 'Deed of Gift') {
+    professionalFee = propertyValue * 0.05; // 5% of value
+    breakdown.push(`5% of property value for Deed of Gift: ₦${professionalFee.toLocaleString()}`);
   }
   
   // Calculate additional costs

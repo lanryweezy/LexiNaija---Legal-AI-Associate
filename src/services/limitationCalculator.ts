@@ -11,6 +11,8 @@ export type LimitationType =
   | 'Defamation'
   | 'Fraud'
   | 'Employment'
+  | 'Personal Injury'
+  | 'Public Officers Protection'
   | 'Criminal Summary';
 
 export interface LimitationPeriod {
@@ -39,9 +41,9 @@ export const LIMITATION_PERIODS: Record<LimitationType, LimitationPeriod> = {
   },
   'Fundamental Rights': {
     type: 'Fundamental Rights',
-    years: 1,
-    source: 'Constitution of the Federal Republic of Nigeria 1999 (as amended)',
-    description: 'Fundamental rights enforcement must be brought within 1 year (some courts allow reasonable time)'
+    years: Infinity,
+    source: 'FREP Rules 2009',
+    description: 'Under the 2009 Rules, there is no limitation period for enforcing fundamental rights. Delay does not bar the action.'
   },
   'Land Recovery': {
     type: 'Land Recovery',
@@ -67,6 +69,19 @@ export const LIMITATION_PERIODS: Record<LimitationType, LimitationPeriod> = {
     source: 'Limitation Law',
     description: 'Employment-related claims: 6 years from breach'
   },
+  'Personal Injury': {
+    type: 'Personal Injury',
+    years: 3,
+    source: 'Limitation Law',
+    description: 'Actions for personal injury (negligence/assault): 3 years from accrual'
+  },
+  'Public Officers Protection': {
+    type: 'Public Officers Protection',
+    years: 0,
+    months: 3,
+    source: 'Public Officers Protection Act/Laws',
+    description: 'Actions against public officers for acts done in the execution of public duty: 3 months'
+  },
   'Criminal Summary': {
     type: 'Criminal Summary',
     years: 0,
@@ -84,6 +99,12 @@ export const calculateLimitationDate = (
   limitationType: LimitationType
 ): Date => {
   const period = LIMITATION_PERIODS[limitationType];
+
+  if (period.years === Infinity) {
+    // Return a date very far in the future to represent "no limit"
+    return new Date(9999, 11, 31);
+  }
+
   const result = new Date(accrualDate);
   
   if (period.months) {
@@ -186,6 +207,9 @@ export const getCasesApproachingLimitation = <T extends { limitationDate?: strin
  * Format limitation date for display
  */
 export const formatLimitationDate = (date: Date): string => {
+  if (date.getFullYear() >= 9999) {
+    return 'No Limitation Period (Infinite)';
+  }
   return date.toLocaleDateString('en-NG', {
     year: 'numeric',
     month: 'long',
@@ -201,10 +225,12 @@ export const getLimitationTypeOptions = (): { value: LimitationType; label: stri
   return Object.values(LIMITATION_PERIODS).map(p => ({
     value: p.type,
     label: p.type,
-    period: p.months 
-      ? `${p.months} month(s)` 
-      : p.years === 1 
-        ? '1 year' 
-        : `${p.years} years`
+    period: p.years === Infinity
+      ? 'No Limit'
+      : p.months
+        ? `${p.months} month(s)`
+        : p.years === 1
+          ? '1 year'
+          : `${p.years} years`
   }));
 };

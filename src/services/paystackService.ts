@@ -1,5 +1,5 @@
-import React from 'react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
+import PaystackPop from '@paystack/inline-js';
 
 interface PaystackProps {
   amount: number;
@@ -9,17 +9,20 @@ interface PaystackProps {
   planName: string;
 }
 
-// In a real environment, this would use @paystack/inline-js
-// We are building the logic to trigger the Paystack popup
+/**
+ * Paystack Payment Hook
+ * Integrates with Paystack for legal-tech subscription billing
+ */
 export const usePaystackPayment = () => {
-  const { addCredits, updateFirmProfile } = useLegalStore();
+  const { addCredits } = useLegalStore();
 
   const initializePayment = (config: PaystackProps) => {
-    // @ts-ignore
-    const handler = window.PaystackPop.setup({
+    const paystack = new PaystackPop();
+
+    paystack.newTransaction({
       key: (import.meta as any).env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_test_placeholder',
       email: config.email,
-      amount: config.amount * 100, // Convert to kobo
+      amount: config.amount * 100, // Convert to kobo (NGN)
       currency: 'NGN',
       ref: `LX-${Date.now()}`,
       metadata: {
@@ -31,15 +34,14 @@ export const usePaystackPayment = () => {
           }
         ]
       },
-      callback: function(response: any) {
-        // Payment verified on server-side via webhook
-        config.onSuccess(response.reference);
+      onSuccess: (transaction: any) => {
+        // Payment success callback - reference returned: transaction.reference
+        config.onSuccess(transaction.reference);
       },
-      onClose: function() {
+      onCancel: () => {
         config.onClose();
       }
     });
-    handler.openIframe();
   };
 
   return { initializePayment };

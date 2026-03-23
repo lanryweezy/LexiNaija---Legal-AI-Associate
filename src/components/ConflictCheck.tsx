@@ -52,9 +52,11 @@ export const ConflictCheck: React.FC = () => {
         <div className="absolute -inset-1 bg-gradient-to-r from-legal-gold/20 to-transparent rounded-[32px] blur-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
         <form onSubmit={handleSearch} className="relative flex items-center bg-white/70 backdrop-blur-2xl border border-slate-100 rounded-[30px] p-2 shadow-2xl transition-all focus-within:border-legal-gold/50 focus-within:shadow-legal-gold/5">
             <div className="pl-6 text-slate-300">
+                <label htmlFor="conflict-search" className="sr-only">Search nomenclature</label>
                 <Search size={24} />
             </div>
             <input 
+                id="conflict-search"
                 type="text" 
                 value={query}
                 onChange={(e) => {

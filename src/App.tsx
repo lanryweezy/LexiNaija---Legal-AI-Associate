@@ -29,6 +29,8 @@ const ComplianceAudit = lazy(() => import('./components/ComplianceAudit').then(m
 const ClientPortal = lazy(() => import('./components/ClientPortal').then(m => ({ default: m.ClientPortal })));
 const Entertainment = lazy(() => import('./components/Entertainment').then(m => ({ default: m.Entertainment })));
 const FeeCalculator = lazy(() => import('./components/FeeCalculator').then(m => ({ default: m.FeeCalculator })));
+const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })));
+const TermsOfService = lazy(() => import('./components/TermsOfService').then(m => ({ default: m.TermsOfService })));
 import { AppView } from './types';
 import { LegalStoreProvider, useLegalStore } from './contexts/LegalStoreContext';
 import { ToastProvider } from './contexts/ToastContext';
@@ -53,7 +55,7 @@ function AppContent() {
   const renderView = () => {
     switch (currentView) {
       case AppView.LANDING:
-        return <LandingPage onGetStarted={() => setView(AppView.AUTH)} />;
+        return <LandingPage onGetStarted={() => setView(AppView.AUTH)} onNavigate={setView} />;
       case AppView.AUTH:
         return <Auth onAuthSuccess={() => setView(AppView.DASHBOARD)} />;
       case AppView.DASHBOARD:
@@ -108,16 +110,22 @@ function AppContent() {
         return <ComplianceAudit />;
       case AppView.PORTAL:
         return <ClientPortal />;
+      case AppView.PRIVACY:
+        return <PrivacyPolicy onBack={() => setView(AppView.LANDING)} />;
+      case AppView.TERMS:
+        return <TermsOfService onBack={() => setView(AppView.LANDING)} />;
       default:
         return <Dashboard onNavigate={setView} />;
     }
   };
 
+  const isFullPage = currentView === AppView.LANDING || currentView === AppView.AUTH || currentView === AppView.PRIVACY || currentView === AppView.TERMS;
+
   return (
     <ErrorBoundary>
       <div className="flex h-screen w-full bg-slate-50 font-sans text-slate-900">
-        {(currentView !== AppView.LANDING && currentView !== AppView.AUTH) && <Sidebar currentView={currentView} setView={setView} />}
-        <main className={`flex-1 ${(currentView !== AppView.LANDING && currentView !== AppView.AUTH) ? 'ml-64' : ''} overflow-auto scrollbar-hide ${currentView === AppView.EDITOR || currentView === AppView.DOCKET || currentView === AppView.EVIDENCE || currentView === AppView.WITNESS || currentView === AppView.BRIEFS || currentView === AppView.CORPORATE ? 'bg-white' : ''}`}>
+        {!isFullPage && <Sidebar currentView={currentView} setView={setView} />}
+        <main className={`flex-1 ${!isFullPage ? 'ml-64' : ''} overflow-auto scrollbar-hide ${currentView === AppView.EDITOR || currentView === AppView.DOCKET || currentView === AppView.EVIDENCE || currentView === AppView.WITNESS || currentView === AppView.BRIEFS || currentView === AppView.CORPORATE ? 'bg-white' : ''}`}>
           <Suspense fallback={<div className="p-6 text-sm text-gray-600">Loading…</div>}>
             {renderView()}
           </Suspense>

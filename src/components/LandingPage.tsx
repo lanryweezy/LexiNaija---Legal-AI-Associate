@@ -15,11 +15,14 @@ import {
   Play
 } from 'lucide-react';
 
+import { AppView } from '../types';
+
 interface LandingPageProps {
   onGetStarted: () => void;
+  onNavigate: (view: AppView) => void;
 }
 
-export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
+export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onNavigate }) => {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -379,9 +382,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
             <span className="text-xl font-serif font-black italic tracking-tighter uppercase text-white">LexiNaija</span>
           </div>
           <div className="flex items-center gap-12 text-white/70">
-            <a href="#" className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors">Privacy Protocol</a>
-            <a href="#" className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors">Firm Licensing</a>
-            <a href="#" className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors">Security Ops</a>
+            <button
+              onClick={() => onNavigate(AppView.PRIVACY)}
+              className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors"
+            >
+              Privacy Protocol
+            </button>
+            <button
+              onClick={() => onNavigate(AppView.TERMS)}
+              className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors"
+            >
+              Firm Licensing
+            </button>
+            <a href="mailto:security@lexinaija.com" className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors">Security Ops</a>
           </div>
           <p className="text-[10px] font-black text-white/50 uppercase tracking-widest">© 2026 LexiNaija AI. All Rights Reserved.</p>
         </div>

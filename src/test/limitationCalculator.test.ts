@@ -24,6 +24,19 @@ describe('limitationCalculator', () => {
     expect(limitDate.getMonth()).toBe(6); // July (0-indexed)
   });
 
+  it('calculates Public Officers Protection correctly', () => {
+    const accrualDate = new Date('2024-01-01');
+    const limitDate = calculateLimitationDate(accrualDate, 'Public Officers Protection');
+    // 3 months
+    expect(limitDate.getMonth()).toBe(3); // April
+  });
+
+  it('handles Fundamental Rights as effectively no limitation', () => {
+    const accrualDate = new Date();
+    const limitDate = calculateLimitationDate(accrualDate, 'Fundamental Rights');
+    expect(limitDate.getFullYear()).toBeGreaterThan(accrualDate.getFullYear() + 50);
+  });
+
   it('calculates days until limitation correctly', () => {
     const limitDate = new Date();
     limitDate.setDate(limitDate.getDate() + 10);

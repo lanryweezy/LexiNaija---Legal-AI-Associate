@@ -23,6 +23,35 @@ describe('lproCalculator', () => {
     expect(result.professionalFee).toBe(7_500_000);
   });
 
+  it('calculates Sale fee correctly for third tier', () => {
+    const result = calculateLPROFee({
+      transactionType: 'Sale',
+      propertyValue: 300_000_000 // 300M
+    });
+    // 10% of first 50M = 5M
+    // 5% of next 200M = 10M
+    // 3% of balance 50M = 1.5M
+    // Total = 16.5M
+    expect(result.professionalFee).toBe(16_500_000);
+  });
+
+  it('calculates Power of Attorney flat fee', () => {
+    const result = calculateLPROFee({
+      transactionType: 'Power of Attorney',
+      propertyValue: 0
+    });
+    expect(result.professionalFee).toBe(50_000);
+  });
+
+  it('calculates Deed of Gift fee', () => {
+    const result = calculateLPROFee({
+      transactionType: 'Deed of Gift',
+      propertyValue: 10_000_000 // 10M
+    });
+    // 5% of 10M = 500,000
+    expect(result.professionalFee).toBe(500_000);
+  });
+
   it('calculates Lease fee for residential', () => {
     const result = calculateLPROFee({
       transactionType: 'Lease',

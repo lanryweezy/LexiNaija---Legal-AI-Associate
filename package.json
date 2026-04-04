@@ -15,7 +15,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@google/genai": "^1.32.0",
     "@google/generative-ai": "^0.24.1",
     "@paystack/inline-js": "^2.22.8",
     "@sentry/react": "^8.54.0",

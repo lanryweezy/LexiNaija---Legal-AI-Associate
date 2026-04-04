@@ -42,8 +42,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onNaviga
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,#fff,transparent_80%)] opacity-50"></div>
       </div>
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-[100] bg-white shadow-sm py-4">
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+      <header role="banner" className="fixed top-0 w-full z-[100] bg-white shadow-sm py-4">
+        <nav className="max-w-7xl mx-auto px-6 flex items-center justify-between" aria-label="Main Navigation">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-legal-900 rounded-xl flex items-center justify-center shadow-lg">
               <ShieldCheck className="text-legal-gold w-6 h-6" />
@@ -58,28 +58,30 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onNaviga
           <div>
             <button 
               onClick={onGetStarted}
+              aria-label="Login to LexiNaija"
               className="px-8 py-4 bg-legal-900 text-white rounded-full text-[10px] font-black uppercase tracking-[.2em] shadow-[0_10px_40px_-10px_rgba(26,35,46,0.5)] hover:bg-legal-gold hover:text-legal-900 transition-all active:scale-95 flex items-center gap-2 group"
             >
               Login <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
-        </div>
-      </nav>
+        </nav>
+      </header>
 
+      <main role="main">
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 px-6">
+      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 px-6" aria-labelledby="hero-heading">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left Content */}
             <div className="relative z-10">
               
-              <h1 className="text-6xl md:text-7xl lg:text-[90px] font-serif font-black text-legal-900 leading-[0.9] tracking-tighter mb-8 animate-in slide-in-from-bottom delay-100">
-                The AI associate<br />
+              <h1 id="hero-heading" className="text-6xl md:text-7xl lg:text-[90px] font-serif font-black text-legal-900 leading-[0.9] tracking-tighter mb-8 animate-in slide-in-from-bottom delay-100">
+                The Premier <span className="text-legal-gold italic">Nigerian Legal AI</span> Associate.<br />
                 <span className="text-legal-gold italic">For Your Chambers.</span>
               </h1>
               
               <p className="text-lg md:text-xl text-slate-500 font-medium leading-relaxed max-w-lg mb-10 animate-in slide-in-from-bottom delay-200">
-                LexiNaija is the hyper-intelligent associate suite designed specifically for the Nigerian legal landscape. Automate research, draft high-fidelity briefs, and manage your practice with institutional precision.
+                LexiNaija is the hyper-intelligent <strong>Legal AI OS</strong> designed specifically for the Nigerian legal landscape. Automate research on Supreme Court rulings, draft high-fidelity briefs with IRAC precision, and manage your practice under <strong>CAMA 2020</strong> and <strong>LPRO 2023</strong> standards.
               </p>
               
               <div className="flex flex-col sm:flex-row items-center gap-6 animate-in slide-in-from-bottom delay-300">
@@ -101,8 +103,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onNaviga
               
               <div className="relative rounded-[40px] overflow-hidden shadow-2xl border-8 border-white group">
                 <img 
-                  src="file:///C:/Users/USER/.gemini/antigravity/brain/ded6e2a8-4e02-4241-b662-cc14fb24817f/lexinaija_hero_visual_1773488549630.png" 
-                  alt="LexiNaija Sovereign Justice Visual" 
+                  src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=2000"
+                  alt="LexiNaija AI Legal Dashboard - Nigerian Law Firm Management"
                   className="w-full object-cover aspect-[4/5] group-hover:scale-105 transition-transform duration-1000"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-legal-900/80 via-transparent to-transparent"></div>
@@ -127,8 +129,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onNaviga
               {/* Secondary Floating Image */}
               <div className="absolute -bottom-10 -left-10 w-64 rounded-3xl overflow-hidden shadow-2xl border-4 border-white hidden md:block animate-bounce-slow bg-white">
                 <img 
-                   src="file:///C:/Users/USER/.gemini/antigravity/brain/ded6e2a8-4e02-4241-b662-cc14fb24817f/digital_lawyer_dashboard_mockup_1773488564501.png" 
-                   alt="LexiNaija Dashboard Workflow" 
+                   src="https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=800"
+                   alt="Nigerian Legal AI Research Tool Interface"
                    className="w-full object-cover aspect-video"
                 />
                 <div className="p-4 bg-white border-t border-slate-100">
@@ -228,6 +230,29 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onNaviga
         </div>
       </section>
 
+
+      {/* Practice Areas Section */}
+      <section id="practice-areas" className="py-24 px-6 bg-white border-t border-slate-100">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
+            <div className="md:col-span-1">
+              <h2 className="text-3xl font-serif font-black text-legal-900 italic mb-6">Expertise across <span className="text-legal-gold">Nigerian Law</span>.</h2>
+              <p className="text-slate-500 font-medium">Our AI is specifically trained on Nigerian jurisprudence, statutes, and procedural rules across all major practice areas.</p>
+            </div>
+            <div className="md:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {[
+                "Corporate (CAMA 2020)", "Land & Property", "Civil Litigation",
+                "Criminal Justice (ACJA)", "Family & Probate", "Intellectual Property",
+                "Maritime Law", "Tax & Revenue", "Labor Law"
+              ].map((area, i) => (
+                <div key={i} className="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-center hover:border-legal-gold/40 transition-colors">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-legal-900">{area}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Pricing Section */}
       <section id="pricing" className="py-32 px-6 bg-white relative">
@@ -341,6 +366,41 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onNaviga
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section id="faq" className="py-32 px-6 bg-slate-50">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-serif font-black text-legal-900 italic mb-4">Frequently Asked Questions</h2>
+            <p className="text-slate-500 font-medium">Everything you need to know about the premier Nigerian Legal AI associate.</p>
+          </div>
+          <div className="space-y-6">
+            {[
+              {
+                q: "Is LexiNaija compliant with the Evidence Act 2011?",
+                a: "Yes. LexiNaija features a dedicated Section 84 Certificate Generator for electronic evidence, complete with automated device fingerprinting and SHA-256 integrity hashing to ensure admissibility in Nigerian courts."
+              },
+              {
+                q: "How does the AI handle CAMA 2020 requirements?",
+                a: "Our Smart Drafter and Corporate Assistant are specifically tuned for CAC compliance under CAMA 2020, assisting with resolutions, incorporation documents, and annual return filings."
+              },
+              {
+                q: "Does the AI provide legal advice?",
+                a: "No. LexiNaija is a support tool for legal practitioners. As per the Rules of Professional Conduct (RPC) 2023, lawyers must verify all AI-generated content before use. We provide the 'Associate' level support to amplify your expertise."
+              },
+              {
+                q: "What is LPRO 2023 and how do you use it?",
+                a: "LPRO 2023 is the Legal Practitioners (Remuneration for Legal Documentation and Other Land Matters) Order. Our platform includes an automated calculator that ensures your fee notes comply with the statutory 3-tier scale for sales and other transactions."
+              }
+            ].map((item, i) => (
+              <div key={i} className="bg-white p-8 rounded-[32px] border border-slate-200 shadow-sm">
+                <h3 className="text-lg font-bold text-legal-900 mb-3">{item.q}</h3>
+                <p className="text-slate-600 leading-relaxed font-medium text-sm">{item.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-32 px-6 relative overflow-hidden">
         <div className="absolute inset-0">
@@ -372,8 +432,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onNaviga
         </div>
       </section>
 
+      </main>
+
       {/* Footer */}
-      <footer className="bg-legal-950 py-16 px-6 relative z-10 border-t border-legal-900">
+      <footer role="contentinfo" className="bg-legal-950 py-16 px-6 relative z-10 border-t border-legal-900">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-legal-900 rounded-xl flex items-center justify-center border border-white/10">

@@ -117,13 +117,17 @@ export const calculateLimitationDate = (
 };
 
 /**
- * Calculate days remaining until limitation expires
+ * Calculate days remaining until limitation expires.
+ * Uses UTC-normalized midnight for stability across timezones and DST.
  */
 export const getDaysUntilLimitation = (limitationDate: Date): number => {
   const today = new Date();
-  const limit = new Date(limitationDate);
-  const diffTime = limit.getTime() - today.getTime();
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  // Normalize both dates to midnight UTC to ensure consistency
+  const start = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+  const end = Date.UTC(limitationDate.getFullYear(), limitationDate.getMonth(), limitationDate.getDate());
+
+  const diffTime = end - start;
+  const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
   return diffDays;
 };
 

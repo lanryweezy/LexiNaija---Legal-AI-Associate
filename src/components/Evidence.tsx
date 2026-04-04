@@ -71,6 +71,12 @@ export const Evidence: React.FC = () => {
 
   const handleGenerateS84Certificate = async (item: EvidenceItem) => {
       if (!selectedCase) return;
+
+      if (!firmProfile.solicitorName || firmProfile.solicitorName === 'A. I. Lawyer, Esq.') {
+          showToast("Please update your Solicitor Name in Settings before generating S.84 certificates.", "warning");
+          return;
+      }
+
       const client = clients.find(c => c.id === selectedCase.clientId);
       
       try {
@@ -373,8 +379,9 @@ C/O THEIR COUNSEL
                   </div>
                   <form onSubmit={handleAddEvidence} className="space-y-6">
                       <div>
-                          <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Description</label>
+                          <label htmlFor="ev-desc" className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Description</label>
                           <input 
+                              id="ev-desc"
                               required
                               type="text" 
                               className="w-full bg-slate-50 border border-slate-100 p-5 rounded-2xl font-bold text-legal-900 outline-none focus:bg-white transition-all shadow-inner"

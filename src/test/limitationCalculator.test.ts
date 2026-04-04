@@ -8,8 +8,7 @@ import {
 
 describe('limitationCalculator', () => {
   it('calculates limitation date for contract correctly', () => {
-    // Use explicit components to avoid parser timezone ambiguity
-    const accrualDate = new Date(2024, 0, 1);
+    const accrualDate = new Date('2024-01-01');
     const limitDate = calculateLimitationDate(accrualDate, 'Contract');
     // Contract is 6 years
     expect(limitDate.getFullYear()).toBe(2030);
@@ -18,7 +17,7 @@ describe('limitationCalculator', () => {
   });
 
   it('calculates limitation date for criminal summary correctly', () => {
-    const accrualDate = new Date(2024, 0, 1);
+    const accrualDate = new Date('2024-01-01');
     const limitDate = calculateLimitationDate(accrualDate, 'Criminal Summary');
     // Criminal summary is 6 months
     expect(limitDate.getFullYear()).toBe(2024);
@@ -26,7 +25,7 @@ describe('limitationCalculator', () => {
   });
 
   it('calculates Public Officers Protection correctly', () => {
-    const accrualDate = new Date(2024, 0, 1);
+    const accrualDate = new Date('2024-01-01');
     const limitDate = calculateLimitationDate(accrualDate, 'Public Officers Protection');
     // 3 months
     expect(limitDate.getMonth()).toBe(3); // April

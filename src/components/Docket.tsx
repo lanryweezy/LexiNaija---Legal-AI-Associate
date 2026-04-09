@@ -200,7 +200,9 @@ export const Docket: React.FC = () => {
                 <h3 className="font-serif font-bold flex items-center gap-2"><Sparkles size={16} className="text-legal-gold"/> Executive Brief</h3>
                 <button onClick={() => setBrief(null)} className="text-gray-400 hover:text-white text-xs">Dismiss</button>
             </div>
-            <ReactMarkdown className="prose prose-invert prose-sm max-w-none">{brief}</ReactMarkdown>
+            <div className="prose prose-invert prose-sm max-w-none">
+              <ReactMarkdown>{brief}</ReactMarkdown>
+            </div>
         </div>
       )}
 

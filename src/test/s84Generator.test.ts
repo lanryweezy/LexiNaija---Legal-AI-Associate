@@ -43,22 +43,31 @@ describe('s84Generator', () => {
     };
     const selectedCase: Case = {
       id: 'case1',
+      clientId: 'client1',
       title: 'Ade v. Bola',
       suitNumber: 'LD/123/2024',
       court: 'High Court, Lagos',
       status: 'Open',
-      documents: []
+      notes: '',
+      documents: [],
+      billableItems: [],
+      evidence: []
     };
     const client: Client = {
       id: 'client1',
       name: 'Adedeji Ade',
-      type: 'Individual'
+      type: 'Individual',
+      email: 'ade@example.com',
+      phone: '0800',
+      address: 'Lagos',
+      dateAdded: new Date()
     };
     const firmProfile: FirmProfile = {
-      id: 'firm1',
       name: 'LexiNaija Partners',
       solicitorName: 'Samsudeen Esq.',
-      address: 'Lagos, Nigeria'
+      address: 'Lagos, Nigeria',
+      email: 'partners@lexinaija.com',
+      phone: '0800'
     };
     const deviceDetails = getDeviceFingerprint();
     const hash = 'HASH123456';

@@ -24,7 +24,7 @@ export const TermsOfService: React.FC<TermsOfServiceProps> = ({ onBack }) => {
 
       <div className="max-w-3xl mx-auto py-16 px-6">
         <h1 className="text-4xl font-serif font-black text-legal-900 mb-2 italic">Firm Licensing Terms</h1>
-        <p className="text-slate-400 text-xs font-black uppercase tracking-widest mb-12">Effective October 2023 | RPC 2023 Compliant</p>
+        <p className="text-slate-400 text-xs font-black uppercase tracking-widest mb-12">Effective March 2024 | RPC 2023 Compliant</p>
 
         <div className="prose prose-slate max-w-none space-y-8 font-medium">
           <section>

@@ -114,13 +114,18 @@ export const Calculators: React.FC = () => {
       const value = parseFloat(propertyValue);
       if (!value) return;
       
-      // Simplified sliding scale logic often used as estimation
+      // LPRO 2023 Scale for Sale of Property (Scale 1)
       let fee = 0;
+      if (value <= 50_000_000) {
+          fee = value * 0.10; // 10%
+      } else if (value <= 250_000_000) {
+          fee = (50_000_000 * 0.10) + ((value - 50_000_000) * 0.05);
+      } else {
+          fee = (50_000_000 * 0.10) + (200_000_000 * 0.05) + ((value - 250_000_000) * 0.03);
+      }
       
-      // First 10m -> 10% (Example approximation)
-      // This is highly variable based on Scale 1, 2 or 3.
-      // We will use a flat 10% estimation for 'Solicitor's Fee' as a base guide, with a disclaimer.
-      fee = value * 0.10; // 10%
+      // Statutory minimum
+      if (fee < 50_000) fee = 50_000;
       
       setFeeResult(fee);
   };

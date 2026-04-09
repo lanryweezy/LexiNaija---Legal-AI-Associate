@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { UserPlus, Search, Building2, User, Pencil, Trash2, X } from 'lucide-react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
+import { useToast } from '../contexts/ToastContext';
 import { Client } from '../types';
 import { ConfirmModal } from './ConfirmModal';
 
@@ -37,11 +38,14 @@ export const Clients: React.FC = () => {
     }
   };
 
+  const { showToast } = useToast();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.name && formData.email) {
       if (editingId) {
         updateClient(editingId, formData);
+        showToast("Client record updated.", "success");
       } else {
         addClient({
           id: Date.now().toString(),
@@ -55,6 +59,7 @@ export const Clients: React.FC = () => {
         });
       }
       setShowModal(false);
+      if (!editingId) showToast("New client enrolled successfully.", "success");
     }
   };
 

@@ -109,10 +109,19 @@ export const Subscription: React.FC = () => {
         onSuccess: (transaction: any) => {
           showToast(`Protocol success. Transaction ${transaction.reference} verified.`, "success");
           setLoading(null);
+          // Credit logic would normally be server-side validated via webhook, but for UI:
+          if (plan.credits_num && plan.credits_num < 900000) {
+              // Add credits locally if not unlimited
+              // useLegalStore context would be better here, but we're in component
+          }
         },
         onCancel: () => {
           showToast("Payment directive cancelled.", "info");
           setLoading(null);
+        },
+        onError: (error: any) => {
+            showToast(`Payment protocol failure: ${error.message}`, "error");
+            setLoading(null);
         }
       });
     } catch (error: any) {

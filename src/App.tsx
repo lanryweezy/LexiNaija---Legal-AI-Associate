@@ -115,7 +115,18 @@ function AppContent() {
       case AppView.TERMS:
         return <TermsOfService onBack={() => setView(AppView.LANDING)} />;
       default:
-        return <Dashboard onNavigate={setView} />;
+        return (
+          <div className="flex flex-col items-center justify-center h-full text-slate-400">
+            <h2 className="text-2xl font-serif font-black italic">View Not Found</h2>
+            <p className="mt-2 text-sm uppercase tracking-widest font-black">The requested intelligence module is unavailable.</p>
+            <button
+              onClick={() => setView(AppView.DASHBOARD)}
+              className="mt-8 px-6 py-3 bg-legal-900 text-white rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-legal-gold transition-all"
+            >
+              Return to Control Panel
+            </button>
+          </div>
+        );
     }
   };
 

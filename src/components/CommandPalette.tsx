@@ -30,10 +30,25 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
     ];
 
     // Filtered items based on query
-    const filteredCommands = commands.filter(c => 
-        c.label.toLowerCase().includes(query.toLowerCase()) || 
-        c.category.toLowerCase().includes(query.toLowerCase())
-    );
+    const filteredCommands = [
+        ...commands.filter(c =>
+            c.label.toLowerCase().includes(query.toLowerCase()) ||
+            c.category.toLowerCase().includes(query.toLowerCase())
+        ),
+        ...(query.length > 2 ? cases.filter(c => c.title.toLowerCase().includes(query.toLowerCase())).map(c => ({
+            id: AppView.CASES,
+            label: `Case: ${c.title}`,
+            icon: Briefcase,
+            category: 'Matter',
+            caseId: c.id
+        })) : []),
+        ...(query.length > 2 ? clients.filter(c => c.name.toLowerCase().includes(query.toLowerCase())).map(c => ({
+            id: AppView.CLIENTS,
+            label: `Client: ${c.name}`,
+            icon: Users,
+            category: 'Directory'
+        })) : [])
+    ];
 
     useEffect(() => {
         if (isOpen) {
@@ -43,6 +58,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
         }
     }, [isOpen]);
 
+    const { setActiveCaseId } = useLegalStore();
+
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'ArrowDown') {
             setSelectedIndex(prev => (prev + 1) % filteredCommands.length);
@@ -51,6 +68,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
         } else if (e.key === 'Enter') {
             const selected = filteredCommands[selectedIndex];
             if (selected) {
+                if ((selected as any).caseId) {
+                    setActiveCaseId((selected as any).caseId);
+                }
                 onNavigate(selected.id as AppView);
                 onClose();
             }

@@ -57,6 +57,20 @@ export const CaseLawDatabase: React.FC = () => {
   const [shepardizing, setShepardizing] = useState(false);
   const [citatorResult, setCitatorResult] = useState<any>(null);
 
+  const handleShepardize = (caseItem: CaseLaw) => {
+    setShepardizing(true);
+    // Simulate Shepardizing logic
+    setTimeout(() => {
+        setCitatorResult({
+            status: 'Good Law',
+            legalPrinciple: 'The principle of absolute immunity for the President and Vice President remains a cornerstone of Nigerian constitutional law, as reinforced in subsequent interpretations.',
+            citedBy: 124,
+            latestFollowedBy: 'Supreme Court, 2023'
+        });
+        setShepardizing(false);
+    }, 1500);
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim()) return;

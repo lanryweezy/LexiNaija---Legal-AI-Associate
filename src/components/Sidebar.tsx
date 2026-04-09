@@ -8,7 +8,7 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
-  const { suggestions, activeCaseId, cases } = useLegalStore();
+  const { suggestions, activeCaseId, cases, creditsTotal, creditsUsed, firmProfile } = useLegalStore();
   const practiceItems = [
     { id: AppView.DASHBOARD, label: 'Dashboard', icon: LayoutDashboard, badge: suggestions.length > 0 ? suggestions.length : undefined },
     { id: AppView.ANALYTICS, label: 'Analytics', icon: BarChart3 },
@@ -118,12 +118,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
             </div>
         )}
         <div className="bg-legal-800 rounded-lg p-4 border border-legal-700">
-          <p className="text-xs text-legal-gold uppercase font-bold mb-1">LexiNaija Pro</p>
-          <p className="text-xs text-gray-400 mb-3">Enterprise License</p>
+          <p className="text-xs text-legal-gold uppercase font-bold mb-1">
+            {firmProfile.isEnterprise ? 'LexiNaija Enterprise' : 'LexiNaija Solo'}
+          </p>
+          <p className="text-xs text-gray-400 mb-3">Neural Capacity</p>
           <div className="w-full bg-legal-700 h-1.5 rounded-full">
-            <div className="bg-legal-gold w-3/4 h-1.5 rounded-full"></div>
+            <div
+              className="bg-legal-gold h-1.5 rounded-full transition-all duration-1000"
+              style={{ width: `${Math.min(100, (creditsUsed / creditsTotal) * 100)}%` }}
+            ></div>
           </div>
-          <p className="text-[10px] text-gray-500 mt-2 text-right">750/1000 credits used</p>
+          <p className="text-[10px] text-gray-500 mt-2 text-right">{creditsUsed}/{creditsTotal} credits consumed</p>
         </div>
       </div>
     </div>

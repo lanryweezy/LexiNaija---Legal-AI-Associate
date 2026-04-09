@@ -124,14 +124,14 @@ export const Briefs: React.FC = () => {
 
       <div className="flex-1 flex overflow-hidden">
         {/* Left Side: Parameters Panel */}
-        <div className="w-[450px] border-r border-slate-100 flex flex-col bg-slate-50/30 overflow-hidden">
-          <div className="p-8 flex-1 overflow-y-auto space-y-8 scrollbar-hide">
+        <div className="w-[450px] border-r border-slate-100 flex flex-col bg-slate-50/50 overflow-hidden">
+          <div className="p-10 flex-1 overflow-y-auto space-y-10 scrollbar-hide">
             <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Link to Litigation File</label>
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-2">Litigation File Linkage</label>
                 <select 
                     value={selectedCaseId}
                     onChange={e => handleCaseSelect(e.target.value)}
-                    className="w-full bg-white border border-slate-100 p-4 rounded-2xl font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/5 outline-none transition-all cursor-pointer shadow-sm"
+                    className="w-full bg-white border border-slate-100 p-5 rounded-[24px] font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/5 outline-none transition-all cursor-pointer shadow-sm"
                 >
                     <option value="">-- Associate with Matter --</option>
                     {cases.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
@@ -139,23 +139,23 @@ export const Briefs: React.FC = () => {
             </div>
 
             <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Issue for Determination</label>
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-2">Issue for Determination</label>
                 <input 
                     type="text"
                     value={formData.issue}
                     onChange={e => setFormData({...formData, issue: e.target.value})}
-                    className="w-full bg-white border border-slate-100 p-4 rounded-2xl font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/5 outline-none transition-all"
+                    className="w-full bg-white border border-slate-100 p-5 rounded-[24px] font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/5 outline-none transition-all"
                     placeholder="e.g. Whether the Claimant is entitled to the reliefs..."
                 />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-6">
                 <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Argue For</label>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-2">Advocacy Posture</label>
                     <select 
                         value={formData.stance}
                         onChange={e => setFormData({...formData, stance: e.target.value})}
-                        className="w-full bg-white border border-slate-100 p-4 rounded-2xl font-bold text-legal-900 outline-none cursor-pointer"
+                        className="w-full bg-white border border-slate-100 p-5 rounded-[24px] font-bold text-legal-900 outline-none cursor-pointer"
                     >
                         <option>Applicant/Claimant</option>
                         <option>Respondent/Defendant</option>
@@ -163,23 +163,23 @@ export const Briefs: React.FC = () => {
                     </select>
                 </div>
                 <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Target Forum</label>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-2">Target Forum</label>
                     <input 
                         type="text"
                         value={formData.jurisdiction}
                         onChange={e => setFormData({...formData, jurisdiction: e.target.value})}
-                        className="w-full bg-white border border-slate-100 p-4 rounded-2xl font-bold text-legal-900 outline-none"
+                        className="w-full bg-white border border-slate-100 p-5 rounded-[24px] font-bold text-legal-900 outline-none"
                     />
                 </div>
             </div>
 
             <div className="flex-1 flex flex-col">
-                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Relevant Facts for Argument</label>
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-2">Strategic Fact Reservoir</label>
                 <textarea 
                     value={formData.facts}
                     onChange={e => setFormData({...formData, facts: e.target.value})}
                     placeholder="Provide specific facts to be synthesized into the legal argument..."
-                    className="w-full h-80 bg-white border border-slate-100 rounded-[32px] p-8 text-lg font-serif italic text-legal-900 focus:ring-4 focus:ring-legal-gold/5 outline-none transition-all resize-none shadow-inner"
+                    className="w-full h-80 bg-white border border-slate-100 rounded-[40px] p-8 text-lg font-serif italic text-legal-900 focus:ring-4 focus:ring-legal-gold/5 outline-none transition-all resize-none shadow-inner"
                 />
             </div>
             
@@ -194,11 +194,11 @@ export const Briefs: React.FC = () => {
             </div>
           </div>
 
-          <div className="p-8 bg-white border-t border-slate-100">
+          <div className="p-10 bg-white border-t border-slate-100">
             <button 
                 onClick={handleGenerate}
                 disabled={isGenerating || !formData.issue}
-                className="w-full bg-legal-900 text-white py-5 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-2xl shadow-legal-900/20 hover:bg-legal-gold hover:text-legal-900 transition-all flex items-center justify-center gap-3 disabled:opacity-20 group"
+                className="w-full bg-legal-900 text-white py-6 rounded-[28px] font-black uppercase tracking-widest text-[11px] shadow-2xl shadow-legal-900/20 hover:bg-legal-gold hover:text-legal-900 transition-all flex items-center justify-center gap-4 disabled:opacity-20 group"
             >
                 {isGenerating ? (
                   <RefreshCw size={18} className="animate-spin" />

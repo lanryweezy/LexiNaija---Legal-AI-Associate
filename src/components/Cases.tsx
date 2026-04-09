@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Briefcase, Gavel, Calendar, Plus, Search, Filter, Pencil, Trash2, FileText, X, CreditCard, Banknote, Users, ChevronRight } from 'lucide-react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
+import { useToast } from '../contexts/ToastContext';
 import { Case, BillableItem } from '../types';
 import { ConfirmModal } from './ConfirmModal';
 
 export const Cases: React.FC = () => {
+  const { showToast } = useToast();
   const { cases, clients, addCase, updateCase, deleteCase, addBillableItem, loadMoreCases, hasMoreCases, isLoadingMore } = useLegalStore();
   const [showModal, setShowModal] = useState(false);
   const [showFeeModal, setShowFeeModal] = useState(false);
@@ -73,6 +75,7 @@ export const Cases: React.FC = () => {
     if (formData.title && formData.clientId) {
       if (editingId) {
         updateCase(editingId, formData);
+        showToast("Matter intelligence updated.", "success");
       } else {
         addCase({
           id: Date.now().toString(),
@@ -90,6 +93,7 @@ export const Cases: React.FC = () => {
         });
       }
       setShowModal(false);
+      if (!editingId) showToast("New matter focus initialized.", "success");
     }
   };
 

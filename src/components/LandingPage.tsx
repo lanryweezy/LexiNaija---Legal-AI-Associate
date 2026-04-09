@@ -12,10 +12,12 @@ import {
   Calendar,
   Share2,
   Archive,
-  Play
+  Play,
+  Check
 } from 'lucide-react';
 
 import { AppView } from '../types';
+import { useToast } from '../contexts/ToastContext';
 
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -24,6 +26,7 @@ interface LandingPageProps {
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onNavigate }) => {
   const [scrolled, setScrolled] = useState(false);
+  const { showToast } = useToast();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,7 +55,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onNaviga
           </div>
           <div className="hidden md:flex items-center gap-10 bg-white/50 backdrop-blur-md px-8 py-3 rounded-full border border-white/20 shadow-sm">
             <a href="#features" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-legal-900 transition-colors">Intelligence</a>
-            <a href="#suite" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-legal-900 transition-colors">The Vault</a>
+            <a href="#practice-areas" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-legal-900 transition-colors">Jurisdictions</a>
             <a href="#pricing" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-legal-900 transition-colors">Tiers</a>
           </div>
           <div>
@@ -91,7 +94,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onNaviga
                 >
                   Get Started
                 </button>
-                <button className="w-full sm:w-auto px-10 py-5 bg-white text-legal-900 border border-slate-200 rounded-full font-black uppercase tracking-[.2em] text-[11px] hover:border-legal-900 transition-all flex items-center justify-center gap-3 group">
+                <button
+                  onClick={() => showToast("The LexiNaija Experience Demo is currently being finalized. Check back in 24 hours!", "info")}
+                  className="w-full sm:w-auto px-10 py-5 bg-white text-legal-900 border border-slate-200 rounded-full font-black uppercase tracking-[.2em] text-[11px] hover:border-legal-900 transition-all flex items-center justify-center gap-3 group"
+                >
                   <Play size={14} className="group-hover:text-legal-gold transition-colors" /> Watch Demo
                 </button>
               </div>
@@ -356,8 +362,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onNaviga
                   </li>
                </ul>
                <button 
-                  onClick={onGetStarted}
-                  className="w-full py-4 bg-white border border-slate-200 rounded-full text-[10px] font-black uppercase tracking-widest hover:border-legal-900 transition-all font-bold"
+                  onClick={() => showToast("Enterprise onboarding initiated. Our firm liaison will contact you via email.", "info")}
+                  className="w-full py-4 bg-white border border-slate-200 rounded-full text-[10px] font-black uppercase tracking-widest hover:border-legal-900 transition-all font-bold active:scale-95"
                >
                  Consult Sales
                </button>
@@ -424,6 +430,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onNaviga
               Register now
             </button>
             <button 
+              onClick={() => showToast("Our sales team will be with you shortly. Contacting sales@lexinaija.com", "info")}
               className="w-full sm:w-auto px-12 py-6 bg-white/10 text-white border border-white/20 rounded-full font-black uppercase tracking-[.2em] hover:bg-white/20 transition-all font-medium"
             >
               Consult Sales

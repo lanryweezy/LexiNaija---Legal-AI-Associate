@@ -79,11 +79,12 @@ const PLANS: PricingPlan[] = [
 
 export const Subscription: React.FC = () => {
   const { showToast } = useToast();
+  const { addCredits } = useLegalStore();
   const [loading, setLoading] = React.useState<string | null>(null);
 
   const handlePaystackPayment = async (plan: any) => {
-    if (plan.price === 'Custom') {
-      showToast("Enterprise protocol requires manual consultation.", "info");
+    if (plan.cta === 'Consult Sales') {
+      showToast("Enterprise tier requires manual firm onboarding. Contact sales@lexinaija.com", "info");
       return;
     }
 
@@ -109,10 +110,19 @@ export const Subscription: React.FC = () => {
         onSuccess: (transaction: any) => {
           showToast(`Protocol success. Transaction ${transaction.reference} verified.`, "success");
           setLoading(null);
+          // Provision credits immediately for UX
+          if (plan.credits_num) {
+              addCredits(plan.credits_num === 999999 ? 5000 : plan.credits_num);
+              showToast(`${plan.credits_num === 999999 ? 'Unlimited' : plan.credits_num} credits provisioned to your firm vault.`, "success");
+          }
         },
         onCancel: () => {
           showToast("Payment directive cancelled.", "info");
           setLoading(null);
+        },
+        onError: (error: any) => {
+            showToast(`Payment protocol failure: ${error.message}`, "error");
+            setLoading(null);
         }
       });
     } catch (error: any) {

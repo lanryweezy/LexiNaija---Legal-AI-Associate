@@ -12,7 +12,7 @@ export const Entertainment: React.FC = () => {
     const [query, setQuery] = useState('');
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState('');
-    const { addToast } = useToast();
+    const { showToast } = useToast();
 
     const handleAction = async () => {
         if (!query) return;
@@ -21,17 +21,17 @@ export const Entertainment: React.FC = () => {
             let res = '';
             if (activeTab === 'injunction') {
                 res = await generateEntertainmentAdvice(query, 'Copyright');
-                addToast('Copyright Injunction Strategy generated', 'success');
+                showToast('Copyright Injunction Strategy generated', 'success');
             } else if (activeTab === 'talent') {
                 res = await draftEntertainmentContract('Talent/Management', 'Parties per input', query);
-                addToast('Entertainment Instrument drafted', 'success');
+                showToast('Entertainment Instrument drafted', 'success');
             } else {
                 res = await generateEntertainmentAdvice(query, 'Piracy/Anti-Counterfeiting');
-                addToast('Anti-Piracy Audit completed', 'success');
+                showToast('Anti-Piracy Audit completed', 'success');
             }
             setResult(res);
         } catch (error) {
-            addToast('AI Generation failed', 'error');
+            showToast('AI Generation failed', 'error');
         } finally {
             setLoading(false);
         }
@@ -125,7 +125,7 @@ export const Entertainment: React.FC = () => {
                     {result ? (
                         <div className="w-full max-w-4xl bg-white rounded-[48px] shadow-2xl border border-white overflow-hidden animate-in zoom-in-95 fade-in duration-700 relative">
                             <div className="absolute top-0 right-0 p-8 flex gap-3 z-20">
-                                <button onClick={() => {navigator.clipboard.writeText(result); addToast('Copied to clipboard', 'success');}} className="w-12 h-12 bg-slate-50 hover:bg-legal-gold hover:text-legal-900 rounded-2xl flex items-center justify-center text-slate-400 transition-all shadow-sm">
+                                <button onClick={() => {navigator.clipboard.writeText(result); showToast('Copied to clipboard', 'success');}} className="w-12 h-12 bg-slate-50 hover:bg-legal-gold hover:text-legal-900 rounded-2xl flex items-center justify-center text-slate-400 transition-all shadow-sm">
                                     <Copy size={20} />
                                 </button>
                                 <button className="w-12 h-12 bg-slate-50 hover:bg-legal-gold hover:text-legal-900 rounded-2xl flex items-center justify-center text-slate-400 transition-all shadow-sm">

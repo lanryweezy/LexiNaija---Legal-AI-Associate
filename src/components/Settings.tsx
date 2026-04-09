@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
+import { useToast } from '../contexts/ToastContext';
 import { Save, Building, Mail, Phone, User, ShieldCheck, RefreshCw, Upload } from 'lucide-react';
 
 export const Settings: React.FC = () => {
+  const { showToast } = useToast();
   const { firmProfile, updateFirmProfile, creditsTotal, creditsUsed, addCredits } = useLegalStore();
   const [formData, setFormData] = useState(firmProfile);
   const [saved, setSaved] = useState(false);
@@ -11,6 +13,7 @@ export const Settings: React.FC = () => {
     e.preventDefault();
     updateFirmProfile(formData);
     setSaved(true);
+    showToast("Firm architecture persisted.", "success");
     setTimeout(() => setSaved(false), 3000);
   };
 

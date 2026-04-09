@@ -12,10 +12,12 @@ import {
   Calendar,
   Share2,
   Archive,
-  Play
+  Play,
+  Check
 } from 'lucide-react';
 
 import { AppView } from '../types';
+import { useToast } from '../contexts/ToastContext';
 
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -24,6 +26,7 @@ interface LandingPageProps {
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onNavigate }) => {
   const [scrolled, setScrolled] = useState(false);
+  const { showToast } = useToast();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -91,7 +94,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onNaviga
                 >
                   Get Started
                 </button>
-                <button className="w-full sm:w-auto px-10 py-5 bg-white text-legal-900 border border-slate-200 rounded-full font-black uppercase tracking-[.2em] text-[11px] hover:border-legal-900 transition-all flex items-center justify-center gap-3 group">
+                <button
+                  onClick={() => showToast("The LexiNaija Experience Demo is currently being finalized. Check back in 24 hours!", "info")}
+                  className="w-full sm:w-auto px-10 py-5 bg-white text-legal-900 border border-slate-200 rounded-full font-black uppercase tracking-[.2em] text-[11px] hover:border-legal-900 transition-all flex items-center justify-center gap-3 group"
+                >
                   <Play size={14} className="group-hover:text-legal-gold transition-colors" /> Watch Demo
                 </button>
               </div>

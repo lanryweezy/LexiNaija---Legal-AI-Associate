@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
     Building2, FileCheck, HelpCircle, PenTool, Copy, Save, Sparkles, Building, Play,
-    ChevronRight, ChevronLeft, Briefcase, Zap, X, Clipboard, ShieldCheck, RefreshCw, Bookmark
+    ChevronRight, ChevronLeft, Briefcase, Zap, X, Clipboard, ShieldCheck, RefreshCw, Bookmark,
+    Calendar, AlertTriangle, CheckCircle, Clock, Plus
 } from 'lucide-react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 import { generateCorporateObjects, generateCorporateResolution, generateComplianceAdvice } from '../services/geminiService';
@@ -10,11 +11,11 @@ import remarkGfm from 'remark-gfm';
 import { useToast } from '../contexts/ToastContext';
 import { MatterArchiveModal } from './MatterArchiveModal';
 
-type Tab = 'objects' | 'resolutions' | 'compliance';
+type Tab = 'objects' | 'resolutions' | 'compliance' | 'registry';
 
 export const Corporate: React.FC = () => {
   const { showToast } = useToast();
-  const { consumeCredits, creditsTotal, creditsUsed } = useLegalStore();
+  const { consumeCredits, creditsTotal, creditsUsed, clients } = useLegalStore();
   const [activeTab, setActiveTab] = useState<Tab>('objects');
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,6 +33,29 @@ export const Corporate: React.FC = () => {
 
   // Compliance State
   const [compQuery, setCompQuery] = useState('');
+
+  // Registry / Annual Returns State
+  const corporateClients = useMemo(() => clients.filter(c => c.type === 'Corporate'), [clients]);
+
+  const complianceMetrics = useMemo(() => {
+    return corporateClients.map(c => {
+        // Mock data logic for returns - in a real app this would come from a 'registry' table
+        // We use a deterministic hash of the ID to simulate different registration dates
+        const idHash = c.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        const incMonth = (idHash % 12);
+        const incDay = (idHash % 28) + 1;
+
+        const deadline = new Date(new Date().getFullYear(), incMonth, incDay);
+        const daysToDeadline = Math.round((deadline.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+
+        return {
+            ...c,
+            deadline,
+            daysToDeadline,
+            status: daysToDeadline < 0 ? 'Overdue' : daysToDeadline < 30 ? 'Critical' : 'Compliant'
+        };
+    });
+  }, [corporateClients]);
 
   const handleGenerate = async () => {
     setIsLoading(true);
@@ -102,14 +126,14 @@ export const Corporate: React.FC = () => {
           
           {/* Internal Navigation */}
           {step === 1 && (
-            <div className="flex border-b border-slate-50 px-10 pt-8 shrink-0 bg-white/30">
-                {(['objects', 'resolutions', 'compliance'] as Tab[]).map((t) => (
+            <div className="flex border-b border-slate-50 dark:border-slate-800 px-10 pt-8 shrink-0 bg-white/30 dark:bg-slate-900/30 overflow-x-auto scrollbar-hide">
+                {(['objects', 'resolutions', 'compliance', 'registry'] as Tab[]).map((t) => (
                     <button 
                         key={t}
                         onClick={() => setActiveTab(t)}
-                        className={`px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] transition-all relative ${activeTab === t ? 'text-legal-900' : 'text-slate-400 hover:text-legal-gold'}`}
+                        className={`px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] transition-all relative whitespace-nowrap ${activeTab === t ? 'text-legal-900 dark:text-legal-gold' : 'text-slate-400 hover:text-legal-gold'}`}
                     >
-                        {t}
+                        {t === 'registry' ? 'Compliance Registry' : t}
                         {activeTab === t && <div className="absolute bottom-0 left-8 right-8 h-1 bg-legal-gold rounded-full transition-all shadow-[0_0_10px_rgba(197,160,89,0.5)]"></div>}
                     </button>
                 ))}
@@ -206,27 +230,89 @@ export const Corporate: React.FC = () => {
                             <textarea 
                                 value={compQuery}
                                 onChange={e => setCompQuery(e.target.value)}
-                                className="flex-1 w-full bg-slate-50 border border-slate-100 rounded-[32px] p-8 text-lg font-serif italic text-legal-900 focus:ring-4 focus:ring-legal-gold/5 outline-none transition-all resize-none shadow-inner"
+                                className="flex-1 w-full bg-slate-50 border border-slate-100 dark:border-slate-800 rounded-[32px] p-8 text-lg font-serif italic text-legal-900 dark:text-white bg-transparent focus:ring-4 focus:ring-legal-gold/5 outline-none transition-all resize-none shadow-inner"
                                 placeholder="e.g. What are the requirements for a private company limited by guarantee to appoint a non-citizen as a director?"
                             />
                         </div>
                     )}
+
+                    {activeTab === 'registry' && (
+                        <div className="h-full flex flex-col animate-in fade-in slide-in-from-right-4 duration-500">
+                            <div className="flex justify-between items-center mb-8">
+                                <div>
+                                    <h3 className="text-xl font-serif font-black italic text-legal-900 dark:text-white tracking-tight">Statutory Compliance Registry</h3>
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">CAMA 2020 Annual Returns Tracker</p>
+                                </div>
+                                <button className="bg-legal-900 dark:bg-legal-gold text-white dark:text-legal-900 px-6 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest hover:opacity-90 transition-all flex items-center gap-2">
+                                    <Plus size={14} /> Add Entity Tracker
+                                </button>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-4 overflow-y-auto pr-2 scrollbar-hide">
+                                {complianceMetrics.length === 0 ? (
+                                    <div className="py-20 text-center bg-slate-50 dark:bg-slate-800/50 rounded-[32px] border-2 border-dashed border-slate-200 dark:border-slate-800">
+                                        <Building2 className="mx-auto w-12 h-12 text-slate-200 mb-4" />
+                                        <p className="text-sm font-bold text-slate-400">No corporate entities detected in directory.</p>
+                                    </div>
+                                ) : (
+                                    complianceMetrics.map(c => (
+                                        <div key={c.id} className="bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 p-6 rounded-[24px] flex items-center justify-between group hover:shadow-lg transition-all">
+                                            <div className="flex items-center gap-6">
+                                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border shadow-sm ${
+                                                    c.status === 'Overdue' ? 'bg-rose-50 border-rose-100 text-rose-500' :
+                                                    c.status === 'Critical' ? 'bg-amber-50 border-amber-100 text-amber-500' :
+                                                    'bg-emerald-50 border-emerald-100 text-emerald-500'
+                                                }`}>
+                                                    <Clock size={24} />
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-serif font-black italic text-lg text-legal-900 dark:text-white">{c.name}</h4>
+                                                    <div className="flex items-center gap-4 mt-1">
+                                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Next Filing: {c.deadline.toLocaleDateString()}</span>
+                                                        <span className={`text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest ${
+                                                            c.status === 'Overdue' ? 'bg-rose-500 text-white' :
+                                                            c.status === 'Critical' ? 'bg-amber-500 text-white' :
+                                                            'bg-emerald-500 text-white'
+                                                        }`}>
+                                                            {c.status}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-3">
+                                                {c.status !== 'Compliant' && (
+                                                    <button className="bg-legal-900 dark:bg-white text-white dark:text-legal-900 px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-legal-gold transition-all">
+                                                        Draft Returns
+                                                    </button>
+                                                )}
+                                                <button className="p-3 text-slate-300 hover:text-legal-900 dark:hover:text-white rounded-xl transition-all">
+                                                    <ChevronRight size={20} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
-                <div className="flex justify-between items-center py-6 border-t border-slate-50 shrink-0 mt-8">
-                    <div className="flex items-center gap-3 px-6 py-2 bg-slate-900 rounded-full">
-                        <ShieldCheck className="text-legal-gold" size={16} />
-                        <span className="text-[9px] font-black text-white uppercase tracking-widest">CAMA 2020 Compliance Guard Active</span>
+                {activeTab !== 'registry' && (
+                    <div className="flex justify-between items-center py-6 border-t border-slate-50 shrink-0 mt-8">
+                        <div className="flex items-center gap-3 px-6 py-2 bg-slate-900 rounded-full">
+                            <ShieldCheck className="text-legal-gold" size={16} />
+                            <span className="text-[9px] font-black text-white uppercase tracking-widest">CAMA 2020 Compliance Guard Active</span>
+                        </div>
+                        <button
+                            onClick={handleGenerate}
+                            disabled={isLoading}
+                            className="group bg-legal-900 text-white px-12 py-6 rounded-[24px] font-black uppercase tracking-widest text-[11px] shadow-2xl shadow-legal-900/40 hover:bg-legal-gold hover:text-legal-900 transition-all flex items-center gap-4 disabled:opacity-20 active:scale-95"
+                        >
+                            {isLoading ? <RefreshCw className="animate-spin" size={18}/> : <Zap size={18} className="group-hover:scale-125 transition-transform" />}
+                            {isLoading ? 'Processing...' : 'Execute Synthesis'}
+                        </button>
                     </div>
-                    <button 
-                        onClick={handleGenerate}
-                        disabled={isLoading}
-                        className="group bg-legal-900 text-white px-12 py-6 rounded-[24px] font-black uppercase tracking-widest text-[11px] shadow-2xl shadow-legal-900/40 hover:bg-legal-gold hover:text-legal-900 transition-all flex items-center gap-4 disabled:opacity-20 active:scale-95"
-                    >
-                        {isLoading ? <RefreshCw className="animate-spin" size={18}/> : <Zap size={18} className="group-hover:scale-125 transition-transform" />}
-                        {isLoading ? 'Processing...' : 'Execute Synthesis'}
-                    </button>
-                </div>
+                )}
               </div>
             ) : (
               <div className="flex-1 flex flex-col overflow-hidden animate-in fade-in slide-in-from-right-4 duration-700">

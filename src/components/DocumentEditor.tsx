@@ -483,6 +483,16 @@ export const DocumentEditor: React.FC = () => {
 
                 <div className="h-8 w-px bg-gray-100 dark:bg-slate-800"></div>
 
+                <button
+                    onClick={() => setShowHistory(!showHistory)}
+                    className={`p-2.5 rounded-xl transition-all ${showHistory ? 'bg-legal-gold text-white shadow-lg' : 'text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-legal-900 dark:hover:text-white'}`}
+                    title="Version History"
+                >
+                    <History size={18} />
+                </button>
+
+                <div className="h-8 w-px bg-gray-100 dark:bg-slate-800"></div>
+
                 <button 
                   onClick={() => setPaperMode(!paperMode)}
                   className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${paperMode ? 'bg-legal-gold text-white shadow-lg' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200'}`}
@@ -492,8 +502,8 @@ export const DocumentEditor: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex-1 flex overflow-hidden bg-slate-50/50 dark:bg-slate-950">
-                <div className={`flex flex-col h-full bg-white dark:bg-slate-900 transition-all duration-500 ${splitView ? 'w-1/2 border-r border-gray-100 dark:border-slate-800' : 'w-full'} overflow-hidden`}>
+            <div className="flex-1 flex overflow-hidden bg-slate-50/50 dark:bg-slate-950 relative">
+                <div className={`flex flex-col h-full bg-white dark:bg-slate-900 transition-all duration-500 ${splitView ? 'w-1/2 border-r border-gray-100 dark:border-slate-800' : showHistory ? 'w-[calc(100%-320px)]' : 'w-full'} overflow-hidden`}>
                   <div className="flex-1 overflow-y-auto relative scrollbar-hide py-12 px-10">
                       <div className="max-w-3xl mx-auto min-h-full flex flex-col">
                           <input
@@ -577,11 +587,59 @@ export const DocumentEditor: React.FC = () => {
                         </div>
                       )}
                   </div>
-                </div>                 {splitView && (
+                </div>
+
+                {splitView && (
                     <div ref={previewRef} className="w-1/2 h-full overflow-y-auto bg-slate-200/50 dark:bg-slate-950/50 py-12 px-10 scrollbar-hide border-l border-gray-100 dark:border-slate-800 flex justify-center">
                         <div className={`prose prose-slate dark:prose-invert prose-lg max-w-none h-fit ${paperMode ? 'legal-document-form shadow-2xl mb-40' : 'bg-white dark:bg-slate-900 p-12 shadow-sm font-serif text-slate-800 dark:text-slate-200'}`}>
                             {!paperMode && <h1 className="text-5xl font-black italic tracking-tighter text-legal-900 dark:text-white mb-10">{selectedDoc.title}</h1>}
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>{selectedDoc.content}</ReactMarkdown>
+                        </div>
+                    </div>
+                )}
+
+                {showHistory && (
+                    <div className="w-80 h-full bg-slate-50 dark:bg-slate-900 border-l border-gray-100 dark:border-slate-800 flex flex-col animate-in slide-in-from-right duration-300">
+                        <div className="p-6 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-white dark:bg-slate-900">
+                            <h3 className="text-xs font-black uppercase tracking-widest text-legal-900 dark:text-white flex items-center gap-2">
+                                <History size={14} className="text-legal-gold" /> Version History
+                            </h3>
+                            <button onClick={() => setShowHistory(false)} className="text-slate-400 hover:text-slate-600"><X size={16} /></button>
+                        </div>
+                        <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide">
+                            {currentStoredDoc?.versions && currentStoredDoc.versions.length > 0 ? (
+                                currentStoredDoc.versions.map((version, idx) => (
+                                    <div key={version.id} className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-all group">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <span className="text-[10px] font-black text-legal-gold uppercase tracking-widest">
+                                                {idx === 0 ? 'Current Live' : `Version ${currentStoredDoc.versions!.length - idx}`}
+                                            </span>
+                                            <span className="text-[9px] font-medium text-slate-400">
+                                                {new Date(version.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            </span>
+                                        </div>
+                                        <p className="text-[11px] font-bold text-legal-900 dark:text-white mb-3 truncate">{version.title}</p>
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => handleRestoreVersion(version)}
+                                                className="flex-1 bg-slate-900 dark:bg-legal-gold text-white dark:text-legal-900 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center gap-1"
+                                            >
+                                                <RotateCcw size={10} /> Restore
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="py-20 text-center text-slate-400">
+                                    <History size={32} className="mx-auto mb-4 opacity-10" />
+                                    <p className="text-[10px] font-black uppercase tracking-widest">No archival versions detected.</p>
+                                </div>
+                            )}
+                        </div>
+                        <div className="p-6 bg-white dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800">
+                            <p className="text-[9px] font-medium text-slate-400 leading-relaxed italic">
+                                Versions are automatically captured during intelligence sync operations.
+                            </p>
                         </div>
                     </div>
                 )}

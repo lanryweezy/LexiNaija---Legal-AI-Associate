@@ -64,6 +64,7 @@ export const Clients: React.FC = () => {
         showToast("New client enrollment completed.", "success");
       }
       setShowModal(false);
+      if (!editingId) showToast("New client enrolled successfully.", "success");
     }
   };
 

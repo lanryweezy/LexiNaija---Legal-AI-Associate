@@ -79,11 +79,12 @@ const PLANS: PricingPlan[] = [
 
 export const Subscription: React.FC = () => {
   const { showToast } = useToast();
+  const { addCredits } = useLegalStore();
   const [loading, setLoading] = React.useState<string | null>(null);
 
   const handlePaystackPayment = async (plan: any) => {
-    if (plan.price === 'Custom') {
-      showToast("Enterprise protocol requires manual consultation.", "info");
+    if (plan.cta === 'Consult Sales') {
+      showToast("Enterprise tier requires manual firm onboarding. Contact sales@lexinaija.com", "info");
       return;
     }
 

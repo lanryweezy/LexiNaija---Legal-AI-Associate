@@ -10,7 +10,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      includeAssets: ['favicon.png', 'pwa-512x512.png', 'robots.txt', 'sitemap.xml'],
       manifest: {
         name: 'LexiNaija - Legal AI Associate',
         short_name: 'LexiNaija',
@@ -18,7 +18,7 @@ export default defineConfig({
         theme_color: '#0a192f',
         icons: [
           {
-            src: 'pwa-192x192.png',
+            src: 'favicon.png',
             sizes: '192x192',
             type: 'image/png'
           },

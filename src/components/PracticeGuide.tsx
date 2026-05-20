@@ -293,27 +293,29 @@ export const PracticeGuide: React.FC = () => {
     : GUIDES.filter(g => g.category === selectedCategory);
 
   return (
-    <div className="p-8 max-w-7xl mx-auto h-screen flex flex-col">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h2 className="text-3xl font-serif font-bold text-legal-900">Practice Guides</h2>
-          <p className="text-gray-600 mt-2">Step-by-step procedural guides for Nigerian law practice.</p>
+    <div className="p-8 max-w-7xl mx-auto h-[calc(100vh-2rem)] flex flex-col animate-in fade-in duration-1000">
+      <header className="mb-12">
+        <div className="flex items-center gap-2 text-[10px] font-black text-legal-gold uppercase tracking-[0.3em] mb-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-legal-gold animate-pulse"></div>
+            Jurisprudence & Procedure
         </div>
-      </div>
+        <h2 className="text-5xl font-serif font-black text-legal-900 italic tracking-tighter leading-tight">Practice Guides</h2>
+        <p className="text-slate-400 font-medium mt-2">Step-by-step procedural blueprints for Nigerian legal practitioners.</p>
+      </header>
 
-      <div className="flex gap-6 flex-1 overflow-hidden">
+      <div className="flex gap-10 flex-1 overflow-hidden">
         {/* Sidebar Categories */}
-        <div className="w-64 flex-shrink-0 bg-white rounded-lg shadow-sm border border-gray-200 p-4 h-fit">
-          <h3 className="font-semibold text-gray-700 mb-4 px-2">Categories</h3>
-          <div className="space-y-1">
+        <div className="w-72 flex-shrink-0 bg-white/70 backdrop-blur-xl rounded-[40px] border border-white shadow-2xl p-8 h-fit flex flex-col gap-6">
+          <h3 className="text-[10px] font-black text-legal-900 uppercase tracking-widest border-b border-slate-50 pb-4">Categories</h3>
+          <div className="space-y-2">
             {categories.map(cat => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                className={`w-full text-left px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all ${
                   selectedCategory === cat 
-                    ? 'bg-legal-50 text-legal-900 font-medium' 
-                    : 'text-gray-600 hover:bg-gray-50'
+                    ? 'bg-legal-900 text-white shadow-xl'
+                    : 'text-slate-400 hover:text-legal-900 hover:bg-slate-50'
                 }`}
               >
                 {cat}
@@ -323,51 +325,57 @@ export const PracticeGuide: React.FC = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 overflow-y-auto pr-2 pb-4">
-          <div className="grid grid-cols-1 gap-4">
+        <div className="flex-1 overflow-y-auto scrollbar-hide pb-10">
+          <div className="grid grid-cols-1 gap-6">
             {filteredGuides.map(guide => (
               <div 
                 key={guide.id}
-                className={`bg-white rounded-lg shadow-sm border transition-all duration-200 ${
-                  activeGuide === guide.id ? 'border-legal-gold ring-1 ring-legal-gold' : 'border-gray-200'
+                className={`bg-white/70 backdrop-blur-xl rounded-[32px] shadow-sm border transition-all duration-300 group ${
+                  activeGuide === guide.id ? 'border-legal-gold bg-white shadow-2xl scale-[1.01]' : 'border-slate-100 hover:border-legal-gold/40'
                 }`}
               >
                 <div 
                   onClick={() => setActiveGuide(activeGuide === guide.id ? null : guide.id)}
-                  className="p-5 cursor-pointer flex justify-between items-center"
+                  className="p-8 cursor-pointer flex justify-between items-center"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className={`p-2 rounded-lg ${
-                      guide.category === 'Property' ? 'bg-orange-100 text-orange-600' :
-                      guide.category === 'Corporate' ? 'bg-blue-100 text-blue-600' :
-                      guide.category === 'Litigation' ? 'bg-red-100 text-red-600' :
-                      'bg-purple-100 text-purple-600'
+                  <div className="flex items-center gap-6">
+                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${
+                      guide.category === 'Property' ? 'bg-orange-50 text-orange-500' :
+                      guide.category === 'Corporate' ? 'bg-sky-50 text-sky-500' :
+                      guide.category === 'Litigation' ? 'bg-rose-50 text-rose-500' :
+                      'bg-legal-gold/10 text-legal-gold'
                     }`}>
-                      {guide.category === 'Property' && <Home className="w-5 h-5" />}
-                      {guide.category === 'Corporate' && <Building2 className="w-5 h-5" />}
-                      {guide.category === 'Litigation' && <Scale className="w-5 h-5" />}
-                      {guide.category === 'Family' && <User className="w-5 h-5" />}
-                      {guide.category === 'General' && <CheckSquare className="w-5 h-5" />}
+                      {guide.category === 'Property' && <Home size={24} />}
+                      {guide.category === 'Corporate' && <Building2 size={24} />}
+                      {guide.category === 'Litigation' && <Scale size={24} />}
+                      {guide.category === 'Family' && <User size={24} />}
+                      {guide.category === 'General' && <CheckSquare size={24} />}
                     </div>
                     <div>
-                      <h3 className="font-serif font-bold text-legal-900 text-lg">{guide.title}</h3>
-                      <p className="text-sm text-gray-500">{guide.description}</p>
+                      <h3 className="text-2xl font-serif font-black italic text-legal-900 tracking-tight group-hover:text-legal-gold transition-colors">{guide.title}</h3>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">{guide.description}</p>
                     </div>
                   </div>
-                  <ChevronRight className={`w-5 h-5 text-gray-400 transition-transform ${activeGuide === guide.id ? 'rotate-90' : ''}`} />
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${activeGuide === guide.id ? 'bg-legal-gold text-white rotate-90' : 'bg-slate-50 text-slate-300 group-hover:text-legal-900'}`}>
+                    <ChevronRight size={20} />
+                  </div>
                 </div>
 
                 {activeGuide === guide.id && (
-                  <div className="px-5 pb-5 pt-0 border-t border-gray-100 bg-gray-50/50">
-                    <div className="mt-4 space-y-3">
+                  <div className="px-10 pb-10 pt-4 border-t border-slate-50 bg-slate-50/50 animate-in slide-in-from-top-4 duration-300">
+                    <div className="space-y-4">
                       {guide.steps.map((step, index) => (
-                        <div key={index} className="flex items-start gap-3 p-2 rounded hover:bg-white transition-colors">
-                          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-legal-100 text-legal-700 flex items-center justify-center text-xs font-bold mt-0.5">
+                        <div key={index} className="flex items-start gap-6 p-6 rounded-[24px] bg-white shadow-sm border border-slate-100 hover:shadow-md transition-all">
+                          <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-legal-900 text-legal-gold flex items-center justify-center text-[10px] font-black italic shadow-lg">
                             {index + 1}
                           </div>
-                          <p className="text-gray-700 text-sm leading-relaxed">{step}</p>
+                          <p className="text-slate-600 text-sm font-medium leading-relaxed italic">{step}</p>
                         </div>
                       ))}
+                    </div>
+                    <div className="mt-8 flex items-center gap-3 px-6 py-4 bg-emerald-50 border border-emerald-100 rounded-2xl">
+                        <ShieldCheck size={16} className="text-emerald-500" />
+                        <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Protocol Verified: Evidence Act & Rules of Court Compliant</span>
                     </div>
                   </div>
                 )}

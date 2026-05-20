@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Truck, Search, Plus, Calendar, FileText, User, CheckCircle2, Clock, Upload, AlertCircle, Trash2 } from 'lucide-react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
+import { useToast } from '../contexts/ToastContext';
 import { useDropzone } from 'react-dropzone';
 
 interface BailiffEntry {
@@ -18,6 +19,7 @@ interface BailiffEntry {
 
 export const BailiffTracker: React.FC = () => {
   const { cases } = useLegalStore();
+  const { showToast } = useToast();
   const [entries, setEntries] = useState<BailiffEntry[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [newEntry, setNewEntry] = useState<Partial<BailiffEntry>>({
@@ -30,6 +32,7 @@ export const BailiffTracker: React.FC = () => {
   const onDrop = (acceptedFiles: File[]) => {
     // Affidavit verified for chain of custody
     setNewEntry({ ...newEntry, affidavitUrl: acceptedFiles[0].name });
+    showToast("Affidavit metadata ingested successfully.", "success");
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ 
@@ -47,50 +50,57 @@ export const BailiffTracker: React.FC = () => {
       ]);
       setShowModal(false);
       setNewEntry({ status: 'In Progress', dateGiven: new Date().toISOString().split('T')[0] });
+      showToast("Service record initialized.", "success");
     }
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto h-[calc(100vh-2rem)] flex flex-col">
-      <div className="flex justify-between items-end mb-8">
-        <div>
-          <h2 className="text-3xl font-serif font-bold text-legal-900 flex items-center gap-3">
-            <Truck className="text-legal-gold" /> Bailiff & Process Tracker
-          </h2>
-          <p className="text-gray-600 mt-2">Monitor service of process and manage affidavits of service.</p>
+    <div className="p-8 max-w-7xl mx-auto flex flex-col animate-in fade-in duration-1000">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 text-[10px] font-black text-legal-gold uppercase tracking-[0.3em] mb-1">
+              <div className="w-1.5 h-1.5 rounded-full bg-legal-gold animate-pulse"></div>
+              Service of Process
+          </div>
+          <h2 className="text-5xl font-serif font-black text-legal-900 italic tracking-tighter leading-tight">Bailiff Tracker</h2>
+          <p className="text-slate-400 font-medium">Monitor institutional service protocols and manage affidavits of service.</p>
         </div>
         <button 
           onClick={() => setShowModal(true)}
-          className="bg-legal-900 text-white px-6 py-3 rounded-lg font-bold hover:bg-legal-800 flex items-center gap-2 shadow-lg"
+          className="bg-legal-900 text-white px-10 py-5 rounded-[22px] font-black uppercase tracking-widest text-[11px] hover:bg-legal-gold hover:text-legal-900 shadow-xl shadow-legal-900/10 transition-all flex items-center gap-3 active:scale-95 group"
         >
-          <Plus size={20} /> Log New Process
+          <Plus size={18} className="group-hover:rotate-90 transition-transform" /> Log Process
         </button>
-      </div>
+      </header>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex-1 flex flex-col">
-        <div className="p-4 border-b border-gray-100 bg-gray-50 flex gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+      <div className="bg-white/70 backdrop-blur-xl rounded-[48px] border border-white shadow-2xl overflow-hidden flex-1 flex flex-col">
+        <div className="p-6 border-b border-slate-100 bg-slate-50/30 flex gap-6">
+          <div className="relative flex-1 group">
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-legal-gold transition-colors w-5 h-5" />
             <input 
               type="text" 
               placeholder="Search by Bailiff, Case, or Process..." 
-              className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-legal-gold outline-none"
+              className="w-full pl-14 pr-6 py-4 bg-white border border-slate-100 rounded-2xl text-sm font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/5 outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-300"
             />
           </div>
-          <select className="bg-white border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-legal-gold outline-none">
-            <option>All Statuses</option>
+          <select className="bg-white border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/5 outline-none cursor-pointer shadow-sm">
+            <option>All Active Protocols</option>
             <option>In Progress</option>
             <option>Served</option>
             <option>Returned</option>
           </select>
         </div>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto scrollbar-hide">
           {entries.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-gray-400 p-12 text-center">
-              <Truck className="w-16 h-16 mb-4 opacity-10" />
-              <p className="text-lg font-medium">No processes currently tracked.</p>
-              <p className="text-sm max-w-xs mt-2">Log your first process to start tracking service of court papers.</p>
+            <div className="h-full flex flex-col items-center justify-center text-slate-300 p-20 text-center">
+              <div className="w-24 h-24 bg-slate-50 rounded-[32px] flex items-center justify-center mb-8">
+                <Truck className="w-12 h-12 opacity-10" />
+              </div>
+              <h4 className="text-2xl font-serif font-black italic text-slate-300 tracking-tight">Empty Registry</h4>
+              <p className="text-xs font-black uppercase tracking-widest text-slate-400 mt-4 max-w-xs leading-relaxed">
+                Log your first process to start tracking institutional service of court papers.
+              </p>
             </div>
           ) : (
             <table className="w-full text-left border-collapse">

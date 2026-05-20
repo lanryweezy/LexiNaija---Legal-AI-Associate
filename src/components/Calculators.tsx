@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { Calculator, Calendar, AlertTriangle, CheckCircle2, Coins, Clock, ShieldCheck, Feather } from 'lucide-react';
 
+import { useToast } from '../contexts/ToastContext';
+
 export const Calculators: React.FC = () => {
+  const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<'limitation' | 'tenancy' | 'fees' | 'probate'>('limitation');
 
   // Limitation State
@@ -349,6 +352,18 @@ export const Calculators: React.FC = () => {
 
                     {feeResult !== null && (
                         <div className="mt-10 p-10 rounded-[32px] bg-slate-50 border border-slate-200 text-center relative overflow-hidden group hover:bg-white transition-all cursor-default shadow-sm hover:shadow-xl">
+                            <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(`Statutory Fee Estimate: ₦${feeResult.toLocaleString()}`);
+                                        showToast("Fee estimate copied to clipboard.", "success");
+                                    }}
+                                    className="p-3 bg-white border border-slate-100 rounded-xl text-slate-400 hover:text-legal-900 shadow-sm"
+                                    title="Copy Result"
+                                >
+                                    <Feather size={16} />
+                                </button>
+                            </div>
                             <p className="text-[10px] text-slate-400 uppercase font-black tracking-[0.2em] mb-4">Minimum Statutory Fee Estimate</p>
                             <p className="text-5xl font-serif font-black text-legal-900 mb-4 tracking-tighter">₦{feeResult.toLocaleString()}</p>
                             <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-[9px] font-black uppercase tracking-widest">Scale I: 10% Weighted Avg.</div>

@@ -39,12 +39,12 @@ export const Analytics: React.FC = () => {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto animate-in fade-in duration-1000">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+    <div className="p-8 max-w-7xl mx-auto flex flex-col h-[calc(100vh-2rem)] animate-in fade-in duration-1000">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-[10px] font-black text-legal-gold uppercase tracking-[0.3em] mb-1">
               <div className="w-1.5 h-1.5 rounded-full bg-legal-gold animate-pulse"></div>
-              Firm Performance
+              Intelligence Insights
           </div>
           <h2 className="text-5xl font-serif font-black text-legal-900 dark:text-white italic tracking-tighter leading-tight">Analytics</h2>
           <p className="text-slate-400 dark:text-slate-500 font-medium">Insights and metrics on firm performance and matter status.</p>

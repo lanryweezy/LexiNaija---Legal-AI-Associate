@@ -1,4 +1,5 @@
 import React, { useState, Suspense, lazy, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { Sidebar } from './components/Sidebar';
 import { LandingPage } from './components/LandingPage';
 import { Auth } from './components/Auth';
@@ -31,15 +32,25 @@ const Entertainment = lazy(() => import('./components/Entertainment').then(m => 
 const FeeCalculator = lazy(() => import('./components/FeeCalculator').then(m => ({ default: m.FeeCalculator })));
 const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })));
 const TermsOfService = lazy(() => import('./components/TermsOfService').then(m => ({ default: m.TermsOfService })));
+
 import { AppView } from './types';
 import { LegalStoreProvider, useLegalStore } from './contexts/LegalStoreContext';
 import { ToastProvider } from './contexts/ToastContext';
-
+import { ThemeProvider } from './contexts/ThemeContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
-function AppContent() {
+function AppRoutes() {
   const { currentView, setView } = useLegalStore();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+
+  useEffect(() => {
+    const path = location.pathname.substring(1).toUpperCase() || 'LANDING';
+    if (Object.values(AppView).includes(path as AppView)) {
+        setView(path as AppView);
+    }
+  }, [location, setView]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -52,112 +63,86 @@ function AppContent() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const renderView = () => {
-    switch (currentView) {
-      case AppView.LANDING:
-        return <LandingPage onGetStarted={() => setView(AppView.AUTH)} onNavigate={setView} />;
-      case AppView.AUTH:
-        return <Auth onAuthSuccess={() => setView(AppView.DASHBOARD)} />;
-      case AppView.DASHBOARD:
-        return <Dashboard onNavigate={setView} />;
-      case AppView.DOCKET:
-        return <Docket />;
-      case AppView.RESEARCH:
-        return <Research />;
-      case AppView.DRAFTER:
-        return <Drafter />;
-      case AppView.SUMMARIZER:
-        return <Summarizer />;
-      case AppView.CLIENTS:
-        return <Clients />;
-      case AppView.CASES:
-        return <Cases />;
-      case AppView.BILLING:
-        return <Billing />;
-      case AppView.EDITOR:
-        return <DocumentEditor />;
-      case AppView.SETTINGS:
-        return <Settings />;
-      case AppView.CONFLICT_CHECK:
-        return <ConflictCheck />;
-      case AppView.CALCULATORS:
-        return <Calculators />;
-      case AppView.PRECEDENTS:
-        return <Precedents onNavigate={setView} />;
-      case AppView.PRACTICE_GUIDE:
-        return <PracticeGuide />;
-      case AppView.STRATEGY:
-        return <Strategy />;
-      case AppView.EVIDENCE:
-        return <Evidence />;
-      case AppView.WITNESS:
-        return <Witness />;
-      case AppView.BRIEFS:
-        return <Briefs />;
-      case AppView.CORPORATE:
-        return <Corporate />;
-      case AppView.ENTERTAINMENT:
-        return <Entertainment />;
-      case AppView.CALCULATOR:
-        return <FeeCalculator />;
-      case AppView.ANALYTICS:
-        return <Analytics />;
-      case AppView.CASE_LAW:
-        return <CaseLawDatabase />;
-      case AppView.BAILIFF:
-        return <BailiffTracker />;
-      case AppView.AUDIT:
-        return <ComplianceAudit />;
-      case AppView.PORTAL:
-        return <ClientPortal />;
-      case AppView.PRIVACY:
-        return <PrivacyPolicy onBack={() => setView(AppView.LANDING)} />;
-      case AppView.TERMS:
-        return <TermsOfService onBack={() => setView(AppView.LANDING)} />;
-      default:
-        return (
-          <div className="flex flex-col items-center justify-center h-full text-slate-400">
-            <h2 className="text-2xl font-serif font-black italic">View Not Found</h2>
-            <p className="mt-2 text-sm uppercase tracking-widest font-black">The requested intelligence module is unavailable.</p>
-            <button
-              onClick={() => setView(AppView.DASHBOARD)}
-              className="mt-8 px-6 py-3 bg-legal-900 text-white rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-legal-gold transition-all"
-            >
-              Return to Control Panel
-            </button>
-          </div>
-        );
-    }
-  };
-
   const isFullPage = currentView === AppView.LANDING || currentView === AppView.AUTH || currentView === AppView.PRIVACY || currentView === AppView.TERMS;
 
+  const handleNavigate = (view: AppView) => {
+    setView(view);
+    navigate(`/${view.toLowerCase()}`);
+  };
+
   return (
-    <ErrorBoundary>
-      <div className="flex h-screen w-full bg-slate-50 font-sans text-slate-900">
-        {!isFullPage && <Sidebar currentView={currentView} setView={setView} />}
-        <main className={`flex-1 ${!isFullPage ? 'ml-64' : ''} overflow-auto scrollbar-hide ${currentView === AppView.EDITOR || currentView === AppView.DOCKET || currentView === AppView.EVIDENCE || currentView === AppView.WITNESS || currentView === AppView.BRIEFS || currentView === AppView.CORPORATE ? 'bg-white' : ''}`}>
-          <Suspense fallback={<div className="p-6 text-sm text-gray-600">Loading…</div>}>
-            {renderView()}
-          </Suspense>
-        </main>
-        <CommandPalette 
-          isOpen={isCommandPaletteOpen}
-          onClose={() => setIsCommandPaletteOpen(false)}
-          onNavigate={(view) => setView(view)}
-        />
-      </div>
-    </ErrorBoundary>
+    <div className="flex h-screen w-full bg-slate-50 dark:bg-slate-950 font-sans text-slate-900 dark:text-slate-100 transition-colors">
+      {!isFullPage && <Sidebar currentView={currentView} />}
+      <main className={`flex-1 ${!isFullPage ? 'ml-64' : ''} overflow-auto scrollbar-hide ${currentView === AppView.EDITOR || currentView === AppView.DOCKET || currentView === AppView.EVIDENCE || currentView === AppView.WITNESS || currentView === AppView.BRIEFS || currentView === AppView.CORPORATE ? 'bg-white dark:bg-slate-900' : ''}`}>
+        <Suspense fallback={<div className="p-6 text-sm text-gray-600">Loading…</div>}>
+          <Routes>
+            <Route path="/" element={<Navigate to={`/${AppView.LANDING.toLowerCase()}`} replace />} />
+            <Route path="/landing" element={<LandingPage onGetStarted={() => handleNavigate(AppView.AUTH)} onNavigate={handleNavigate} />} />
+            <Route path="/auth" element={<Auth onAuthSuccess={() => handleNavigate(AppView.DASHBOARD)} />} />
+            <Route path="/dashboard" element={<Dashboard onNavigate={handleNavigate} />} />
+            <Route path="/docket" element={<Docket />} />
+            <Route path="/research" element={<Research />} />
+            <Route path="/drafter" element={<Drafter />} />
+            <Route path="/summarizer" element={<Summarizer />} />
+            <Route path="/clients" element={<Clients />} />
+            <Route path="/cases" element={<Cases />} />
+            <Route path="/billing" element={<Billing />} />
+            <Route path="/editor" element={<DocumentEditor />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/conflict_check" element={<ConflictCheck />} />
+            <Route path="/calculators" element={<Calculators />} />
+            <Route path="/precedents" element={<Precedents onNavigate={handleNavigate} />} />
+            <Route path="/practice_guide" element={<PracticeGuide />} />
+            <Route path="/strategy" element={<Strategy />} />
+            <Route path="/evidence" element={<Evidence />} />
+            <Route path="/witness" element={<Witness />} />
+            <Route path="/briefs" element={<Briefs />} />
+            <Route path="/corporate" element={<Corporate />} />
+            <Route path="/entertainment" element={<Entertainment />} />
+            <Route path="/calculator" element={<FeeCalculator />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/case_law" element={<CaseLawDatabase />} />
+            <Route path="/bailiff" element={<BailiffTracker />} />
+            <Route path="/audit" element={<ComplianceAudit />} />
+            <Route path="/portal" element={<ClientPortal />} />
+            <Route path="/privacy" element={<PrivacyPolicy onBack={() => handleNavigate(AppView.LANDING)} />} />
+            <Route path="/terms" element={<TermsOfService onBack={() => handleNavigate(AppView.LANDING)} />} />
+            <Route path="*" element={
+              <div className="flex flex-col items-center justify-center h-full text-slate-400">
+                <h2 className="text-2xl font-serif font-black italic">View Not Found</h2>
+                <p className="mt-2 text-sm uppercase tracking-widest font-black">The requested intelligence module is unavailable.</p>
+                <button
+                  onClick={() => handleNavigate(AppView.DASHBOARD)}
+                  className="mt-8 px-6 py-3 bg-legal-900 text-white rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-legal-gold transition-all"
+                >
+                  Return to Control Panel
+                </button>
+              </div>
+            } />
+          </Routes>
+        </Suspense>
+      </main>
+      <CommandPalette
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+      />
+    </div>
   );
 }
 
 function App() {
   return (
-    <LegalStoreProvider>
-      <ToastProvider>
-        <AppContent />
-      </ToastProvider>
-    </LegalStoreProvider>
+    <ErrorBoundary>
+      <LegalStoreProvider>
+        <ToastProvider>
+          <ThemeProvider>
+            <BrowserRouter>
+              <AppRoutes />
+            </BrowserRouter>
+          </ThemeProvider>
+        </ToastProvider>
+      </LegalStoreProvider>
+    </ErrorBoundary>
   );
 }
 

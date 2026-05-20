@@ -13,7 +13,7 @@
 @layer base {
   body {
     font-family: var(--font-sans);
-    background-color: #f8fafc;
+    @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors;
   }
   
   .legal-serif {
@@ -70,4 +70,14 @@
     left: 0;
     font-weight: bold;
   }
+}
+
+@layer components {
+    .card {
+        @apply bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm transition-all;
+    }
+
+    .input-base {
+        @apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 focus:ring-4 focus:ring-legal-gold/10 transition-all outline-none;
+    }
 }

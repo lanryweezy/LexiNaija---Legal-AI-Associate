@@ -1,14 +1,17 @@
-import { Scale, BookOpen, PenTool, LayoutDashboard, ShieldCheck, Users, Briefcase, CreditCard, FileText, Calendar, ShieldAlert, Settings, Calculator, Library, List, BrainCircuit, Archive, UserCheck, Feather, Building2, BarChart3, Gavel, Truck, Share2, Music } from 'lucide-react';
+import { Scale, BookOpen, PenTool, LayoutDashboard, ShieldCheck, Users, Briefcase, CreditCard, FileText, Calendar, ShieldAlert, Settings, Calculator, Library, List, BrainCircuit, Archive, UserCheck, Feather, Building2, BarChart3, Gavel, Truck, Share2, Music, Sun, Moon } from 'lucide-react';
 import { AppView } from '../types';
 import { useLegalStore } from '../contexts/LegalStoreContext';
+import { useTheme } from '../contexts/ThemeContext';
+import { Link } from 'react-router-dom';
 
 interface SidebarProps {
   currentView: AppView;
-  setView: (view: AppView) => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ currentView }) => {
   const { suggestions, activeCaseId, cases, creditsTotal, creditsUsed, firmProfile } = useLegalStore();
+  const { theme, toggleTheme } = useTheme();
+
   const practiceItems = [
     { id: AppView.DASHBOARD, label: 'Dashboard', icon: LayoutDashboard, badge: suggestions.length > 0 ? suggestions.length : undefined },
     { id: AppView.ANALYTICS, label: 'Analytics', icon: BarChart3 },
@@ -42,14 +45,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
 
   return (
     <div className="w-64 bg-legal-900 text-white h-screen flex flex-col fixed left-0 top-0 z-10 shadow-xl">
-      <div className="p-6 border-b border-legal-700 flex items-center gap-3">
-        <div className="w-8 h-8 bg-legal-gold rounded-sm flex items-center justify-center">
-          <ShieldCheck className="text-legal-900 w-5 h-5" />
+      <div className="p-6 border-b border-legal-700 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-legal-gold rounded-sm flex items-center justify-center">
+            <ShieldCheck className="text-legal-900 w-5 h-5" />
+            </div>
+            <div className="flex flex-col">
+                <h1 className="text-lg font-serif font-bold tracking-wide text-gray-100 leading-none">LexiNaija</h1>
+                <span className="text-[10px] text-gray-400 mt-1">Associate Suite</span>
+            </div>
         </div>
-        <div className="flex flex-col">
-            <h1 className="text-lg font-serif font-bold tracking-wide text-gray-100 leading-none">LexiNaija</h1>
-            <span className="text-[10px] text-gray-400 mt-1">Associate Suite</span>
-        </div>
+        <button
+            onClick={toggleTheme}
+            className="p-2 hover:bg-legal-800 rounded-lg transition-colors text-legal-gold"
+        >
+            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+        </button>
       </div>
 
       <nav className="flex-1 py-6 overflow-y-auto scrollbar-hide">
@@ -60,8 +71,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
             const isActive = currentView === item.id;
             return (
               <li key={item.id}>
-                <button
-                  onClick={() => setView(item.id)}
+                <Link
+                  to={`/${item.id.toLowerCase()}`}
                   className={`w-full flex items-center gap-3 px-6 py-2.5 transition-colors duration-200 border-l-4 ${
                     isActive 
                       ? 'bg-legal-800 border-legal-gold text-white' 
@@ -75,7 +86,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
                         {item.badge}
                     </span>
                   )}
-                </button>
+                </Link>
               </li>
             );
           })}
@@ -88,8 +99,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
             const isActive = currentView === item.id;
             return (
               <li key={item.id}>
-                <button
-                  onClick={() => setView(item.id)}
+                <Link
+                  to={`/${item.id.toLowerCase()}`}
                   className={`w-full flex items-center gap-3 px-6 py-2.5 transition-colors duration-200 border-l-4 ${
                     isActive 
                       ? 'bg-legal-800 border-legal-gold text-white' 
@@ -98,7 +109,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
                 >
                   <Icon className={`w-4 h-4 ${isActive ? 'text-legal-gold' : ''}`} />
                   <span className="font-medium text-sm">{item.label}</span>
-                </button>
+                </Link>
               </li>
             );
           })}

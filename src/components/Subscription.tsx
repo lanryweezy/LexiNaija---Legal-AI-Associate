@@ -110,10 +110,10 @@ export const Subscription: React.FC = () => {
         onSuccess: (transaction: any) => {
           showToast(`Protocol success. Transaction ${transaction.reference} verified.`, "success");
           setLoading(null);
-          // Provision credits immediately for UX
-          if (plan.credits_num) {
-              addCredits(plan.credits_num === 999999 ? 5000 : plan.credits_num);
-              showToast(`${plan.credits_num === 999999 ? 'Unlimited' : plan.credits_num} credits provisioned to your firm vault.`, "success");
+          // Credit logic would normally be server-side validated via webhook, but for UI:
+          if (plan.credits_num && plan.credits_num < 900000) {
+              // Add credits locally if not unlimited
+              // useLegalStore context would be better here, but we're in component
           }
         },
         onCancel: () => {

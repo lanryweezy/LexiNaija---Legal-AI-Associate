@@ -14,8 +14,20 @@ export const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
 
+  const checkSupabaseConfig = () => {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    if (!supabaseUrl || !supabaseAnonKey || supabaseUrl.includes('placeholder')) {
+      showToast("Supabase is not configured correctly. Check your environment variables (VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY).", "error");
+      return false;
+    }
+    return true;
+  };
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!checkSupabaseConfig()) return;
+
     setLoading(true);
     
     try {
@@ -31,13 +43,15 @@ export const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
         onAuthSuccess?.();
       }
     } catch (error: any) {
-      showToast(error.message, "error");
+      showToast(error.message || "Authentication failed. Check your Supabase project settings.", "error");
     } finally {
       setLoading(false);
     }
   };
 
   const handleSSO = async (provider: 'google' | 'azure') => {
+    if (!checkSupabaseConfig()) return;
+
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
@@ -47,7 +61,7 @@ export const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
       });
       if (error) throw error;
     } catch (error: any) {
-      showToast(error.message, "error");
+      showToast(error.message || `SSO Login failed. Ensure ${provider} provider is enabled in Supabase.`, "error");
     }
   };
 

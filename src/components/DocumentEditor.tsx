@@ -5,7 +5,7 @@ import {
   FileText, Save, Download, File, Search, ChevronRight, PenTool, Eye, History, RotateCcw,
   Bold, Italic, Underline, Heading, List, ListOrdered, Quote, Code,
   Strikethrough, Subscript, Superscript, Link as LinkIcon, Table as TableIcon,
-  CheckSquare, Minus, Image as ImageIcon, Sparkles, X, Wand2, Columns, Layout, Gavel
+  CheckSquare, Minus, Image as ImageIcon, Sparkles, X, Wand2, Columns, Layout, Gavel, Users
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -48,6 +48,23 @@ export const DocumentEditor: React.FC = () => {
   
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
+
+  // Simulated Presence
+  const [activeUsers, setActiveUsers] = useState<Array<{id: string, name: string, color: string}>>([]);
+
+  useEffect(() => {
+    if (selectedDoc && firmProfile.isEnterprise) {
+        // Simulate a partner joining after 3 seconds
+        const timer = setTimeout(() => {
+            setActiveUsers([{ id: 'partner_1', name: 'Principal Partner', color: 'bg-emerald-500' }]);
+            showToast("Principal Partner joined the drafting session.", "info");
+        }, 3000);
+        return () => {
+            clearTimeout(timer);
+            setActiveUsers([]);
+        };
+    }
+  }, [selectedDoc, firmProfile.isEnterprise]);
 
   // Auto-save logic
   const debouncedSave = useCallback(
@@ -328,21 +345,21 @@ export const DocumentEditor: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen bg-white">
+    <div className="flex h-screen bg-white dark:bg-slate-950">
       {/* Sidebar List */}
-      <div className="w-80 border-r border-gray-100 flex flex-col bg-gray-50/50 pt-6">
+      <div className="w-80 border-r border-gray-100 dark:border-slate-800 flex flex-col bg-gray-50/50 dark:bg-slate-900/20 pt-6">
         <div className="px-5 mb-6">
-          <h2 className="text-xl font-serif font-black text-legal-900 mb-4 flex items-center gap-2">
+          <h2 className="text-xl font-serif font-black text-legal-900 dark:text-white mb-4 flex items-center gap-2">
             <FileText className="w-6 h-6 text-legal-gold"/> Documents
           </h2>
           <div className="relative group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 group-focus-within:text-legal-900 transition-colors" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 group-focus-within:text-legal-900 dark:group-focus-within:text-legal-gold transition-colors" />
             <input 
               type="text" 
               placeholder="Search documents..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-legal-gold/20 focus:border-legal-gold transition-all"
+              className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-legal-gold/20 focus:border-legal-gold transition-all dark:text-white"
             />
           </div>
         </div>
@@ -353,7 +370,7 @@ export const DocumentEditor: React.FC = () => {
             if (caseDocs.length === 0) return null;
             return (
               <div key={c.id} className="mb-4">
-                <div className="px-3 py-1 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 truncate">
+                <div className="px-3 py-1 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-2 truncate">
                   {c.title}
                 </div>
                 <div className="space-y-1">
@@ -363,15 +380,15 @@ export const DocumentEditor: React.FC = () => {
                       onClick={() => handleSelectDoc(c.id, doc)}
                       className={`w-full text-left px-3 py-2.5 rounded-xl text-sm flex items-center gap-3 transition-all ${
                         selectedDoc?.docId === doc.id 
-                          ? 'bg-white shadow-sm ring-1 ring-gray-100 text-legal-900 font-semibold' 
-                          : 'text-slate-500 hover:bg-gray-100 hover:text-legal-900'
+                          ? 'bg-white dark:bg-slate-800 shadow-sm ring-1 ring-gray-100 dark:ring-slate-700 text-legal-900 dark:text-white font-semibold'
+                          : 'text-slate-500 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-legal-900 dark:hover:text-white'
                       }`}
                     >
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${selectedDoc?.docId === doc.id ? 'bg-legal-900 text-legal-gold' : 'bg-white text-slate-400 border border-gray-100'}`}>
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${selectedDoc?.docId === doc.id ? 'bg-legal-900 text-legal-gold' : 'bg-white dark:bg-slate-800 text-slate-400 border border-gray-100 dark:border-slate-700'}`}>
                         <File size={16} />
                       </div>
                       <span className="truncate flex-1">{doc.title}</span>
-                      <div className={`w-2 h-2 rounded-full ${doc.status === 'Signed' ? 'bg-green-500' : doc.status === 'Under Review' ? 'bg-amber-400' : 'bg-slate-200'}`}></div>
+                      <div className={`w-2 h-2 rounded-full ${doc.status === 'Signed' ? 'bg-green-500' : doc.status === 'Under Review' ? 'bg-amber-400' : 'bg-slate-200 dark:bg-slate-700'}`}></div>
                     </button>
                   ))}
                 </div>
@@ -385,13 +402,13 @@ export const DocumentEditor: React.FC = () => {
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
         {selectedDoc ? (
           <>
-            <div className="h-16 border-b border-gray-100 flex justify-between items-center px-8 bg-white shrink-0 z-20">
+            <div className="h-16 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center px-8 bg-white dark:bg-slate-900 shrink-0 z-20 transition-colors">
               <div className="flex items-center gap-3 text-sm">
-                <div className="px-2.5 py-1 bg-slate-100 text-slate-500 rounded text-[10px] font-black uppercase tracking-widest truncate max-w-[120px]">
+                <div className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded text-[10px] font-black uppercase tracking-widest truncate max-w-[120px]">
                     {cases.find(c => c.id === selectedDoc.caseId)?.title}
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-300" />
-                <span className="font-serif font-black text-legal-900 uppercase italic tracking-tight truncate max-w-[200px]">{selectedDoc.title}</span>
+                <ChevronRight className="w-4 h-4 text-slate-300 dark:text-slate-600" />
+                <span className="font-serif font-black text-legal-900 dark:text-white uppercase italic tracking-tight truncate max-w-[200px]">{selectedDoc.title}</span>
                 {isSaving ? (
                   <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-green-600 ml-4 animate-pulse">
                      <Save size={12} /> Auto-saving
@@ -402,6 +419,20 @@ export const DocumentEditor: React.FC = () => {
               </div>
               
               <div className="flex items-center gap-3">
+                {/* Presence Indicators */}
+                <div className="flex items-center gap-2 mr-4 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-full border dark:border-slate-700 transition-all">
+                    <div className="w-8 h-8 rounded-full bg-legal-900 border-2 border-white dark:border-slate-700 text-white flex items-center justify-center text-[10px] font-black" title="You">ME</div>
+                    {activeUsers.map(u => (
+                        <div key={u.id} className={`w-8 h-8 rounded-full ${u.color} border-2 border-white dark:border-slate-700 text-white flex items-center justify-center text-[10px] font-black animate-in zoom-in duration-500`} title={u.name}>
+                            {u.name.split(' ').map(n => n[0]).join('')}
+                        </div>
+                    ))}
+                    <div className="flex items-center gap-1 ml-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">{activeUsers.length + 1} ONLINE</span>
+                    </div>
+                </div>
+
                 <div className="px-3 py-1.5 bg-legal-900 text-white rounded-lg flex items-center gap-2 group cursor-pointer hover:bg-legal-800 transition-colors">
                     <span className="text-[10px] font-black tracking-widest text-legal-gold uppercase italic">PREMIUM SUBSCRIPTION</span>
                     <div className="h-4 w-px bg-white/10"></div>
@@ -412,7 +443,7 @@ export const DocumentEditor: React.FC = () => {
                     <select 
                         value={selectedDoc.status} 
                         onChange={(e) => handleUpdateStatus(e.target.value as SavedDocument['status'])}
-                        className="pl-3 pr-8 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl border border-gray-100 bg-slate-50 text-slate-500 appearance-none focus:ring-2 focus:ring-legal-gold/20 focus:border-legal-gold outline-none transition-all cursor-pointer"
+                        className="pl-3 pr-8 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl border border-gray-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 appearance-none focus:ring-2 focus:ring-legal-gold/20 focus:border-legal-gold outline-none transition-all cursor-pointer"
                     >
                         <option value="Draft">DRAFT STAGE</option>
                         <option value="Under Review">LEGAL REVIEW</option>
@@ -422,22 +453,12 @@ export const DocumentEditor: React.FC = () => {
                     <ChevronRight className="w-3 h-3 absolute right-3 top-1/2 -translate-y-1/2 rotate-90 text-slate-400 pointer-events-none" />
                 </div>
 
-                <div className="h-8 w-px bg-gray-100"></div>
-                
-                {/* Enterprise Collaboration Simulation */}
-                <div className="flex -space-x-2">
-                    <div className="w-8 h-8 rounded-full bg-legal-900 border-2 border-white text-white flex items-center justify-center text-[10px] font-black" title="You">ME</div>
-                    {selectedDoc.status === 'Under Review' && (
-                        <div className="w-8 h-8 rounded-full bg-amber-500 border-2 border-white text-white flex items-center justify-center text-[10px] font-black" title="Senior Partner">SP</div>
-                    )}
-                </div>
-
-                <div className="h-8 w-px bg-gray-100"></div>
+                <div className="h-8 w-px bg-gray-100 dark:bg-slate-800"></div>
 
                 <div className="flex gap-1">
                     <button 
                         onClick={() => { setSplitView(!splitView); setPreviewMode(false); }}
-                        className={`p-2.5 rounded-xl transition-all ${splitView ? 'bg-legal-gold text-white shadow-lg' : 'text-slate-400 hover:bg-gray-100 hover:text-legal-900'}`}
+                        className={`p-2.5 rounded-xl transition-all ${splitView ? 'bg-legal-gold text-white shadow-lg' : 'text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-legal-900 dark:hover:text-white'}`}
                         title="Split Layout"
                     >
                         <Columns size={18} />
@@ -445,7 +466,7 @@ export const DocumentEditor: React.FC = () => {
                     {!splitView && (
                         <button 
                             onClick={() => setPreviewMode(!previewMode)}
-                            className={`p-2.5 rounded-xl transition-all ${previewMode ? 'bg-legal-900 text-white shadow-lg' : 'text-slate-400 hover:bg-gray-100 hover:text-legal-900'}`}
+                            className={`p-2.5 rounded-xl transition-all ${previewMode ? 'bg-legal-900 text-white shadow-lg' : 'text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-legal-900 dark:hover:text-white'}`}
                             title="Preview Mode"
                         >
                             <Eye size={18} />
@@ -453,26 +474,26 @@ export const DocumentEditor: React.FC = () => {
                     )}
                 </div>
 
-                <div className="h-8 w-px bg-gray-100"></div>
+                <div className="h-8 w-px bg-gray-100 dark:bg-slate-800"></div>
                 
                 <div className="flex gap-1">
-                    <button onClick={handleExportPDF} className="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all" title="Export PDF"><Download size={18} /></button>
-                    <button onClick={handleExportWord} className="p-2.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all" title="Export Word"><FileText size={18} /></button>
+                    <button onClick={handleExportPDF} className="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-xl transition-all" title="Export PDF"><Download size={18} /></button>
+                    <button onClick={handleExportWord} className="p-2.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/20 rounded-xl transition-all" title="Export Word"><FileText size={18} /></button>
                 </div>
 
-                <div className="h-8 w-px bg-gray-100"></div>
+                <div className="h-8 w-px bg-gray-100 dark:bg-slate-800"></div>
 
                 <button 
                   onClick={() => setPaperMode(!paperMode)}
-                  className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${paperMode ? 'bg-legal-gold text-white shadow-lg' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+                  className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${paperMode ? 'bg-legal-gold text-white shadow-lg' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200'}`}
                 >
                   {paperMode ? 'LEGAL PAPER MODE: ON' : 'LEGAL PAPER MODE: OFF'}
                 </button>
               </div>
             </div>
 
-            <div className="flex-1 flex overflow-hidden bg-slate-50/50">
-                <div className={`flex flex-col h-full bg-white transition-all duration-500 ${splitView ? 'w-1/2 border-r border-gray-100' : 'w-full'} overflow-hidden`}>
+            <div className="flex-1 flex overflow-hidden bg-slate-50/50 dark:bg-slate-950">
+                <div className={`flex flex-col h-full bg-white dark:bg-slate-900 transition-all duration-500 ${splitView ? 'w-1/2 border-r border-gray-100 dark:border-slate-800' : 'w-full'} overflow-hidden`}>
                   <div className="flex-1 overflow-y-auto relative scrollbar-hide py-12 px-10">
                       <div className="max-w-3xl mx-auto min-h-full flex flex-col">
                           <input
@@ -483,17 +504,17 @@ export const DocumentEditor: React.FC = () => {
                                 setHasUnsavedChanges(true);
                                 debouncedSave(selectedDoc.caseId, selectedDoc.docId, e.target.value, selectedDoc.content);
                             }}
-                            className="w-full text-5xl font-serif font-black text-legal-900 placeholder-slate-200 border-none focus:ring-0 px-0 mb-10 bg-transparent italic tracking-tighter"
+                            className="w-full text-5xl font-serif font-black text-legal-900 dark:text-white placeholder-slate-200 dark:placeholder-slate-800 border-none focus:ring-0 px-0 mb-10 bg-transparent italic tracking-tighter"
                             placeholder="Title of Instrument"
                           />
                           
-                          <div className="sticky top-0 bg-white/80 backdrop-blur-md z-10 py-3 mb-8 flex gap-1 items-center flex-wrap">
-                            <button onClick={() => applyFormat('bold')} className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition-colors"><Bold size={16} /></button>
-                            <button onClick={() => applyFormat('italic')} className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition-colors"><Italic size={16} /></button>
-                            <button onClick={() => applyFormat('h1')} className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition-colors"><Heading size={16} /></button>
-                            <button onClick={() => applyFormat('list')} className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition-colors"><List size={16} /></button>
-                            <button onClick={() => applyFormat('quote')} className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition-colors"><Quote size={16} /></button>
-                            <div className="w-px h-4 bg-gray-200 mx-2"></div>
+                          <div className="sticky top-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md z-10 py-3 mb-8 flex gap-1 items-center flex-wrap">
+                            <button onClick={() => applyFormat('bold')} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"><Bold size={16} /></button>
+                            <button onClick={() => applyFormat('italic')} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"><Italic size={16} /></button>
+                            <button onClick={() => applyFormat('h1')} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"><Heading size={16} /></button>
+                            <button onClick={() => applyFormat('list')} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"><List size={16} /></button>
+                            <button onClick={() => applyFormat('quote')} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"><Quote size={16} /></button>
+                            <div className="w-px h-4 bg-gray-200 dark:bg-slate-800 mx-2"></div>
                             <button 
                                 onClick={handleOpenAiModal}
                                 className="px-4 py-2 rounded-xl bg-legal-gold/10 text-legal-gold hover:bg-legal-gold hover:text-white flex items-center gap-2 text-[10px] font-black tracking-widest uppercase transition-all"
@@ -502,13 +523,13 @@ export const DocumentEditor: React.FC = () => {
                             </button>
                             <button 
                                 onClick={() => { setAiInstruction("Formalize into court-standard language using institutional legalese, ensuring all parties are properly referenced as defined in the header."); handleAiGenerate(); setShowAiModal(true); }}
-                                className="px-4 py-2 rounded-xl bg-legal-900/10 text-legal-900 hover:bg-legal-900 hover:text-white flex items-center gap-2 text-[10px] font-black tracking-widest uppercase transition-all"
+                                className="px-4 py-2 rounded-xl bg-legal-900/10 dark:bg-white/10 text-legal-900 dark:text-white hover:bg-legal-900 dark:hover:bg-legal-gold hover:text-white flex items-center gap-2 text-[10px] font-black tracking-widest uppercase transition-all"
                             >
                                 <Gavel size={14} /> Formalize for Court
                             </button>
                           </div>
                                                     {previewMode && !splitView ? (
-                            <div className={`prose prose-slate prose-lg max-w-none ${paperMode ? 'legal-document-form shadow-2xl scale-95 origin-top' : 'font-serif text-slate-800 flex-1'}`}>
+                            <div className={`prose prose-slate dark:prose-invert prose-lg max-w-none ${paperMode ? 'legal-document-form shadow-2xl scale-95 origin-top' : 'font-serif text-slate-800 dark:text-slate-200 flex-1'}`}>
                                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{selectedDoc.content}</ReactMarkdown>
                             </div>
                           ) : (
@@ -523,7 +544,7 @@ export const DocumentEditor: React.FC = () => {
                                     }}
                                     onScroll={handleScroll}
                                     placeholder="Commence drafting procedures..."
-                                    className="w-full flex-1 resize-none border-none focus:ring-0 px-0 text-xl leading-[1.8] text-slate-700 font-serif bg-transparent outline-none pb-40"
+                                    className="w-full flex-1 resize-none border-none focus:ring-0 px-0 text-xl leading-[1.8] text-slate-700 dark:text-slate-300 font-serif bg-transparent outline-none pb-40"
                                     spellCheck={false}
                                 />
                                 {/* Simple Variable Overlay (Visual only, doesn't interfere with typing) */}
@@ -557,9 +578,9 @@ export const DocumentEditor: React.FC = () => {
                       )}
                   </div>
                 </div>                 {splitView && (
-                    <div ref={previewRef} className="w-1/2 h-full overflow-y-auto bg-slate-200/50 py-12 px-10 scrollbar-hide border-l border-gray-100 flex justify-center">
-                        <div className={`prose prose-slate prose-lg max-w-none h-fit ${paperMode ? 'legal-document-form shadow-2xl mb-40' : 'bg-white p-12 shadow-sm font-serif text-slate-800'}`}>
-                            {!paperMode && <h1 className="text-5xl font-black italic tracking-tighter text-legal-900 mb-10">{selectedDoc.title}</h1>}
+                    <div ref={previewRef} className="w-1/2 h-full overflow-y-auto bg-slate-200/50 dark:bg-slate-950/50 py-12 px-10 scrollbar-hide border-l border-gray-100 dark:border-slate-800 flex justify-center">
+                        <div className={`prose prose-slate dark:prose-invert prose-lg max-w-none h-fit ${paperMode ? 'legal-document-form shadow-2xl mb-40' : 'bg-white dark:bg-slate-900 p-12 shadow-sm font-serif text-slate-800 dark:text-slate-200'}`}>
+                            {!paperMode && <h1 className="text-5xl font-black italic tracking-tighter text-legal-900 dark:text-white mb-10">{selectedDoc.title}</h1>}
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>{selectedDoc.content}</ReactMarkdown>
                         </div>
                     </div>
@@ -568,7 +589,7 @@ export const DocumentEditor: React.FC = () => {
             
             {showAiModal && (
                 <div className="fixed inset-0 bg-legal-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-[40px] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.3)] w-full max-w-xl overflow-hidden animate-in fade-in zoom-in-95 duration-500">
+                    <div className="bg-white dark:bg-slate-900 rounded-[40px] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.3)] w-full max-w-xl overflow-hidden animate-in fade-in zoom-in-95 duration-500">
                         <div className="bg-legal-900 p-8 flex justify-between items-center relative overflow-hidden">
                              <div className="absolute top-0 right-0 w-32 h-32 bg-legal-gold opacity-10 rounded-full translate-x-10 -translate-y-10"></div>
                              <h3 className="text-white font-serif font-black text-2xl italic tracking-tight flex items-center gap-3 relative z-10">
@@ -578,21 +599,21 @@ export const DocumentEditor: React.FC = () => {
                         </div>
                         <div className="p-10">
                             <div className="mb-8">
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Selected Provision</label>
-                                <div className="p-6 bg-slate-50 rounded-3xl text-sm text-slate-600 max-h-40 overflow-y-auto italic border border-slate-100 relative">
+                                <label className="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Selected Provision</label>
+                                <div className="p-6 bg-slate-50 dark:bg-slate-800 rounded-3xl text-sm text-slate-600 dark:text-slate-400 max-h-40 overflow-y-auto italic border border-slate-100 dark:border-slate-700 relative">
                                     <div className="absolute top-0 left-0 w-1 h-full bg-legal-gold/20 mr-4"></div>
                                     "{aiSelectedText}"
                                 </div>
                             </div>
                             
                             <div className="mb-8">
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Select Refining Protocol</label>
+                                <label className="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">Select Refining Protocol</label>
                                 <div className="flex flex-wrap gap-3 mb-6">
                                     {["Make Formal", "Simplify", "Fix Grammar", "Expand", "To Legalese", "Aggressive Style", "Defensive Style"].map((opt) => (
                                         <button 
                                             key={opt}
                                             onClick={() => setAiInstruction(opt)}
-                                            className={`px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl border transition-all ${aiInstruction === opt ? 'bg-legal-gold text-white border-legal-gold shadow-lg shadow-legal-gold/20' : 'bg-white text-slate-500 border-gray-100 hover:border-legal-gold hover:text-legal-gold'}`}
+                                            className={`px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl border transition-all ${aiInstruction === opt ? 'bg-legal-gold text-white border-legal-gold shadow-lg shadow-legal-gold/20' : 'bg-white dark:bg-slate-800 text-slate-500 border-gray-100 dark:border-slate-700 hover:border-legal-gold hover:text-legal-gold'}`}
                                         >
                                             {opt}
                                         </button>
@@ -604,12 +625,12 @@ export const DocumentEditor: React.FC = () => {
                                         value={aiInstruction}
                                         onChange={(e) => setAiInstruction(e.target.value)}
                                         placeholder="Or input custom directives..." 
-                                        className="w-full bg-slate-50 border-none rounded-2xl pl-4 pr-14 py-4 text-sm focus:ring-2 focus:ring-legal-gold/20 outline-none transition-all placeholder-slate-300"
+                                        className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl pl-4 pr-14 py-4 text-sm focus:ring-2 focus:ring-legal-gold/20 outline-none transition-all placeholder-slate-300 dark:placeholder-slate-600 dark:text-white"
                                     />
                                     <button 
                                         onClick={handleAiGenerate}
                                         disabled={!aiInstruction || isAiLoading}
-                                        className="absolute right-2 top-2 p-2.5 bg-legal-900 text-white rounded-xl hover:bg-legal-gold hover:text-legal-900 disabled:opacity-50 transition-all flex items-center justify-center"
+                                        className="absolute right-2 top-2 p-2.5 bg-legal-900 dark:bg-legal-gold text-white dark:text-legal-900 rounded-xl hover:bg-legal-gold hover:text-legal-900 transition-all flex items-center justify-center"
                                     >
                                         {isAiLoading ? <Loader2 className="animate-spin w-4 h-4" /> : <Wand2 size={18} />}
                                     </button>
@@ -619,7 +640,7 @@ export const DocumentEditor: React.FC = () => {
                             {aiResult && !isAiLoading && (
                                 <div className="mb-8 animate-in fade-in slide-in-from-bottom-5">
                                     <label className="block text-[10px] font-black text-green-600 uppercase tracking-widest mb-3">AI PROVISION GENERATED</label>
-                                    <div className="p-6 bg-green-50 rounded-3xl text-sm text-slate-800 border border-green-100 shadow-sm leading-relaxed">
+                                    <div className="p-6 bg-green-50 dark:bg-emerald-900/20 rounded-3xl text-sm text-slate-800 dark:text-emerald-400 border border-green-100 dark:border-emerald-900/30 shadow-sm leading-relaxed">
                                         {aiResult}
                                     </div>
                                 </div>
@@ -630,7 +651,7 @@ export const DocumentEditor: React.FC = () => {
                                 <button 
                                     onClick={handleAiApply}
                                     disabled={!aiResult}
-                                    className="flex-[2] py-4 bg-legal-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-legal-gold hover:text-legal-900 disabled:opacity-20 shadow-xl transition-all"
+                                    className="flex-[2] py-4 bg-legal-900 dark:bg-legal-gold text-white dark:text-legal-900 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-legal-gold hover:text-legal-900 dark:hover:bg-white shadow-xl transition-all"
                                 >
                                     Replace Selection
                                 </button>
@@ -641,11 +662,11 @@ export const DocumentEditor: React.FC = () => {
             )}
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center bg-slate-50/50">
-            <div className="w-40 h-40 bg-white rounded-[40px] shadow-2xl flex items-center justify-center mb-8 animate-pulse">
-               <FileText className="w-16 h-16 text-slate-200" />
+          <div className="flex-1 flex flex-col items-center justify-center bg-slate-50/50 dark:bg-slate-950">
+            <div className="w-40 h-40 bg-white dark:bg-slate-900 rounded-[40px] shadow-2xl flex items-center justify-center mb-8 animate-pulse border dark:border-slate-800">
+               <FileText className="w-16 h-16 text-slate-200 dark:text-slate-800" />
             </div>
-            <p className="text-xl font-serif font-black italic text-slate-300 uppercase tracking-widest">Select Instrument For Review</p>
+            <p className="text-xl font-serif font-black italic text-slate-300 dark:text-slate-800 uppercase tracking-widest">Select Instrument For Review</p>
           </div>
         )}
       </div>

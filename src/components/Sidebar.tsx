@@ -1,19 +1,26 @@
-import { Scale, BookOpen, PenTool, LayoutDashboard, ShieldCheck, Users, Briefcase, CreditCard, FileText, Calendar, ShieldAlert, Settings, Calculator, Library, List, BrainCircuit, Archive, UserCheck, Feather, Building2, BarChart3, Gavel, Truck, Share2, Music, Sun, Moon } from 'lucide-react';
+import { Scale, BookOpen, PenTool, LayoutDashboard, ShieldCheck, Users, Briefcase, CreditCard, FileText, Calendar, ShieldAlert, Settings, Calculator, Library, List, BrainCircuit, Archive, UserCheck, Feather, Building2, BarChart3, Gavel, Truck, Share2, Music, Sun, Moon, Bell } from 'lucide-react';
 import { AppView } from '../types';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
+import { getCasesApproachingLimitation } from '../services/limitationCalculator';
 
 interface SidebarProps {
   currentView: AppView;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentView }) => {
-  const { suggestions, activeCaseId, cases, creditsTotal, creditsUsed, firmProfile } = useLegalStore();
+  const { suggestions, activeCaseId, cases, creditsTotal, creditsUsed, firmProfile, tasks } = useLegalStore();
   const { theme, toggleTheme } = useTheme();
+
+  // Calculate Notification Badge Count
+  const limitationCount = getCasesApproachingLimitation(cases, 90).length;
+  const urgentTasks = tasks.filter(t => t.status === 'Pending' && t.priority === 'High').length;
+  const totalNotifications = limitationCount + urgentTasks;
 
   const practiceItems = [
     { id: AppView.DASHBOARD, label: 'Dashboard', icon: LayoutDashboard, badge: suggestions.length > 0 ? suggestions.length : undefined },
+    { id: AppView.NOTIFICATIONS, label: 'Notifications', icon: Bell, badge: totalNotifications > 0 ? totalNotifications : undefined },
     { id: AppView.ANALYTICS, label: 'Analytics', icon: BarChart3 },
     { id: AppView.DOCKET, label: 'Court Diary & Tasks', icon: Calendar },
     { id: AppView.CASES, label: 'Case Files', icon: Briefcase },
@@ -82,7 +89,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView }) => {
                   <Icon className={`w-4 h-4 ${isActive ? 'text-legal-gold' : ''}`} />
                   <span className="font-medium text-sm flex-1">{item.label}</span>
                   {item.badge && (
-                    <span className="bg-legal-gold text-legal-900 text-[10px] font-black px-2 py-0.5 rounded-full">
+                    <span className={`${item.id === AppView.NOTIFICATIONS ? 'bg-rose-500' : 'bg-legal-gold'} text-legal-900 text-[10px] font-black px-2 py-0.5 rounded-full`}>
                         {item.badge}
                     </span>
                   )}

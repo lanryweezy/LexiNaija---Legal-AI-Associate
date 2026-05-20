@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { CreditCard, FileText, Send, Sparkles, Download, X, AlertTriangle, CheckCircle } from 'lucide-react';
+import { CreditCard, FileText, Send, Sparkles, Download, X, AlertTriangle, CheckCircle, Table } from 'lucide-react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 import { generateFeeNoteDescription } from '../services/geminiService';
 import { jsPDF } from 'jspdf';
+import * as XLSX from 'xlsx';
 import { Invoice } from '../types';
 import { useToast } from '../contexts/ToastContext';
 import { calculateLPROFee, formatCurrency, getLPROReference, type TransactionType } from '../services/lproCalculator';
@@ -74,18 +75,57 @@ export const Billing: React.FC = () => {
       const baseAmount = parseFloat(newInvoice.amount);
       const vatAmount = baseAmount * 0.075; // 7.5% VAT (FIRS)
       const totalAmount = baseAmount + vatAmount;
+
+      let description = newInvoice.finalDescription;
+
+      if (lproResult) {
+          description += "\n\n--- STATUTORY REMUNERATION (LPRO 2023) ---\n";
+          description += getLPROReference({
+              transactionType: lproInput.transactionType,
+              propertyValue: parseFloat(lproInput.propertyValue)
+          }, lproResult);
+      } else {
+          description += `\n\n[Professional Fees: ₦${baseAmount.toLocaleString()} | VAT @ 7.5%: ₦${vatAmount.toLocaleString()} | Total: ₦${totalAmount.toLocaleString()}]`;
+      }
+
       addInvoice({
         id: Date.now().toString(),
         clientId: newInvoice.clientId,
         caseId: newInvoice.caseId,
         amount: totalAmount,
-        description: newInvoice.finalDescription + `\n\n[Professional Fees: ₦${baseAmount.toLocaleString()} | VAT @ 7.5%: ₦${vatAmount.toLocaleString()} | Total: ₦${totalAmount.toLocaleString()}]`,
+        description: description,
         status: 'Draft',
         date: new Date()
       });
+
       setDrafting(false);
       setNewInvoice({ clientId: '', caseId: '', amount: '', rawDescription: '', finalDescription: '' });
+      setLproResult(null);
+      showToast("Invoice committed to financial register.", "success");
     }
+  };
+
+  const exportToExcel = () => {
+    if (invoices.length === 0) {
+      showToast("No data to export.", "info");
+      return;
+    }
+
+    const data = invoices.map(inv => ({
+      'Invoice ID': `INV-${inv.id.slice(-4)}`,
+      'Client': clients.find(c => c.id === inv.clientId)?.name || 'Unknown',
+      'Matter': cases.find(c => c.id === inv.caseId)?.title || 'General',
+      'Description': inv.description,
+      'Amount (NGN)': inv.amount,
+      'Status': inv.status,
+      'Date': new Date(inv.date).toLocaleDateString()
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Billing Register");
+    XLSX.writeFile(wb, `LexiNaija_Billing_Export_${new Date().getTime()}.xlsx`);
+    showToast("Financial register exported to Excel.", "success");
   };
 
   const generatePDF = (inv: Invoice) => {
@@ -99,10 +139,10 @@ export const Billing: React.FC = () => {
     doc.text("FEE NOTE", 150, 20);
     
     doc.setFontSize(16);
-    doc.text(firmProfile.name, 20, 20);
+    doc.text(firmProfile.name.toUpperCase(), 20, 20);
     doc.setFont("times", "normal");
     doc.setFontSize(10);
-    doc.text("Barristers, Solicitors & Notaries Public", 20, 26);
+    doc.text("BARRISTERS, SOLICITORS & NOTARIES PUBLIC", 20, 26);
     
     // Split address if too long
     const addressLines = doc.splitTextToSize(firmProfile.address, 100);
@@ -113,12 +153,13 @@ export const Billing: React.FC = () => {
     
     // Line
     yOffset += 10;
+    doc.setDrawColor(15, 23, 42);
     doc.setLineWidth(0.5);
     doc.line(20, yOffset, 190, yOffset);
     
     // To Client
     yOffset += 10;
-    doc.setFontSize(12);
+    doc.setFontSize(11);
     doc.setFont("times", "bold");
     doc.text("TO:", 20, yOffset);
     doc.setFont("times", "normal");
@@ -136,49 +177,66 @@ export const Billing: React.FC = () => {
     
     yOffset += 40;
     if (caseItem) {
-        doc.text(`Re: ${caseItem.title}`, 20, yOffset);
+        doc.setFont("times", "bold");
+        doc.text(`RE: ${caseItem.title.toUpperCase()}`, 20, yOffset);
         yOffset += 10;
     }
 
     // Table Header
-    doc.setFillColor(240, 240, 240);
+    doc.setFillColor(15, 23, 42); // slate-900
     doc.rect(20, yOffset, 170, 10, "F");
+    doc.setTextColor(255, 255, 255);
     doc.setFont("times", "bold");
-    doc.text("DESCRIPTION", 25, yOffset + 6);
-    doc.text("AMOUNT (NGN)", 150, yOffset + 6);
+    doc.text("DESCRIPTION OF SERVICES", 25, yOffset + 6.5);
+    doc.text("AMOUNT (NGN)", 150, yOffset + 6.5);
     
     // Content
     yOffset += 20;
+    doc.setTextColor(15, 23, 42);
     doc.setFont("times", "normal");
-    const descLines = doc.splitTextToSize(inv.description, 110);
+    const descLines = doc.splitTextToSize(inv.description, 120);
     doc.text(descLines, 25, yOffset);
-    doc.text(inv.amount.toLocaleString(), 150, yOffset);
     
-    // Total
-    const totalY = yOffset + (descLines.length * 7) + 10;
-    doc.line(20, totalY, 190, totalY);
+    // Amount formatting
+    const amountStr = inv.amount.toLocaleString(undefined, { minimumFractionDigits: 2 });
+    doc.text(amountStr, 185, yOffset, { align: 'right' });
+
+    // Total Section
+    const totalY = Math.max(yOffset + (descLines.length * 7) + 20, 200);
+    doc.setDrawColor(15, 23, 42);
+    doc.setLineWidth(0.5);
+    doc.line(110, totalY - 5, 190, totalY - 5);
+
     doc.setFont("times", "bold");
-    doc.text("TOTAL DUE:", 110, totalY + 10);
+    doc.text("TOTAL DUE:", 110, totalY + 5);
     doc.setFontSize(14);
-    doc.text(`NGN ${inv.amount.toLocaleString()}`, 150, totalY + 10);
+    doc.text(`NGN ${amountStr}`, 185, totalY + 5, { align: 'right' });
     
-    // Footer
-    doc.setFontSize(10);
+    // Footer / Professional Stamp
+    doc.setFontSize(9);
     doc.setFont("times", "italic");
-    doc.text("Payment terms: Due upon receipt.", 20, totalY + 40);
-    doc.text("Note: This fee note includes VAT @ 7.5% as required by FIRS.", 20, totalY + 45);
-    doc.text("Thank you for your instructions.", 20, totalY + 50);
+    doc.text("Payment is due on presentation of this fee note.", 20, totalY + 30);
+    doc.text("Note: Professional fees are subject to 7.5% VAT as per Nigerian Tax Laws.", 20, totalY + 35);
+    doc.text("All checks should be made payable to LexiNaija Chambers or via provided bank details.", 20, totalY + 40);
     
     if (firmProfile.solicitorName) {
         doc.setFont("times", "normal");
-        doc.text("Signed:", 130, totalY + 40);
+        doc.text("Yours Faithfully,", 130, totalY + 30);
         doc.setFont("times", "bold");
-        doc.text(firmProfile.solicitorName, 130, totalY + 50);
+        doc.text(firmProfile.solicitorName, 130, totalY + 45);
         doc.setFont("times", "normal");
-        doc.text("PP: " + firmProfile.name, 130, totalY + 55);
+        doc.text("Principal Partner", 130, totalY + 50);
+
+        // SEAL Placeholder
+        doc.setDrawColor(217, 119, 6); // legal-gold
+        doc.setLineWidth(0.2);
+        doc.circle(170, totalY + 42, 12, 'S');
+        doc.setFontSize(6);
+        doc.setTextColor(217, 119, 6);
+        doc.text("NBA SEAL", 170, totalY + 42, { align: 'center' });
     }
     
-    doc.save(`Invoice_${inv.id}.pdf`);
+    doc.save(`LexiNaija_FeeNote_${inv.id}.pdf`);
   };
 
   return (
@@ -189,43 +247,51 @@ export const Billing: React.FC = () => {
               <div className="w-1.5 h-1.5 rounded-full bg-legal-gold animate-pulse"></div>
               Financial Management
           </div>
-          <h2 className="text-5xl font-serif font-black text-legal-900 italic tracking-tighter leading-tight">Billing & Fees</h2>
-          <p className="text-slate-400 font-medium">Generate professional Fee Notes perfectly compliant with existing LPRO standards.</p>
+          <h2 className="text-5xl font-serif font-black text-legal-900 dark:text-white italic tracking-tighter leading-tight">Billing & Fees</h2>
+          <p className="text-slate-400 dark:text-slate-500 font-medium">Generate professional Fee Notes perfectly compliant with existing LPRO standards.</p>
         </div>
-        <button 
-           onClick={() => setDrafting(true)}
-           className="bg-legal-900 text-white px-8 py-4 rounded-2xl hover:bg-legal-gold hover:text-legal-900 flex items-center gap-3 text-[10px] font-black uppercase tracking-widest shadow-xl shadow-legal-900/20 transition-all shrink-0 group"
-        >
-          <FileText size={16} className="group-hover:-translate-y-1 transition-transform" /> Draft Fee Note
-        </button>
+        <div className="flex gap-4">
+            <button
+               onClick={exportToExcel}
+               className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 px-8 py-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-3 text-[10px] font-black uppercase tracking-widest shadow-sm transition-all"
+            >
+              <Table size={16} /> Export Excel
+            </button>
+            <button
+               onClick={() => setDrafting(true)}
+               className="bg-legal-900 dark:bg-legal-gold text-white dark:text-legal-900 px-8 py-4 rounded-2xl hover:bg-legal-gold hover:text-legal-900 dark:hover:bg-white flex items-center gap-3 text-[10px] font-black uppercase tracking-widest shadow-xl shadow-legal-900/20 transition-all shrink-0 group"
+            >
+              <FileText size={16} className="group-hover:-translate-y-1 transition-transform" /> Draft Fee Note
+            </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-2">Recent Invoices</h3>
           {invoices.length === 0 ? (
-            <div className="bg-slate-50 py-24 text-center rounded-[40px] border-2 border-dashed border-slate-200 text-slate-400">
+            <div className="bg-slate-50 dark:bg-slate-900/50 py-24 text-center rounded-[40px] border-2 border-dashed border-slate-200 dark:border-slate-800 text-slate-400">
                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
-                   <FileText className="w-6 h-6 text-slate-300" />
+                   <FileText className="w-6 h-6 text-slate-300 dark:text-slate-600" />
                </div>
                <p className="text-lg font-serif italic text-slate-400">No invoices generated yet.</p>
             </div>
           ) : (
             invoices.map(inv => (
-              <div key={inv.id} className="bg-white p-6 rounded-[24px] shadow-sm border border-slate-100 flex justify-between items-center hover:shadow-lg hover:border-legal-gold/50 transition-all group">
+              <div key={inv.id} className="bg-white dark:bg-slate-900 p-6 rounded-[24px] shadow-sm border border-slate-100 dark:border-slate-800 flex justify-between items-center hover:shadow-lg hover:border-legal-gold/50 transition-all group">
                 <div className="flex-1 pr-6">
                    <p className="text-[9px] uppercase tracking-widest font-black text-slate-400 mb-2">REF: INV-{inv.id.slice(-4)}</p>
-                   <h4 className="font-serif font-black text-xl italic text-legal-900 tracking-tight">{clients.find(c => c.id === inv.clientId)?.name}</h4>
-                   <p className="text-sm font-medium text-slate-500 mt-2 line-clamp-2 leading-relaxed">{inv.description}</p>
+                   <h4 className="font-serif font-black text-xl italic text-legal-900 dark:text-white tracking-tight">{clients.find(c => c.id === inv.clientId)?.name}</h4>
+                   <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-2 line-clamp-2 leading-relaxed">{inv.description}</p>
                 </div>
-                <div className="flex items-center gap-6 border-l border-slate-100 pl-6 h-full">
+                <div className="flex items-center gap-6 border-l border-slate-100 dark:border-slate-800 pl-6 h-full">
                     <div className="text-right">
-                        <p className="text-2xl font-black text-legal-900 tracking-tight">₦{inv.amount.toLocaleString()}</p>
-                        <span className="text-[9px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-100 px-3 py-1 rounded-full mt-1 inline-block">{inv.status}</span>
+                        <p className="text-2xl font-black text-legal-900 dark:text-white tracking-tight">₦{inv.amount.toLocaleString()}</p>
+                        <span className="text-[9px] font-black uppercase tracking-widest bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/30 px-3 py-1 rounded-full mt-1 inline-block">{inv.status}</span>
                     </div>
                     <button 
                         onClick={() => generatePDF(inv)}
-                        className="p-3 text-slate-400 hover:text-legal-900 hover:bg-slate-50 rounded-xl transition-colors shrink-0 object-contain" 
+                        className="p-3 text-slate-400 hover:text-legal-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors shrink-0 object-contain"
                         title="Download PDF"
                     >
                         <Download size={20} />
@@ -237,15 +303,15 @@ export const Billing: React.FC = () => {
         </div>
 
         <div>
-          <div className="bg-legal-900 p-8 rounded-[40px] shadow-xl text-white relative overflow-hidden">
+          <div className="bg-legal-900 dark:bg-slate-900 p-8 rounded-[40px] shadow-xl text-white relative overflow-hidden border dark:border-slate-800">
             <div className="absolute top-0 right-0 w-32 h-32 bg-legal-gold opacity-10 rounded-full translate-x-16 -translate-y-16 blur-2xl"></div>
             <h3 className="font-serif font-black italic text-2xl text-legal-gold mb-4 flex items-center gap-3"><CreditCard size={24}/> Scale of Charges</h3>
             <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Reference: LPRO (Non-Contentious)</p>
             <ul className="text-sm space-y-4 font-medium text-slate-300">
-              <li className="flex justify-between items-center border-b border-legal-800 pb-3"><span>Conveyance (State Land)</span> <span className="text-legal-gold font-bold">10%</span></li>
-              <li className="flex justify-between items-center border-b border-legal-800 pb-3"><span>Conveyance (Private)</span> <span className="text-legal-gold font-bold">10-15%</span></li>
-              <li className="flex justify-between items-center border-b border-legal-800 pb-3"><span>Tenancy (Solicitor)</span> <span className="text-legal-gold font-bold">10%</span></li>
-              <li className="flex justify-between items-center border-b border-legal-800 pb-3"><span>Mortgages</span> <span className="text-legal-gold font-bold">Varies</span></li>
+              <li className="flex justify-between items-center border-b border-legal-800 dark:border-slate-800 pb-3"><span>Conveyance (State Land)</span> <span className="text-legal-gold font-bold">10%</span></li>
+              <li className="flex justify-between items-center border-b border-legal-800 dark:border-slate-800 pb-3"><span>Conveyance (Private)</span> <span className="text-legal-gold font-bold">10-15%</span></li>
+              <li className="flex justify-between items-center border-b border-legal-800 dark:border-slate-800 pb-3"><span>Tenancy (Solicitor)</span> <span className="text-legal-gold font-bold">10%</span></li>
+              <li className="flex justify-between items-center border-b border-legal-800 dark:border-slate-800 pb-3"><span>Mortgages</span> <span className="text-legal-gold font-bold">Varies</span></li>
               <li className="flex justify-between items-center pt-1"><span>VAT (All Fees)</span> <span className="text-amber-400 font-bold">+ 7.5%</span></li>
             </ul>
             <p className="text-[10px] text-slate-500 mt-4 leading-relaxed">Contentious matters: Fees determined by counsel. All professional fees attract 7.5% VAT per FIRS regulations.</p>
@@ -255,20 +321,20 @@ export const Billing: React.FC = () => {
 
       {drafting && (
         <div className="fixed inset-0 bg-legal-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-[40px] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.3)] w-full max-w-3xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
-            <div className="flex justify-between items-center p-8 border-b border-slate-100 bg-slate-50">
-                <h3 className="text-2xl font-serif font-black italic tracking-tight text-legal-900 flex items-center gap-3">
+          <div className="bg-white dark:bg-slate-900 rounded-[40px] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.3)] w-full max-w-3xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
+            <div className="flex justify-between items-center p-8 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
+                <h3 className="text-2xl font-serif font-black italic tracking-tight text-legal-900 dark:text-white flex items-center gap-3">
                   <FileText className="text-legal-gold" size={24} /> Generate Fee Note
                 </h3>
-                <button onClick={() => setDrafting(false)} className="text-slate-400 hover:text-slate-600 transition-colors bg-white p-2 rounded-full hover:bg-slate-100"><X size={20}/></button>
+                <button onClick={() => setDrafting(false)} className="text-slate-400 hover:text-slate-600 transition-colors bg-white dark:bg-slate-800 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700"><X size={20}/></button>
             </div>
             
             <div className="p-8 space-y-8 overflow-y-auto">
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Client Destination</label>
+                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3 ml-2">Client Destination</label>
                   <select 
-                     className="w-full border border-slate-200 p-4 rounded-2xl bg-white text-sm font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm cursor-pointer" 
+                     className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm cursor-pointer"
                      onChange={e => setNewInvoice({...newInvoice, clientId: e.target.value})}
                   >
                     <option value="">-- Designate Client --</option>
@@ -276,9 +342,9 @@ export const Billing: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Related Matter (Optional)</label>
+                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3 ml-2">Related Matter (Optional)</label>
                   <select 
-                     className="w-full border border-slate-200 p-4 rounded-2xl bg-white text-sm font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm cursor-pointer" 
+                     className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm cursor-pointer"
                      onChange={e => setNewInvoice({...newInvoice, caseId: e.target.value})}
                   >
                     <option value="">-- Select Matter --</option>
@@ -288,11 +354,11 @@ export const Billing: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Professional Fees Minimum (₦)</label>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3 ml-2">Professional Fees Minimum (₦)</label>
                 <div className="relative">
                     <input 
                     type="number" 
-                    className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl text-2xl font-mono text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all" 
+                    className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 p-4 rounded-2xl text-2xl font-mono text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all"
                     placeholder="0.00" 
                     value={newInvoice.amount}
                     onChange={e => setNewInvoice({...newInvoice, amount: e.target.value})} 
@@ -317,7 +383,7 @@ export const Billing: React.FC = () => {
                       
                       <div className="grid grid-cols-2 gap-4 mb-6">
                           <div className="col-span-2">
-                              <label className="block text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2">Transaction Type</label>
+                              <label className="block text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Transaction Type</label>
                               <select
                                 value={lproInput.transactionType}
                                 onChange={(e) => setLproInput({...lproInput, transactionType: e.target.value as TransactionType})}
@@ -330,7 +396,7 @@ export const Billing: React.FC = () => {
                               </select>
                           </div>
                           <div className="col-span-2">
-                              <label className="block text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2">Property/Transaction Value (₦)</label>
+                              <label className="block text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Property/Transaction Value (₦)</label>
                               <input
                                 type="number"
                                 value={lproInput.propertyValue}
@@ -340,7 +406,7 @@ export const Billing: React.FC = () => {
                               />
                           </div>
                           {(lproInput.transactionType === 'Lease') && (
-                            <div className="col-span-2">
+                            <div className="col-span-2 px-2">
                                 <label className="flex items-center gap-3 cursor-pointer">
                                     <input
                                       type="checkbox"
@@ -404,27 +470,27 @@ export const Billing: React.FC = () => {
 
               <div>
                 <div className="flex justify-between items-center mb-3">
-                   <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400">Raw Service Narrative</label>
+                   <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 ml-2">Raw Service Narrative</label>
                    <button 
                       onClick={handleAiRefine}
                       disabled={!newInvoice.rawDescription || loadingAi}
-                      className="text-[10px] font-black uppercase tracking-widest text-legal-gold bg-legal-gold/10 px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-legal-gold/20 disabled:opacity-50 transition-colors"
+                      className="text-[10px] font-black uppercase tracking-widest text-legal-gold bg-legal-gold/10 px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-legal-gold/20 disabled:opacity-50 transition-colors mr-2"
                    >
                      <Sparkles size={14}/> {loadingAi ? 'Refining...' : 'Actionable AI Refinement'}
                    </button>
                 </div>
                 <textarea 
-                  className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl h-24 text-sm font-medium text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-inner resize-none placeholder:font-normal placeholder:text-slate-300" 
+                  className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 p-4 rounded-2xl h-24 text-sm font-medium text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-inner resize-none placeholder:font-normal placeholder:text-slate-300 dark:placeholder:text-slate-600"
                   placeholder="e.g. I went to court for the tenancy matter and filed papers."
                   value={newInvoice.rawDescription}
                   onChange={e => setNewInvoice({...newInvoice, rawDescription: e.target.value, finalDescription: e.target.value})}
                 />
               </div>
 
-              <div className="bg-slate-50 p-6 rounded-[24px] border border-slate-200 shadow-inner">
-                <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 border-b border-slate-200 pb-2">Final Invoice Statement (Legal Pro AI)</label>
+              <div className="bg-slate-50 dark:bg-slate-800/80 p-6 rounded-[24px] border border-slate-200 dark:border-slate-700 shadow-inner">
+                <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3 border-b border-slate-200 dark:border-slate-700 pb-2">Final Invoice Statement (Legal Pro AI)</label>
                 <textarea 
-                  className="w-full bg-transparent border-none p-0 text-sm font-serif font-medium text-legal-900 focus:ring-0 resize-none leading-relaxed" 
+                  className="w-full bg-transparent border-none p-0 text-sm font-serif font-medium text-legal-900 dark:text-slate-200 focus:ring-0 resize-none leading-relaxed"
                   rows={4}
                   value={newInvoice.finalDescription}
                   onChange={e => setNewInvoice({...newInvoice, finalDescription: e.target.value})}
@@ -432,9 +498,9 @@ export const Billing: React.FC = () => {
                 />
               </div>
 
-              <div className="flex gap-4 pt-6 border-t border-slate-100">
+              <div className="flex gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
                 <button onClick={() => setDrafting(false)} className="flex-1 py-4 text-[10px] uppercase font-black tracking-widest text-slate-400 hover:text-slate-600 transition-colors">Terminate Directive</button>
-                <button onClick={handleSave} className="flex-[2] bg-legal-900 text-legal-gold py-4 rounded-2xl text-[10px] uppercase font-black tracking-widest hover:bg-legal-gold hover:text-legal-900 transition-all shadow-xl shadow-legal-900/10 flex items-center justify-center gap-3 group px-4">
+                <button onClick={handleSave} className="flex-[2] bg-legal-900 dark:bg-legal-gold text-legal-gold dark:text-legal-900 py-4 rounded-2xl text-[10px] uppercase font-black tracking-widest hover:bg-legal-gold hover:text-legal-900 dark:hover:bg-white shadow-xl shadow-legal-900/10 flex items-center justify-center gap-3 group px-4">
                   Commit to Financial Register <Send size={16} className="group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>

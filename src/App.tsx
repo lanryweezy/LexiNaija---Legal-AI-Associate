@@ -32,6 +32,7 @@ const Entertainment = lazy(() => import('./components/Entertainment').then(m => 
 const FeeCalculator = lazy(() => import('./components/FeeCalculator').then(m => ({ default: m.FeeCalculator })));
 const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })));
 const TermsOfService = lazy(() => import('./components/TermsOfService').then(m => ({ default: m.TermsOfService })));
+const Notifications = lazy(() => import('./components/Notifications').then(m => ({ default: m.Notifications })));
 
 import { AppView } from './types';
 import { LegalStoreProvider, useLegalStore } from './contexts/LegalStoreContext';
@@ -105,6 +106,7 @@ function AppRoutes() {
             <Route path="/bailiff" element={<BailiffTracker />} />
             <Route path="/audit" element={<ComplianceAudit />} />
             <Route path="/portal" element={<ClientPortal />} />
+            <Route path="/notifications" element={<Notifications />} />
             <Route path="/privacy" element={<PrivacyPolicy onBack={() => handleNavigate(AppView.LANDING)} />} />
             <Route path="/terms" element={<TermsOfService onBack={() => handleNavigate(AppView.LANDING)} />} />
             <Route path="*" element={

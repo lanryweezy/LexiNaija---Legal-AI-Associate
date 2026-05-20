@@ -2,8 +2,10 @@ import React from 'react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, LineChart, Line, Legend, AreaChart, Area
+  PieChart, Pie, Cell, Legend, AreaChart, Area
 } from 'recharts';
+import { Table, Download } from 'lucide-react';
+import * as XLSX from 'xlsx';
 
 export const Analytics: React.FC = () => {
   const { getAnalytics } = useLegalStore();
@@ -14,6 +16,27 @@ export const Analytics: React.FC = () => {
 
   const outcomeData = Object.entries(analytics.outcomeDistribution).map(([name, value]) => ({ name, value }));
   const OUTCOME_COLORS = ['#10b981', '#ef4444', '#f59e0b', '#6366f1', '#94a3b8'];
+
+  const exportAnalyticsToExcel = () => {
+    const wb = XLSX.utils.book_new();
+
+    // Summary Sheet
+    const summaryData = [
+      { Metric: 'Total Matters', Value: analytics.totalCases },
+      { Metric: 'Active Matters', Value: analytics.activeCases },
+      { Metric: 'Total Clients', Value: analytics.totalClients },
+      { Metric: 'Total Revenue (NGN)', Value: analytics.totalRevenue }
+    ];
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(summaryData), "Firm Summary");
+
+    // Monthly Revenue Sheet
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(analytics.monthlyRevenue), "Monthly Revenue");
+
+    // Client Revenue Sheet
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(analytics.topClients), "Top Clients");
+
+    XLSX.writeFile(wb, `LexiNaija_Analytics_Report_${new Date().getTime()}.xlsx`);
+  };
 
   return (
     <div className="p-8 max-w-7xl mx-auto animate-in fade-in duration-1000">
@@ -26,6 +49,12 @@ export const Analytics: React.FC = () => {
           <h2 className="text-5xl font-serif font-black text-legal-900 dark:text-white italic tracking-tighter leading-tight">Analytics</h2>
           <p className="text-slate-400 dark:text-slate-500 font-medium">Insights and metrics on firm performance and matter status.</p>
         </div>
+        <button
+            onClick={exportAnalyticsToExcel}
+            className="bg-legal-900 dark:bg-legal-gold text-white dark:text-legal-900 px-8 py-4 rounded-2xl hover:bg-legal-gold hover:text-legal-900 dark:hover:bg-white flex items-center gap-3 text-[10px] font-black uppercase tracking-widest shadow-xl shadow-legal-900/20 transition-all shrink-0 group"
+        >
+            <Table size={16} /> Export Detailed Report
+        </button>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">

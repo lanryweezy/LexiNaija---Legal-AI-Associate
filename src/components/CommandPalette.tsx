@@ -6,18 +6,19 @@ import {
 } from 'lucide-react';
 import { AppView } from '../types';
 import { useLegalStore } from '../contexts/LegalStoreContext';
+import { useNavigate } from 'react-router-dom';
 
 interface CommandPaletteProps {
     isOpen: boolean;
     onClose: () => void;
-    onNavigate: (view: AppView) => void;
 }
 
-export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose, onNavigate }) => {
+export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
     const [query, setQuery] = useState('');
     const [selectedIndex, setSelectedIndex] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);
-    const { cases, clients } = useLegalStore();
+    const { cases, clients, setActiveCaseId, setView, setActiveDoc } = useLegalStore();
+    const navigate = useNavigate();
 
     const commands = [
         { id: AppView.DASHBOARD, label: 'Go to Dashboard', icon: Briefcase, category: 'Navigation' },
@@ -29,13 +30,38 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
         { id: AppView.SETTINGS, label: 'Firm Settings', icon: Settings, category: 'System' },
     ];
 
+    // Deep Search within documents and notes
+    const documentResults = query.length > 2 ? cases.flatMap(c =>
+        c.documents.filter(d =>
+            d.title.toLowerCase().includes(query.toLowerCase()) ||
+            d.content.toLowerCase().includes(query.toLowerCase())
+        ).map(d => ({
+            id: AppView.EDITOR,
+            label: `Doc: ${d.title}`,
+            icon: FileText,
+            category: `Matter: ${c.title}`,
+            caseId: c.id,
+            docId: d.id
+        }))
+    ) : [];
+
+    const caseNoteResults = query.length > 2 ? cases.filter(c =>
+        c.notes.toLowerCase().includes(query.toLowerCase())
+    ).map(c => ({
+        id: AppView.CASES,
+        label: `Note in: ${c.title}`,
+        icon: Briefcase,
+        category: 'Matter Note',
+        caseId: c.id
+    })) : [];
+
     // Filtered items based on query
     const filteredCommands = [
         ...commands.filter(c =>
             c.label.toLowerCase().includes(query.toLowerCase()) ||
             c.category.toLowerCase().includes(query.toLowerCase())
         ),
-        ...(query.length > 2 ? cases.filter(c => c.title.toLowerCase().includes(query.toLowerCase())).map(c => ({
+        ...(query.length > 2 ? cases.filter(c => c.title.toLowerCase().includes(query.toLowerCase()) || (c.suitNumber && c.suitNumber.toLowerCase().includes(query.toLowerCase()))).map(c => ({
             id: AppView.CASES,
             label: `Case: ${c.title}`,
             icon: Briefcase,
@@ -47,7 +73,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
             label: `Client: ${c.name}`,
             icon: Users,
             category: 'Directory'
-        })) : [])
+        })) : []),
+        ...documentResults,
+        ...caseNoteResults
     ];
 
     useEffect(() => {
@@ -58,7 +86,17 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
         }
     }, [isOpen]);
 
-    const { setActiveCaseId } = useLegalStore();
+    const handleAction = (cmd: any) => {
+        if (cmd.caseId) {
+            setActiveCaseId(cmd.caseId);
+        }
+        if (cmd.docId) {
+            setActiveDoc({ caseId: cmd.caseId, docId: cmd.docId });
+        }
+        setView(cmd.id as AppView);
+        navigate(`/${cmd.id.toLowerCase()}`);
+        onClose();
+    };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'ArrowDown') {
@@ -68,11 +106,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
         } else if (e.key === 'Enter') {
             const selected = filteredCommands[selectedIndex];
             if (selected) {
-                if ((selected as any).caseId) {
-                    setActiveCaseId((selected as any).caseId);
-                }
-                onNavigate(selected.id as AppView);
-                onClose();
+                handleAction(selected);
             }
         } else if (e.key === 'Escape') {
             onClose();
@@ -91,7 +125,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
                     <input 
                         ref={inputRef}
                         type="text"
-                        placeholder="Search modules, cases, or type a command..."
+                        placeholder="Deep search cases, docs, or notes..."
                         className="w-full py-8 text-xl font-serif italic text-legal-900 bg-transparent outline-none placeholder:text-slate-300"
                         value={query}
                         onChange={e => setQuery(e.target.value)}
@@ -108,8 +142,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
                             const Icon = cmd.icon;
                             return (
                                 <button 
-                                    key={cmd.label}
-                                    onClick={() => { onNavigate(cmd.id as AppView); onClose(); }}
+                                    key={`${cmd.label}-${idx}`}
+                                    onClick={() => handleAction(cmd)}
                                     onMouseEnter={() => setSelectedIndex(idx)}
                                     className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all ${
                                         idx === selectedIndex ? 'bg-legal-900 text-white shadow-xl translate-x-1' : 'text-slate-500 hover:bg-slate-50'
@@ -138,7 +172,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
                     ) : (
                         <div className="py-20 text-center">
                             <Zap size={48} className="mx-auto text-slate-100 mb-6" />
-                            <p className="font-serif italic text-slate-400 text-xl">No commands matching protocol.</p>
+                            <p className="font-serif italic text-slate-400 text-xl">No results matching protocol.</p>
                         </div>
                     )}
                 </div>

@@ -145,8 +145,8 @@ export const Cases: React.FC = () => {
               <div className="w-1.5 h-1.5 rounded-full bg-legal-gold animate-pulse"></div>
               Active Matters
           </div>
-          <h2 className="text-5xl font-serif font-black text-legal-900 italic tracking-tighter leading-tight">Case Files</h2>
-          <p className="text-slate-400 font-medium">Track your active litigation and solicitor workspace.</p>
+          <h2 className="text-5xl font-serif font-black text-legal-900 dark:text-white italic tracking-tighter leading-tight">Case Files</h2>
+          <p className="text-slate-400 dark:text-slate-500 font-medium">Track your active litigation and solicitor workspace.</p>
         </div>
         <div className="flex gap-4 items-end">
           <div className="relative">
@@ -156,12 +156,12 @@ export const Cases: React.FC = () => {
                placeholder="Search by title, suit no, or client..." 
                value={searchQuery}
                onChange={(e) => setSearchQuery(e.target.value)}
-               className="pl-12 pr-6 py-4 bg-white border border-slate-100 rounded-2xl focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold w-80 text-sm font-bold text-legal-900 shadow-sm outline-none transition-all placeholder:font-normal placeholder:text-slate-300"
+               className="pl-12 pr-6 py-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold w-80 text-sm font-bold text-legal-900 dark:text-white shadow-sm outline-none transition-all placeholder:font-normal placeholder:text-slate-300"
              />
           </div>
           <button 
              onClick={handleOpenAdd}
-             className="bg-legal-900 text-white px-8 py-4 rounded-2xl hover:bg-legal-gold hover:text-legal-900 flex items-center gap-3 text-[10px] font-black uppercase tracking-widest shadow-xl shadow-legal-900/20 transition-all shrink-0 group"
+             className="bg-legal-900 dark:bg-legal-gold text-white dark:text-legal-900 px-8 py-4 rounded-2xl hover:bg-legal-gold hover:text-legal-900 dark:hover:bg-white flex items-center gap-3 text-[10px] font-black uppercase tracking-widest shadow-xl shadow-legal-900/20 transition-all shrink-0 group"
           >
             <Plus size={16} className="group-hover:rotate-90 transition-transform" /> Open New Matter
           </button>
@@ -171,42 +171,42 @@ export const Cases: React.FC = () => {
       <div className="space-y-6">
         {filteredCases.length > 0 ? (
           filteredCases.map(c => (
-            <div key={c.id} className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between gap-8 hover:shadow-xl hover:border-legal-gold/50 transition-all group relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 opacity-0 group-hover:opacity-100 rounded-full translate-x-32 -translate-y-32 blur-3xl transition-opacity"></div>
+            <div key={c.id} className="bg-white dark:bg-slate-900 p-8 rounded-[32px] shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between gap-8 hover:shadow-xl hover:border-legal-gold/50 transition-all group relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 dark:bg-white/5 opacity-0 group-hover:opacity-100 rounded-full translate-x-32 -translate-y-32 blur-3xl transition-opacity"></div>
               
               <div className="flex-1 relative z-10">
                 <div className="flex items-center gap-3 mb-4">
                    <span className={`text-[9px] uppercase font-black tracking-widest px-3 py-1.5 rounded-xl border ${
-                     c.status === 'Open' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                     c.status === 'Pending Court' ? 'bg-amber-50 text-amber-600 border-amber-100' : 
-                     c.status === 'Closed' ? 'bg-rose-50 text-rose-600 border-rose-100' : 'bg-sky-50 text-sky-600 border-sky-100'
+                     c.status === 'Open' ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-900/30' :
+                     c.status === 'Pending Court' ? 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-900/30' :
+                     c.status === 'Closed' ? 'bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-900/20 dark:text-rose-400 dark:border-rose-900/30' : 'bg-sky-50 text-sky-600 border-sky-100 dark:bg-sky-900/20 dark:text-sky-400 dark:border-sky-900/30'
                    }`}>{c.status}</span>
-                   {c.suitNumber && <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{c.suitNumber}</span>}
+                   {c.suitNumber && <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{c.suitNumber}</span>}
                 </div>
-                <h3 className="text-3xl font-serif font-black italic tracking-tight text-legal-900 mb-2">{c.title}</h3>
+                <h3 className="text-3xl font-serif font-black italic tracking-tight text-legal-900 dark:text-white mb-2">{c.title}</h3>
                 <div className="flex flex-wrap gap-6 text-sm mt-4">
-                    <p className="text-legal-600 font-bold flex items-center gap-2">
+                    <p className="text-legal-600 dark:text-legal-gold font-bold flex items-center gap-2">
                         <Briefcase size={16} className="text-legal-gold" /> Client: {getClientName(c.clientId)}
                     </p>
                     {c.opposingParty && (
-                        <p className="text-rose-500 font-bold flex items-center gap-2 py-0.5 px-2 bg-rose-50 rounded text-xs">
+                        <p className="text-rose-500 font-bold flex items-center gap-2 py-0.5 px-2 bg-rose-50 dark:bg-rose-900/20 rounded text-xs">
                             <Users size={14} /> Vs: {c.opposingParty}
                         </p>
                     )}
                 </div>
-                {c.court && <p className="text-sm font-medium text-slate-500 mt-2 flex items-center gap-2"><Gavel size={16} className="text-slate-400" /> {c.court}</p>}
+                {c.court && <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-2"><Gavel size={16} className="text-slate-400" /> {c.court}</p>}
                 
                 <div className="mt-8 flex gap-4">
-                   <div className="text-[10px] uppercase tracking-widest font-black bg-slate-50 text-legal-900 px-4 py-3 rounded-2xl border border-slate-100 flex items-center gap-3">
+                   <div className="text-[10px] uppercase tracking-widest font-black bg-slate-50 dark:bg-slate-800 text-legal-900 dark:text-slate-300 px-4 py-3 rounded-2xl border border-slate-100 dark:border-slate-700 flex items-center gap-3">
                       <FileText size={16} className="text-slate-400"/> {c.documents.length} Docs
                    </div>
-                   <div className="text-[10px] uppercase tracking-widest font-black bg-emerald-50 text-emerald-700 px-4 py-3 rounded-2xl border border-emerald-100 flex items-center gap-3">
+                   <div className="text-[10px] uppercase tracking-widest font-black bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 px-4 py-3 rounded-2xl border border-emerald-100 dark:border-emerald-900/30 flex items-center gap-3">
                       <Banknote size={16} className="text-emerald-500" /> Unbilled: ₦{calculateTotalFees(c).toLocaleString()}
                    </div>
                 </div>
               </div>
 
-              <div className="md:w-72 flex flex-col justify-between border-l pl-0 md:pl-8 border-slate-100 relative z-10">
+              <div className="md:w-72 flex flex-col justify-between border-l pl-0 md:pl-8 border-slate-100 dark:border-slate-800 relative z-10">
                 <div className="absolute top-0 right-0 md:relative flex justify-end gap-2 mb-6 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                     <button onClick={() => handleOpenAdjourn(c)} className="p-3 text-legal-gold hover:bg-legal-gold hover:text-legal-900 rounded-xl transition-colors" title="Adjourn Matter">
                         <Calendar size={18} />
@@ -214,34 +214,34 @@ export const Cases: React.FC = () => {
                     <button onClick={() => handleOpenFeeLog(c.id)} className="p-3 text-legal-gold hover:bg-legal-gold hover:text-legal-900 rounded-xl transition-colors" title="Log Fee/Expense">
                         <CreditCard size={18} />
                     </button>
-                    <button onClick={() => handleOpenEdit(c)} className="p-3 text-slate-400 hover:text-legal-900 hover:bg-slate-100 rounded-xl transition-colors" title="Edit Case">
+                    <button onClick={() => handleOpenEdit(c)} className="p-3 text-slate-400 hover:text-legal-900 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" title="Edit Case">
                         <Pencil size={18} />
                     </button>
-                    <button onClick={() => handleDeleteRequest(c.id)} className="p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors" title="Delete Case">
+                    <button onClick={() => handleDeleteRequest(c.id)} className="p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-colors" title="Delete Case">
                         <Trash2 size={18} />
                     </button>
                 </div>
 
                 <div>
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">Next Appearance</p>
-                  <div className={`flex items-center gap-3 ${c.nextHearing ? 'text-legal-900' : 'text-slate-400'}`}>
-                    <Calendar size={20} className={c.nextHearing ? "text-legal-gold" : "text-slate-300"} />
+                  <p className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Next Appearance</p>
+                  <div className={`flex items-center gap-3 ${c.nextHearing ? 'text-legal-900 dark:text-white' : 'text-slate-400'}`}>
+                    <Calendar size={20} className={c.nextHearing ? "text-legal-gold" : "text-slate-300 dark:text-slate-600"} />
                     <span className="font-bold">{c.nextHearing ? new Date(c.nextHearing).toDateString() : 'Not Scheduled'}</span>
                   </div>
                 </div>
                 
-                <div className="mt-6 pt-6 border-t border-slate-100 md:border-t-0 md:pt-0">
-                  <p className="text-sm font-medium text-slate-500 leading-relaxed italic">{c.notes || "No additional intelligence available."}</p>
+                <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 md:border-t-0 md:pt-0">
+                  <p className="text-sm font-medium text-slate-500 dark:text-slate-400 leading-relaxed italic">{c.notes || "No additional intelligence available."}</p>
                 </div>
               </div>
             </div>
           ))
         ) : (
-          <div className="text-center py-32 bg-slate-50 rounded-[40px] border-2 border-dashed border-slate-200">
-            <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-                <Briefcase className="w-10 h-10 text-slate-300" />
+          <div className="text-center py-32 bg-slate-50 dark:bg-slate-900/50 rounded-[40px] border-2 border-dashed border-slate-200 dark:border-slate-800">
+            <div className="w-24 h-24 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                <Briefcase className="w-10 h-10 text-slate-300 dark:text-slate-600" />
             </div>
-            <p className="text-xl font-serif font-black text-slate-400 italic">No Matter Files Located.</p>
+            <p className="text-xl font-serif font-black text-slate-400 dark:text-slate-600 italic">No Matter Files Located.</p>
             {searchQuery && <button onClick={() => setSearchQuery('')} className="text-[10px] font-black uppercase tracking-widest text-legal-gold mt-4 hover:opacity-80 transition-opacity">Clear Search Filters</button>}
           </div>
         )}
@@ -251,9 +251,9 @@ export const Cases: React.FC = () => {
                 <button 
                     onClick={loadMoreCases}
                     disabled={isLoadingMore}
-                    className="group flex flex-col items-center gap-4 text-slate-400 hover:text-legal-900 transition-all"
+                    className="group flex flex-col items-center gap-4 text-slate-400 hover:text-legal-900 dark:hover:text-white transition-all"
                 >
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border border-slate-100 bg-white shadow-sm group-hover:shadow-md group-hover:border-legal-gold transition-all ${isLoadingMore ? 'animate-spin' : ''}`}>
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm group-hover:shadow-md group-hover:border-legal-gold transition-all ${isLoadingMore ? 'animate-spin' : ''}`}>
                         <Plus size={20} className={isLoadingMore ? 'opacity-20' : ''} />
                     </div>
                     <span className="text-[10px] font-black uppercase tracking-[0.2em]">
@@ -266,12 +266,12 @@ export const Cases: React.FC = () => {
 
       {showModal && (
         <div className="fixed inset-0 bg-legal-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-[40px] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.3)] w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 maxHeight-[90vh] flex flex-col">
-            <div className="flex justify-between items-center p-8 bg-slate-50/50 border-b border-slate-100">
-              <h3 className="text-2xl font-serif font-black text-legal-900 italic tracking-tight flex items-center gap-3">
+          <div className="bg-white dark:bg-slate-900 rounded-[40px] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.3)] w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 maxHeight-[90vh] flex flex-col">
+            <div className="flex justify-between items-center p-8 bg-slate-50/50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
+              <h3 className="text-2xl font-serif font-black text-legal-900 dark:text-white italic tracking-tight flex items-center gap-3">
                   <Briefcase className="text-legal-gold" size={24} /> {editingId ? 'Update Matter Focus' : 'Open New Matter Focus'}
               </h3>
-              <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors p-2 rounded-full hover:bg-slate-100">
+              <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
                 <X size={20} />
               </button>
             </div>
@@ -282,7 +282,7 @@ export const Cases: React.FC = () => {
                 <select 
                   required 
                   value={formData.clientId}
-                  className="w-full border border-slate-200 p-4 rounded-2xl bg-white text-sm font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all cursor-pointer shadow-sm" 
+                  className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all cursor-pointer shadow-sm"
                   onChange={e => setFormData({...formData, clientId: e.target.value})}
                 >
                   <option value="">-- Elect Client Profile --</option>
@@ -297,7 +297,7 @@ export const Cases: React.FC = () => {
                   value={formData.title}
                   placeholder="e.g. Recovery of Premises..." 
                   required 
-                  className="w-full border border-slate-200 p-4 rounded-2xl bg-white text-sm font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-300" 
+                  className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-300 dark:placeholder:text-slate-600"
                   onChange={e => setFormData({...formData, title: e.target.value})} 
                 />
               </div>
@@ -308,7 +308,7 @@ export const Cases: React.FC = () => {
                   type="text" 
                   value={formData.opposingParty}
                   placeholder="e.g. Defendant/Respondent Name" 
-                  className="w-full border border-slate-200 p-4 rounded-2xl bg-white text-sm font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-300" 
+                  className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-300 dark:placeholder:text-slate-600"
                   onChange={e => setFormData({...formData, opposingParty: e.target.value})} 
                 />
               </div>
@@ -320,7 +320,7 @@ export const Cases: React.FC = () => {
                     type="text" 
                     value={formData.suitNumber}
                     placeholder="e.g. FHC/L/CS/..." 
-                    className="w-full border border-slate-200 p-4 rounded-2xl bg-white text-sm font-mono focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-sans placeholder:text-slate-300" 
+                    className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-mono focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-sans placeholder:text-slate-300 dark:placeholder:text-slate-600 dark:text-white"
                     onChange={e => setFormData({...formData, suitNumber: e.target.value})} 
                   />
                 </div>
@@ -328,7 +328,7 @@ export const Cases: React.FC = () => {
                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Current Posture</label>
                   <select 
                     value={formData.status}
-                    className="w-full border border-slate-200 p-4 rounded-2xl bg-white text-sm font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all cursor-pointer shadow-sm" 
+                    className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all cursor-pointer shadow-sm"
                     onChange={e => setFormData({...formData, status: e.target.value as any})}
                   >
                     <option value="Open">Active Investigation</option>
@@ -345,7 +345,7 @@ export const Cases: React.FC = () => {
                   type="text" 
                   value={formData.court}
                   placeholder="e.g. High Court, Lagos Judicial Division" 
-                  className="w-full border border-slate-200 p-4 rounded-2xl bg-white text-sm font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-300" 
+                  className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-300 dark:placeholder:text-slate-600"
                   onChange={e => setFormData({...formData, court: e.target.value})} 
                 />
               </div>
@@ -354,20 +354,20 @@ export const Cases: React.FC = () => {
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Limitation / Next Appearance</label>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <span className="block text-[9px] font-bold text-slate-300 uppercase mb-2">Next Hearing</span>
+                    <span className="block text-[9px] font-bold text-slate-300 dark:text-slate-600 uppercase mb-2">Next Hearing</span>
                     <input 
                       type="date" 
                       value={formData.nextHearing}
-                      className="w-full border border-slate-200 p-4 rounded-2xl bg-white text-sm font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm" 
+                      className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm"
                       onChange={e => setFormData({...formData, nextHearing: e.target.value})} 
                     />
                   </div>
                   <div>
-                    <span className="block text-[9px] font-bold text-slate-300 uppercase mb-2 text-rose-300">Statute Bar Date</span>
+                    <span className="block text-[9px] font-bold text-slate-300 dark:text-slate-600 uppercase mb-2 text-rose-300">Statute Bar Date</span>
                     <input 
                       type="date" 
                       value={formData.limitationDate}
-                      className="w-full border border-rose-100 p-4 rounded-2xl bg-rose-50/50 text-sm font-bold text-rose-900 focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 outline-none transition-all shadow-sm" 
+                      className="w-full border border-rose-100 dark:border-rose-900/50 p-4 rounded-2xl bg-rose-50/50 dark:bg-rose-900/20 text-sm font-bold text-rose-900 dark:text-rose-400 focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 outline-none transition-all shadow-sm"
                       onChange={e => setFormData({...formData, limitationDate: e.target.value})} 
                     />
                   </div>
@@ -379,14 +379,14 @@ export const Cases: React.FC = () => {
                 <textarea 
                   value={formData.notes}
                   placeholder="Record strategic observations..." 
-                  className="w-full border border-slate-200 p-6 rounded-3xl h-32 text-sm text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none resize-none shadow-inner leading-relaxed bg-slate-50" 
+                  className="w-full border border-slate-200 dark:border-slate-700 p-6 rounded-3xl h-32 text-sm text-legal-900 dark:text-slate-300 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none resize-none shadow-inner leading-relaxed bg-slate-50 dark:bg-slate-800/50"
                   onChange={e => setFormData({...formData, notes: e.target.value})} 
                 />
               </div>
               
-              <div className="flex gap-4 pt-4 border-t border-slate-100">
+              <div className="flex gap-4 pt-4 border-t border-slate-100 dark:border-slate-800">
                 <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-colors">Abort Procedure</button>
-                <button type="submit" className="flex-[2] bg-legal-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-legal-gold hover:text-legal-900 shadow-xl transition-all">
+                <button type="submit" className="flex-[2] bg-legal-900 dark:bg-legal-gold text-white dark:text-legal-900 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-legal-gold hover:text-legal-900 dark:hover:bg-white shadow-xl transition-all">
                   {editingId ? 'Update Matter Intelligence' : 'Initialize Matter'}
                 </button>
               </div>
@@ -397,26 +397,26 @@ export const Cases: React.FC = () => {
 
       {showFeeModal && (
         <div className="fixed inset-0 bg-legal-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-[40px] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.3)] w-full max-w-sm overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex justify-between items-center p-8 bg-slate-50 border-b border-slate-100">
-                <h3 className="font-serif font-black italic text-xl text-legal-900 flex items-center gap-3"><CreditCard className="text-legal-gold" size={24}/> Time & Cost Log</h3>
-                <button onClick={() => setShowFeeModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors p-2 rounded-full hover:bg-slate-100"><X size={20}/></button>
+          <div className="bg-white dark:bg-slate-900 rounded-[40px] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.3)] w-full max-w-sm overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center p-8 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
+                <h3 className="font-serif font-black italic text-xl text-legal-900 dark:text-white flex items-center gap-3"><CreditCard className="text-legal-gold" size={24}/> Time & Cost Log</h3>
+                <button onClick={() => setShowFeeModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><X size={20}/></button>
             </div>
             <form onSubmit={handleSaveFee} className="p-8 space-y-6">
                 <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Disbursement Category</label>
-                    <div className="flex p-1 bg-slate-100 rounded-xl">
+                    <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
                         <button 
                             type="button" 
                             onClick={() => setFeeData({...feeData, type: 'Professional Fee'})}
-                            className={`flex-1 py-3 text-[10px] uppercase tracking-widest font-black rounded-lg transition-all ${feeData.type === 'Professional Fee' ? 'bg-white text-legal-900 shadow-sm' : 'text-slate-500 hover:text-legal-900'}`}
+                            className={`flex-1 py-3 text-[10px] uppercase tracking-widest font-black rounded-lg transition-all ${feeData.type === 'Professional Fee' ? 'bg-white dark:bg-slate-700 text-legal-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-legal-900 dark:hover:text-slate-300'}`}
                         >
                             Professional Fee
                         </button>
                         <button 
                             type="button" 
                             onClick={() => setFeeData({...feeData, type: 'Expense'})}
-                            className={`flex-1 py-3 text-[10px] uppercase tracking-widest font-black rounded-lg transition-all ${feeData.type === 'Expense' ? 'bg-white text-legal-900 shadow-sm' : 'text-slate-500 hover:text-legal-900'}`}
+                            className={`flex-1 py-3 text-[10px] uppercase tracking-widest font-black rounded-lg transition-all ${feeData.type === 'Expense' ? 'bg-white dark:bg-slate-700 text-legal-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-legal-900 dark:hover:text-slate-300'}`}
                         >
                             OPE Expense
                         </button>
@@ -430,7 +430,7 @@ export const Cases: React.FC = () => {
                         value={feeData.description}
                         onChange={e => setFeeData({...feeData, description: e.target.value})}
                         placeholder={feeData.type === 'Professional Fee' ? "e.g. Drafting of Writ of Summons" : "e.g. Court Filing Fees"}
-                        className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl text-sm font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all placeholder:font-normal placeholder:text-slate-300"
+                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-4 rounded-2xl text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all placeholder:font-normal placeholder:text-slate-300 dark:placeholder:text-slate-600"
                     />
                 </div>
                 <div>
@@ -441,11 +441,11 @@ export const Cases: React.FC = () => {
                         value={feeData.amount}
                         onChange={e => setFeeData({...feeData, amount: e.target.value})}
                         placeholder="0.00"
-                        className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl text-xl font-mono text-legal-900 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all"
+                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-4 rounded-2xl text-xl font-mono text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all"
                     />
                 </div>
-                <div className="pt-4 border-t border-slate-100">
-                    <button type="submit" className="w-full bg-legal-900 text-white text-[10px] uppercase font-black tracking-widest py-4 rounded-2xl hover:bg-legal-gold hover:text-legal-900 transition-all shadow-xl group flex justify-center items-center gap-2">
+                <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
+                    <button type="submit" className="w-full bg-legal-900 dark:bg-legal-gold text-white dark:text-legal-900 text-[10px] uppercase font-black tracking-widest py-4 rounded-2xl hover:bg-legal-gold hover:text-legal-900 dark:hover:bg-white transition-all shadow-xl group flex justify-center items-center gap-2">
                         Execute Log <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                     </button>
                 </div>
@@ -456,36 +456,36 @@ export const Cases: React.FC = () => {
 
       {showAdjournModal && (
         <div className="fixed inset-0 bg-legal-900/40 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
-          <div className="bg-white rounded-[40px] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.3)] w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex justify-between items-center p-8 bg-amber-50/50 border-b border-amber-100/50">
+          <div className="bg-white dark:bg-slate-900 rounded-[40px] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.3)] w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center p-8 bg-amber-50/50 dark:bg-amber-900/20 border-b border-amber-100/50 dark:border-amber-900/30">
               <div>
-                  <h3 className="text-2xl font-serif font-black text-amber-900 italic tracking-tight flex items-center gap-3">
+                  <h3 className="text-2xl font-serif font-black text-amber-900 dark:text-amber-100 italic tracking-tight flex items-center gap-3">
                       <Calendar className="text-amber-500" size={24} /> Adjourn Matter
                   </h3>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-amber-700/60 mt-2">Log New Court Date</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-amber-700/60 dark:text-amber-500 mt-2">Log New Court Date</p>
               </div>
-              <button onClick={() => setShowAdjournModal(false)} className="text-amber-400 hover:text-amber-600 transition-colors p-2 rounded-full hover:bg-amber-50">
+              <button onClick={() => setShowAdjournModal(false)} className="text-amber-400 hover:text-amber-600 transition-colors p-2 rounded-full hover:bg-amber-50 dark:hover:bg-amber-900/40">
                 <X size={20} />
               </button>
             </div>
             
             <form onSubmit={handleSaveAdjournment} className="p-8 space-y-6">
                 <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Adjourned To <span className="text-rose-500">*</span></label>
+                    <label className="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Adjourned To <span className="text-rose-500">*</span></label>
                     <input 
                         required
                         type="datetime-local" 
                         value={adjournData.nextHearing}
                         onChange={e => setAdjournData({...adjournData, nextHearing: e.target.value})}
-                        className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl font-bold text-legal-900 focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 outline-none transition-all shadow-inner text-sm"
+                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-4 rounded-2xl font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 outline-none transition-all shadow-inner text-sm"
                     />
                 </div>
                 <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Adjournment Purpose</label>
+                    <label className="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Adjournment Purpose</label>
                     <textarea 
                         value={adjournData.notes}
                         onChange={e => setAdjournData({...adjournData, notes: e.target.value})}
-                        className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl font-bold leading-relaxed text-legal-900 focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 outline-none transition-all shadow-inner h-32 resize-none placeholder:text-slate-300 text-sm"
+                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-4 rounded-2xl font-bold leading-relaxed text-legal-900 dark:text-white focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 outline-none transition-all shadow-inner h-32 resize-none placeholder:text-slate-300 dark:placeholder:text-slate-600 text-sm"
                         placeholder="e.g. Adjourned for Continuation of Trial / Cross-examination of PW1..."
                     />
                 </div>

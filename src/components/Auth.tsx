@@ -17,8 +17,15 @@ export const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
   const checkSupabaseConfig = () => {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-    if (!supabaseUrl || !supabaseAnonKey || supabaseUrl.includes('placeholder')) {
-      showToast("Supabase is not configured correctly. Check your environment variables (VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY).", "error");
+
+    const isInvalid = !supabaseUrl ||
+                      !supabaseAnonKey ||
+                      supabaseUrl.includes('placeholder') ||
+                      supabaseUrl.includes('your-project') ||
+                      supabaseAnonKey.includes('your-anon-key');
+
+    if (isInvalid) {
+      showToast("Supabase is not configured. Please copy .env.example to .env.local and set your actual Supabase URL and Key.", "error");
       return false;
     }
     return true;
@@ -43,7 +50,11 @@ export const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
         onAuthSuccess?.();
       }
     } catch (error: any) {
-      showToast(error.message || "Authentication failed. Check your Supabase project settings.", "error");
+      let message = error.message || "Authentication failed.";
+      if (message.includes('Failed to fetch')) {
+        message = "Network error: Could not reach Supabase. Check if your VITE_SUPABASE_URL is correct and your internet is connected.";
+      }
+      showToast(message, "error");
     } finally {
       setLoading(false);
     }
@@ -61,7 +72,11 @@ export const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
       });
       if (error) throw error;
     } catch (error: any) {
-      showToast(error.message || `SSO Login failed. Ensure ${provider} provider is enabled in Supabase.`, "error");
+      let message = error.message || `SSO Login failed. Ensure ${provider} provider is enabled in Supabase.`;
+      if (message.includes('Failed to fetch')) {
+        message = "Network error: Could not reach Supabase for SSO. Check your configuration.";
+      }
+      showToast(message, "error");
     }
   };
 

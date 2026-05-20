@@ -1,8 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { Dashboard } from '../components/Dashboard';
 import { LegalStoreProvider } from '../contexts/LegalStoreContext';
 import { ToastProvider } from '../contexts/ToastContext';
+import { MemoryRouter } from 'react-router-dom';
 
 // Mock CounselAgent component
 vi.mock('../components/CounselAgent', () => ({
@@ -13,11 +14,13 @@ vi.mock('../components/CounselAgent', () => ({
 
 const renderWithProviders = (component: React.ReactElement) => {
   return render(
-    <LegalStoreProvider>
-      <ToastProvider>
-        {component}
-      </ToastProvider>
-    </LegalStoreProvider>
+    <MemoryRouter>
+      <LegalStoreProvider>
+        <ToastProvider>
+          {component}
+        </ToastProvider>
+      </LegalStoreProvider>
+    </MemoryRouter>
   );
 };
 

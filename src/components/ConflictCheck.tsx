@@ -6,31 +6,45 @@ export const ConflictCheck: React.FC = () => {
   const { clients, cases } = useLegalStore();
   const [query, setQuery] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
+  const [submittedQuery, setSubmittedQuery] = useState('');
 
-  // Logic to find matches — expanded per RPC Rule 19
-  const q = query.toLowerCase();
-  const clientMatches = query ? clients.filter(c => 
-    c.name.toLowerCase().includes(q) ||
-    (c.rcNumber && c.rcNumber.toLowerCase().includes(q)) ||
-    (c.address && c.address.toLowerCase().includes(q)) ||
-    (c.email && c.email.toLowerCase().includes(q))
-  ) : [];
-  
-  const opposingPartyMatches = query ? cases.filter(c => 
-    (c.opposingParty && c.opposingParty.toLowerCase().includes(q)) ||
-    (c.opposingCounsel && c.opposingCounsel.toLowerCase().includes(q))
-  ) : [];
-  
-  const caseMatches = query ? cases.filter(c => 
-    c.title.toLowerCase().includes(q) ||
-    (c.suitNumber && c.suitNumber.toLowerCase().includes(q))
-  ) : [];
+  // Logic to find matches — expanded per RPC Rule 19, memoized to prevent re-calculations on keystrokes
+  const { clientMatches, opposingPartyMatches, caseMatches, totalMatches } = React.useMemo(() => {
+    if (!hasSearched || !submittedQuery) {
+      return { clientMatches: [], opposingPartyMatches: [], caseMatches: [], totalMatches: 0 };
+    }
 
-  const totalMatches = clientMatches.length + opposingPartyMatches.length + caseMatches.length;
+    const q = submittedQuery.toLowerCase();
+
+    const cMatches = clients.filter(c =>
+      c.name.toLowerCase().includes(q) ||
+      (c.rcNumber && c.rcNumber.toLowerCase().includes(q)) ||
+      (c.address && c.address.toLowerCase().includes(q)) ||
+      (c.email && c.email.toLowerCase().includes(q))
+    );
+
+    const opMatches = cases.filter(c =>
+      (c.opposingParty && c.opposingParty.toLowerCase().includes(q)) ||
+      (c.opposingCounsel && c.opposingCounsel.toLowerCase().includes(q))
+    );
+
+    const caMatches = cases.filter(c =>
+      c.title.toLowerCase().includes(q) ||
+      (c.suitNumber && c.suitNumber.toLowerCase().includes(q))
+    );
+
+    return {
+      clientMatches: cMatches,
+      opposingPartyMatches: opMatches,
+      caseMatches: caMatches,
+      totalMatches: cMatches.length + opMatches.length + caMatches.length
+    };
+  }, [hasSearched, submittedQuery, clients, cases]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
+        setSubmittedQuery(query);
         setHasSearched(true);
     }
   };
@@ -90,7 +104,7 @@ export const ConflictCheck: React.FC = () => {
                     </div>
                     <h3 className="text-3xl font-serif font-black text-emerald-900 italic tracking-tight mb-4">Conflict Clearance Confirmed</h3>
                     <p className="text-emerald-700 font-medium leading-relaxed">
-                        The designated entity <span className="font-black underline underline-offset-4">"{query}"</span> has no registered interest within the LexiNaija architecture. Ethical posture is deemed secure.
+                        The designated entity <span className="font-black underline underline-offset-4">"{submittedQuery}"</span> has no registered interest within the LexiNaija architecture. Ethical posture is deemed secure.
                     </p>
                     <div className="mt-10 h-[2px] w-12 bg-emerald-200 mx-auto"></div>
                 </div>
@@ -103,7 +117,7 @@ export const ConflictCheck: React.FC = () => {
                         <div>
                             <h3 className="text-3xl font-serif font-black text-rose-900 italic tracking-tight mb-2">Inhibitory Patterns Detected</h3>
                             <p className="text-rose-700 font-medium select-none">
-                                Found {totalMatches} matches for <span className="font-black">"{query}"</span>. Professional vigilance is mandatory before proceeding with this brief.
+                                Found {totalMatches} matches for <span className="font-black">"{submittedQuery}"</span>. Professional vigilance is mandatory before proceeding with this brief.
                             </p>
                         </div>
                     </div>

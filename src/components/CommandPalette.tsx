@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { 
     Search, Command, Briefcase, FileText, Zap, 
     Settings, Users, Calculator, Trash2, Plus, ArrowRight,
@@ -20,7 +20,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
     const { cases, clients, setActiveCaseId, setView, setActiveDoc } = useLegalStore();
     const navigate = useNavigate();
 
-    const commands = [
+    const commands = useMemo(() => [
         { id: AppView.DASHBOARD, label: 'Go to Dashboard', icon: Briefcase, category: 'Navigation' },
         { id: AppView.CASES, label: 'View Case Files', icon: Briefcase, category: 'Navigation' },
         { id: AppView.CLIENTS, label: 'Client Directory', icon: Users, category: 'Navigation' },
@@ -28,10 +28,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
         { id: AppView.DRAFTER, label: 'Draft Instrument', icon: PenTool, category: 'Tools' },
         { id: AppView.RESEARCH, label: 'Legal Research', icon: Scale, category: 'Tools' },
         { id: AppView.SETTINGS, label: 'Firm Settings', icon: Settings, category: 'System' },
-    ];
+    ], []);
 
     // Deep Search within documents and notes
-    const documentResults = query.length > 2 ? cases.flatMap(c =>
+    const documentResults = useMemo(() => query.length > 2 ? cases.flatMap(c =>
         c.documents.filter(d =>
             d.title.toLowerCase().includes(query.toLowerCase()) ||
             d.content.toLowerCase().includes(query.toLowerCase())
@@ -43,9 +43,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
             caseId: c.id,
             docId: d.id
         }))
-    ) : [];
+    ) : [], [query, cases]);
 
-    const caseNoteResults = query.length > 2 ? cases.filter(c =>
+    const caseNoteResults = useMemo(() => query.length > 2 ? cases.filter(c =>
         c.notes.toLowerCase().includes(query.toLowerCase())
     ).map(c => ({
         id: AppView.CASES,
@@ -53,10 +53,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
         icon: Briefcase,
         category: 'Matter Note',
         caseId: c.id
-    })) : [];
+    })) : [], [query, cases]);
 
     // Filtered items based on query
-    const filteredCommands = [
+    const filteredCommands = useMemo(() => [
         ...commands.filter(c =>
             c.label.toLowerCase().includes(query.toLowerCase()) ||
             c.category.toLowerCase().includes(query.toLowerCase())
@@ -76,7 +76,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
         })) : []),
         ...documentResults,
         ...caseNoteResults
-    ];
+    ], [query, commands, cases, clients, documentResults, caseNoteResults]);
 
     useEffect(() => {
         if (isOpen) {

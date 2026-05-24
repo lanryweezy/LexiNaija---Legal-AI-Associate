@@ -55,7 +55,7 @@ export const Analytics: React.FC = () => {
         >
             <Table size={16} /> Export Detailed Report
         </button>
-      </div>
+      </header>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         <div className="bg-white dark:bg-slate-900 rounded-[32px] shadow-sm border border-slate-100 dark:border-slate-800 p-8 hover:shadow-xl hover:border-legal-gold/50 transition-all relative overflow-hidden group">

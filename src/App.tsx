@@ -39,6 +39,46 @@ import { LegalStoreProvider, useLegalStore } from './contexts/LegalStoreContext'
 import { ToastProvider } from './contexts/ToastContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { ChevronRight } from 'lucide-react';
+
+const Breadcrumbs = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const pathnames = location.pathname.split('/').filter((x) => x);
+
+  if (pathnames.length === 0 || pathnames[0] === 'landing' || pathnames[0] === 'auth') return null;
+
+  return (
+    <nav className="flex items-center gap-2 px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
+      <button
+        onClick={() => navigate('/dashboard')}
+        className="hover:text-legal-gold transition-colors"
+      >
+        LexiNaija
+      </button>
+      {pathnames.map((value, index) => {
+        const last = index === pathnames.length - 1;
+        const to = `/${pathnames.slice(0, index + 1).join('/')}`;
+
+        return (
+          <React.Fragment key={to}>
+            <ChevronRight size={10} className="text-slate-300" />
+            {last ? (
+              <span className="text-legal-900 dark:text-white">{value.replaceAll('_', ' ')}</span>
+            ) : (
+              <button
+                onClick={() => navigate(to)}
+                className="hover:text-legal-gold transition-colors"
+              >
+                {value.replaceAll('_', ' ')}
+              </button>
+            )}
+          </React.Fragment>
+        );
+      })}
+    </nav>
+  );
+};
 
 function AppRoutes() {
   const { currentView, setView } = useLegalStore();
@@ -74,56 +114,59 @@ function AppRoutes() {
   return (
     <div className="flex h-screen w-full bg-slate-50 dark:bg-slate-950 font-sans text-slate-900 dark:text-slate-100 transition-colors">
       {!isFullPage && <Sidebar currentView={currentView} />}
-      <main className={`flex-1 ${!isFullPage ? 'ml-64' : ''} overflow-auto scrollbar-hide ${currentView === AppView.EDITOR || currentView === AppView.DOCKET || currentView === AppView.EVIDENCE || currentView === AppView.WITNESS || currentView === AppView.BRIEFS || currentView === AppView.CORPORATE ? 'bg-white dark:bg-slate-900' : ''}`}>
-        <Suspense fallback={<div className="p-6 text-sm text-gray-600">Loading…</div>}>
-          <Routes>
-            <Route path="/" element={<Navigate to={`/${AppView.LANDING.toLowerCase()}`} replace />} />
-            <Route path="/landing" element={<LandingPage onGetStarted={() => handleNavigate(AppView.DASHBOARD)} onNavigate={handleNavigate} />} />
-            <Route path="/auth" element={<Auth onAuthSuccess={() => handleNavigate(AppView.DASHBOARD)} />} />
-            <Route path="/dashboard" element={<Dashboard onNavigate={handleNavigate} />} />
-            <Route path="/docket" element={<Docket />} />
-            <Route path="/research" element={<Research />} />
-            <Route path="/drafter" element={<Drafter />} />
-            <Route path="/summarizer" element={<Summarizer />} />
-            <Route path="/clients" element={<Clients />} />
-            <Route path="/cases" element={<Cases />} />
-            <Route path="/billing" element={<Billing />} />
-            <Route path="/editor" element={<DocumentEditor />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/conflict_check" element={<ConflictCheck />} />
-            <Route path="/calculators" element={<Calculators />} />
-            <Route path="/precedents" element={<Precedents onNavigate={handleNavigate} />} />
-            <Route path="/practice_guide" element={<PracticeGuide />} />
-            <Route path="/strategy" element={<Strategy />} />
-            <Route path="/evidence" element={<Evidence />} />
-            <Route path="/witness" element={<Witness />} />
-            <Route path="/briefs" element={<Briefs />} />
-            <Route path="/corporate" element={<Corporate />} />
-            <Route path="/entertainment" element={<Entertainment />} />
-            <Route path="/calculator" element={<FeeCalculator />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/case_law" element={<CaseLawDatabase />} />
-            <Route path="/bailiff" element={<BailiffTracker />} />
-            <Route path="/audit" element={<ComplianceAudit />} />
-            <Route path="/portal" element={<ClientPortal />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/privacy" element={<PrivacyPolicy onBack={() => handleNavigate(AppView.LANDING)} />} />
-            <Route path="/terms" element={<TermsOfService onBack={() => handleNavigate(AppView.LANDING)} />} />
-            <Route path="*" element={
-              <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                <h2 className="text-2xl font-serif font-black italic">View Not Found</h2>
-                <p className="mt-2 text-sm uppercase tracking-widest font-black">The requested intelligence module is unavailable.</p>
-                <button
-                  onClick={() => handleNavigate(AppView.DASHBOARD)}
-                  className="mt-8 px-6 py-3 bg-legal-900 text-white rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-legal-gold transition-all"
-                >
-                  Return to Control Panel
-                </button>
-              </div>
-            } />
-          </Routes>
-        </Suspense>
-      </main>
+      <div className={`flex-1 flex flex-col ${!isFullPage ? 'ml-64' : ''} overflow-hidden`}>
+        {!isFullPage && <Breadcrumbs />}
+        <main className={`flex-1 overflow-auto scrollbar-hide ${currentView === AppView.EDITOR || currentView === AppView.DOCKET || currentView === AppView.EVIDENCE || currentView === AppView.WITNESS || currentView === AppView.BRIEFS || currentView === AppView.CORPORATE ? 'bg-white dark:bg-slate-900' : ''}`}>
+          <Suspense fallback={<div className="p-6 text-sm text-gray-600">Loading…</div>}>
+            <Routes>
+              <Route path="/" element={<Navigate to={`/${AppView.LANDING.toLowerCase()}`} replace />} />
+              <Route path="/landing" element={<LandingPage onGetStarted={() => handleNavigate(AppView.DASHBOARD)} onNavigate={handleNavigate} />} />
+              <Route path="/auth" element={<Auth onAuthSuccess={() => handleNavigate(AppView.DASHBOARD)} />} />
+              <Route path="/dashboard" element={<Dashboard onNavigate={handleNavigate} />} />
+              <Route path="/docket" element={<Docket />} />
+              <Route path="/research" element={<Research />} />
+              <Route path="/drafter" element={<Drafter />} />
+              <Route path="/summarizer" element={<Summarizer />} />
+              <Route path="/clients" element={<Clients />} />
+              <Route path="/cases" element={<Cases />} />
+              <Route path="/billing" element={<Billing />} />
+              <Route path="/editor" element={<DocumentEditor />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/conflict_check" element={<ConflictCheck />} />
+              <Route path="/calculators" element={<Calculators />} />
+              <Route path="/precedents" element={<Precedents onNavigate={handleNavigate} />} />
+              <Route path="/practice_guide" element={<PracticeGuide />} />
+              <Route path="/strategy" element={<Strategy />} />
+              <Route path="/evidence" element={<Evidence />} />
+              <Route path="/witness" element={<Witness />} />
+              <Route path="/briefs" element={<Briefs />} />
+              <Route path="/corporate" element={<Corporate />} />
+              <Route path="/entertainment" element={<Entertainment />} />
+              <Route path="/calculator" element={<FeeCalculator />} />
+              <Route path="/analytics" element={<Analytics />} />
+              <Route path="/case_law" element={<CaseLawDatabase />} />
+              <Route path="/bailiff" element={<BailiffTracker />} />
+              <Route path="/audit" element={<ComplianceAudit />} />
+              <Route path="/portal" element={<ClientPortal />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/privacy" element={<PrivacyPolicy onBack={() => handleNavigate(AppView.LANDING)} />} />
+              <Route path="/terms" element={<TermsOfService onBack={() => handleNavigate(AppView.LANDING)} />} />
+              <Route path="*" element={
+                <div className="flex flex-col items-center justify-center h-full text-slate-400">
+                  <h2 className="text-2xl font-serif font-black italic">View Not Found</h2>
+                  <p className="mt-2 text-sm uppercase tracking-widest font-black">The requested intelligence module is unavailable.</p>
+                  <button
+                    onClick={() => handleNavigate(AppView.DASHBOARD)}
+                    className="mt-8 px-6 py-3 bg-legal-900 text-white rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-legal-gold transition-all"
+                  >
+                    Return to Control Panel
+                  </button>
+                </div>
+              } />
+            </Routes>
+          </Suspense>
+        </main>
+      </div>
       <CommandPalette
         isOpen={isCommandPaletteOpen}
         onClose={() => setIsCommandPaletteOpen(false)}

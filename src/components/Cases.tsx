@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Briefcase, Gavel, Calendar, Plus, Search, Filter, Pencil, Trash2, FileText, X, CreditCard, Banknote, Users, ChevronRight } from 'lucide-react';
+import {
+  Briefcase, Gavel, Calendar, Plus, Search, Pencil, Trash2, FileText,
+  X, CreditCard, Banknote, Users, ChevronRight, MoreVertical, AlertCircle, Info
+} from 'lucide-react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 import { useToast } from '../contexts/ToastContext';
 import { Case, BillableItem } from '../types';
@@ -16,6 +19,8 @@ export const Cases: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
   const [showAdjournModal, setShowAdjournModal] = useState(false);
+  const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
+
   const [adjournData, setAdjournData] = useState<{caseId: string; nextHearing: string; notes: string}>({
       caseId: '',
       nextHearing: '',
@@ -41,12 +46,14 @@ export const Cases: React.FC = () => {
     setEditingId(caseItem.id);
     setFormData(caseItem);
     setShowModal(true);
+    setActiveMenuId(null);
   };
 
   const handleOpenFeeLog = (caseId: string) => {
     setSelectedCaseId(caseId);
     setFeeData({ description: '', amount: '', type: 'Professional Fee' });
     setShowFeeModal(true);
+    setActiveMenuId(null);
   };
 
   const handleOpenAdjourn = (caseItem: Case) => {
@@ -56,17 +63,20 @@ export const Cases: React.FC = () => {
       notes: `Adjourned ${caseItem.nextHearing ? `from ${new Date(caseItem.nextHearing).toDateString()} ` : ''}for: `
     });
     setShowAdjournModal(true);
+    setActiveMenuId(null);
   };
 
   const handleDeleteRequest = (id: string) => {
     setCaseToDelete(id);
     setShowDeleteConfirm(true);
+    setActiveMenuId(null);
   };
 
   const handleConfirmDelete = () => {
     if (caseToDelete) {
       deleteCase(caseToDelete);
       setCaseToDelete(null);
+      showToast("Case deleted successfully.", "success");
     }
   };
 
@@ -75,7 +85,7 @@ export const Cases: React.FC = () => {
     if (formData.title && formData.clientId) {
       if (editingId) {
         updateCase(editingId, formData);
-        showToast("Matter intelligence updated.", "success");
+        showToast("Case updated successfully.", "success");
       } else {
         addCase({
           id: Date.now().toString(),
@@ -91,9 +101,9 @@ export const Cases: React.FC = () => {
           billableItems: [],
           evidence: []
         });
+        showToast("Case created successfully.", "success");
       }
       setShowModal(false);
-      if (!editingId) showToast("New matter focus initialized.", "success");
     }
   };
 
@@ -109,6 +119,7 @@ export const Cases: React.FC = () => {
         };
         addBillableItem(selectedCaseId, newItem);
         setShowFeeModal(false);
+        showToast("Fee logged successfully.", "success");
     }
   };
 
@@ -120,6 +131,7 @@ export const Cases: React.FC = () => {
           notes: adjournData.notes ? `${new Date().toLocaleDateString()} - Adjournment Note: ${adjournData.notes}` : undefined
       });
       setShowAdjournModal(false);
+      showToast("Adjournment recorded.", "success");
     }
   };
 
@@ -148,7 +160,7 @@ export const Cases: React.FC = () => {
           <h2 className="text-5xl font-serif font-black text-legal-900 dark:text-white italic tracking-tighter leading-tight">Case Files</h2>
           <p className="text-slate-400 dark:text-slate-500 font-medium">Track your active litigation and solicitor workspace.</p>
         </div>
-        <div className="flex gap-4 items-end">
+        <div className="flex flex-wrap gap-4 items-end">
           <div className="relative">
              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
              <input 
@@ -156,14 +168,14 @@ export const Cases: React.FC = () => {
                placeholder="Search by title, suit no, or client..." 
                value={searchQuery}
                onChange={(e) => setSearchQuery(e.target.value)}
-               className="pl-12 pr-6 py-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold w-80 text-sm font-bold text-legal-900 dark:text-white shadow-sm outline-none transition-all placeholder:font-normal placeholder:text-slate-300"
+               className="pl-12 pr-6 py-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold w-full md:w-80 text-sm font-bold text-legal-900 dark:text-white shadow-sm outline-none transition-all placeholder:font-normal placeholder:text-slate-300"
              />
           </div>
           <button 
              onClick={handleOpenAdd}
-             className="bg-legal-900 dark:bg-legal-gold text-white dark:text-legal-900 px-8 py-4 rounded-2xl hover:bg-legal-gold hover:text-legal-900 dark:hover:bg-white flex items-center gap-3 text-[10px] font-black uppercase tracking-widest shadow-xl shadow-legal-900/20 transition-all shrink-0 group"
+             className="bg-legal-900 dark:bg-legal-gold text-white dark:text-legal-900 px-8 py-4 rounded-2xl hover:bg-legal-gold hover:text-legal-900 dark:hover:bg-white flex items-center gap-3 text-[10px] font-black uppercase tracking-widest shadow-xl shadow-legal-900/20 transition-all shrink-0 group min-h-[44px]"
           >
-            <Plus size={16} className="group-hover:rotate-90 transition-transform" /> Open New Matter
+            <Plus size={16} className="group-hover:rotate-90 transition-transform" /> Create Case
           </button>
         </div>
       </div>
@@ -171,8 +183,8 @@ export const Cases: React.FC = () => {
       <div className="space-y-6">
         {filteredCases.length > 0 ? (
           filteredCases.map(c => (
-            <div key={c.id} className="bg-white dark:bg-slate-900 p-8 rounded-[32px] shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between gap-8 hover:shadow-xl hover:border-legal-gold/50 transition-all group relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 dark:bg-white/5 opacity-0 group-hover:opacity-100 rounded-full translate-x-32 -translate-y-32 blur-3xl transition-opacity"></div>
+            <div key={c.id} className="bg-white dark:bg-slate-900 p-8 rounded-[32px] shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between gap-8 hover:shadow-xl hover:border-legal-gold/50 transition-all group relative overflow-visible">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 dark:bg-white/5 opacity-0 group-hover:opacity-100 rounded-full translate-x-32 -translate-y-32 blur-3xl transition-opacity pointer-events-none"></div>
               
               <div className="flex-1 relative z-10">
                 <div className="flex items-center gap-3 mb-4">
@@ -196,9 +208,9 @@ export const Cases: React.FC = () => {
                 </div>
                 {c.court && <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-2"><Gavel size={16} className="text-slate-400" /> {c.court}</p>}
                 
-                <div className="mt-8 flex gap-4">
+                <div className="mt-8 flex flex-wrap gap-4">
                    <div className="text-[10px] uppercase tracking-widest font-black bg-slate-50 dark:bg-slate-800 text-legal-900 dark:text-slate-300 px-4 py-3 rounded-2xl border border-slate-100 dark:border-slate-700 flex items-center gap-3">
-                      <FileText size={16} className="text-slate-400"/> {c.documents.length} Docs
+                      <FileText size={16} className="text-slate-400"/> Documents: {c.documents.length}
                    </div>
                    <div className="text-[10px] uppercase tracking-widest font-black bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 px-4 py-3 rounded-2xl border border-emerald-100 dark:border-emerald-900/30 flex items-center gap-3">
                       <Banknote size={16} className="text-emerald-500" /> Unbilled: ₦{calculateTotalFees(c).toLocaleString()}
@@ -206,27 +218,42 @@ export const Cases: React.FC = () => {
                 </div>
               </div>
 
-              <div className="md:w-72 flex flex-col justify-between border-l pl-0 md:pl-8 border-slate-100 dark:border-slate-800 relative z-10">
-                <div className="absolute top-0 right-0 md:relative flex justify-end gap-2 mb-6 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
-                    <button onClick={() => handleOpenAdjourn(c)} className="p-3 text-legal-gold hover:bg-legal-gold hover:text-legal-900 rounded-xl transition-colors" title="Adjourn Matter">
-                        <Calendar size={18} />
-                    </button>
-                    <button onClick={() => handleOpenFeeLog(c.id)} className="p-3 text-legal-gold hover:bg-legal-gold hover:text-legal-900 rounded-xl transition-colors" title="Log Fee/Expense">
-                        <CreditCard size={18} />
-                    </button>
-                    <button onClick={() => handleOpenEdit(c)} className="p-3 text-slate-400 hover:text-legal-900 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" title="Edit Case">
-                        <Pencil size={18} />
-                    </button>
-                    <button onClick={() => handleDeleteRequest(c.id)} className="p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-colors" title="Delete Case">
-                        <Trash2 size={18} />
-                    </button>
+              <div className="md:w-72 flex flex-col justify-between border-l pl-0 md:pl-8 border-slate-100 dark:border-slate-800 relative z-20">
+                <div className="absolute top-0 right-0 md:relative flex justify-end mb-6">
+                    <div className="relative">
+                      <button
+                        onClick={() => setActiveMenuId(activeMenuId === c.id ? null : c.id)}
+                        className="p-3 text-slate-400 hover:text-legal-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all min-w-[44px] min-h-[44px] flex items-center justify-center"
+                        aria-label="Case actions"
+                      >
+                        <MoreVertical size={20} />
+                      </button>
+
+                      {activeMenuId === c.id && (
+                        <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                          <button onClick={() => handleOpenAdjourn(c)} className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                            <Calendar size={16} className="text-legal-gold" /> Record Adjournment
+                          </button>
+                          <button onClick={() => handleOpenFeeLog(c.id)} className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                            <CreditCard size={16} className="text-emerald-500" /> Log Fee/Expense
+                          </button>
+                          <div className="h-px bg-slate-100 dark:bg-slate-700 my-1 mx-2"></div>
+                          <button onClick={() => handleOpenEdit(c)} className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                            <Pencil size={16} className="text-slate-400" /> Edit Case Details
+                          </button>
+                          <button onClick={() => handleDeleteRequest(c.id)} className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-colors">
+                            <Trash2 size={16} /> Delete Case
+                          </button>
+                        </div>
+                      )}
+                    </div>
                 </div>
 
                 <div>
                   <p className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Next Appearance</p>
                   <div className={`flex items-center gap-3 ${c.nextHearing ? 'text-legal-900 dark:text-white' : 'text-slate-400'}`}>
                     <Calendar size={20} className={c.nextHearing ? "text-legal-gold" : "text-slate-300 dark:text-slate-600"} />
-                    <span className="font-bold">{c.nextHearing ? new Date(c.nextHearing).toDateString() : 'Not Scheduled'}</span>
+                    <span className="font-bold">{c.nextHearing ? new Date(c.nextHearing).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'Not Scheduled'}</span>
                   </div>
                 </div>
                 
@@ -237,12 +264,26 @@ export const Cases: React.FC = () => {
             </div>
           ))
         ) : (
-          <div className="text-center py-32 bg-slate-50 dark:bg-slate-900/50 rounded-[40px] border-2 border-dashed border-slate-200 dark:border-slate-800">
-            <div className="w-24 h-24 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+          <div className="text-center py-32 bg-slate-50 dark:bg-slate-900/50 rounded-[40px] border-2 border-dashed border-slate-200 dark:border-slate-800 flex flex-col items-center">
+            <div className="w-24 h-24 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 shadow-sm">
                 <Briefcase className="w-10 h-10 text-slate-300 dark:text-slate-600" />
             </div>
-            <p className="text-xl font-serif font-black text-slate-400 dark:text-slate-600 italic">No Matter Files Located.</p>
-            {searchQuery && <button onClick={() => setSearchQuery('')} className="text-[10px] font-black uppercase tracking-widest text-legal-gold mt-4 hover:opacity-80 transition-opacity">Clear Search Filters</button>}
+            <h3 className="text-2xl font-serif font-black text-slate-900 dark:text-white italic mb-2">No Matter Files Located</h3>
+            <p className="text-slate-400 dark:text-slate-500 max-w-sm mx-auto mb-8 font-medium">Create your first case to start tracking litigation and managing your solicitor workspace.</p>
+            <button
+              onClick={handleOpenAdd}
+              className="bg-legal-900 dark:bg-legal-gold text-white dark:text-legal-900 px-8 py-4 rounded-2xl hover:bg-legal-gold hover:text-legal-900 dark:hover:bg-white flex items-center gap-3 text-[10px] font-black uppercase tracking-widest shadow-xl transition-all min-h-[44px]"
+            >
+              <Plus size={16} /> Create Your First Case
+            </button>
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="text-[10px] font-black uppercase tracking-widest text-legal-gold mt-6 hover:opacity-80 transition-opacity"
+              >
+                Clear Search Filters
+              </button>
+            )}
           </div>
         )}
 
@@ -265,27 +306,32 @@ export const Cases: React.FC = () => {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-legal-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-[40px] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.3)] w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 maxHeight-[90vh] flex flex-col">
+        <div className="fixed inset-0 bg-legal-900/40 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-[40px] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.3)] w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
             <div className="flex justify-between items-center p-8 bg-slate-50/50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
               <h3 className="text-2xl font-serif font-black text-legal-900 dark:text-white italic tracking-tight flex items-center gap-3">
-                  <Briefcase className="text-legal-gold" size={24} /> {editingId ? 'Update Matter Focus' : 'Open New Matter Focus'}
+                  <Briefcase className="text-legal-gold" size={24} /> {editingId ? 'Edit Case Details' : 'Create New Case'}
               </h3>
-              <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+              <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 min-w-[44px] min-h-[44px] flex items-center justify-center">
                 <X size={20} />
               </button>
             </div>
             
             <form onSubmit={handleSave} className="p-8 space-y-6 overflow-y-auto">
+              <div className="bg-amber-50 dark:bg-amber-900/10 p-4 rounded-2xl flex gap-3 items-start border border-amber-100 dark:border-amber-900/30">
+                <Info size={18} className="text-amber-500 shrink-0 mt-0.5" />
+                <p className="text-[11px] font-bold text-amber-700 dark:text-amber-400 leading-relaxed italic">Required fields are marked with an asterisk (*). Ensure all details are accurate for automated drafting.</p>
+              </div>
+
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Client Association <span className="text-rose-500">*</span></label>
                 <select 
                   required 
                   value={formData.clientId}
-                  className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all cursor-pointer shadow-sm"
+                  className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all cursor-pointer shadow-sm focus:bg-white dark:focus:bg-slate-800 min-h-[44px]"
                   onChange={e => setFormData({...formData, clientId: e.target.value})}
                 >
-                  <option value="">-- Elect Client Profile --</option>
+                  <option value="">Select Client</option>
                   {clients.map(cl => <option key={cl.id} value={cl.id}>{cl.name}</option>)}
                 </select>
               </div>
@@ -295,9 +341,9 @@ export const Cases: React.FC = () => {
                 <input 
                   type="text" 
                   value={formData.title}
-                  placeholder="e.g. Recovery of Premises..." 
+                  placeholder="e.g. Recovery of Premises at 12 Victoria Island"
                   required 
-                  className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-300 dark:placeholder:text-slate-600"
+                  className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:bg-white dark:focus:bg-slate-800 min-h-[44px]"
                   onChange={e => setFormData({...formData, title: e.target.value})} 
                 />
               </div>
@@ -307,28 +353,28 @@ export const Cases: React.FC = () => {
                 <input 
                   type="text" 
                   value={formData.opposingParty}
-                  placeholder="e.g. Defendant/Respondent Name" 
-                  className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-300 dark:placeholder:text-slate-600"
+                  placeholder="e.g. ABC Nigeria Limited"
+                  className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:bg-white dark:focus:bg-slate-800 min-h-[44px]"
                   onChange={e => setFormData({...formData, opposingParty: e.target.value})} 
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Suit Index</label>
                   <input 
                     type="text" 
                     value={formData.suitNumber}
-                    placeholder="e.g. FHC/L/CS/..." 
-                    className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-mono focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-sans placeholder:text-slate-300 dark:placeholder:text-slate-600 dark:text-white"
+                    placeholder="e.g. FHC/L/CS/123/2024"
+                    className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-mono focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-sans placeholder:text-slate-300 dark:placeholder:text-slate-600 dark:text-white focus:bg-white dark:focus:bg-slate-800 min-h-[44px]"
                     onChange={e => setFormData({...formData, suitNumber: e.target.value})} 
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Current Posture</label>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Case Status</label>
                   <select 
                     value={formData.status}
-                    className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all cursor-pointer shadow-sm"
+                    className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all cursor-pointer shadow-sm focus:bg-white dark:focus:bg-slate-800 min-h-[44px]"
                     onChange={e => setFormData({...formData, status: e.target.value as any})}
                   >
                     <option value="Open">Active Investigation</option>
@@ -345,29 +391,29 @@ export const Cases: React.FC = () => {
                   type="text" 
                   value={formData.court}
                   placeholder="e.g. High Court, Lagos Judicial Division" 
-                  className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-300 dark:placeholder:text-slate-600"
+                  className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:bg-white dark:focus:bg-slate-800 min-h-[44px]"
                   onChange={e => setFormData({...formData, court: e.target.value})} 
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Limitation / Next Appearance</label>
-                <div className="grid grid-cols-2 gap-4">
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Deadlines & Hearings</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <span className="block text-[9px] font-bold text-slate-300 dark:text-slate-600 uppercase mb-2">Next Hearing</span>
+                    <span className="block text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase mb-2">Next Hearing Date</span>
                     <input 
                       type="date" 
                       value={formData.nextHearing}
-                      className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm"
+                      className="w-full border border-slate-200 dark:border-slate-700 p-4 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm focus:bg-white dark:focus:bg-slate-800 min-h-[44px]"
                       onChange={e => setFormData({...formData, nextHearing: e.target.value})} 
                     />
                   </div>
                   <div>
-                    <span className="block text-[9px] font-bold text-slate-300 dark:text-slate-600 uppercase mb-2 text-rose-300">Statute Bar Date</span>
+                    <span className="block text-[9px] font-bold text-rose-400 dark:text-rose-500 uppercase mb-2">Statute Bar Date</span>
                     <input 
                       type="date" 
                       value={formData.limitationDate}
-                      className="w-full border border-rose-100 dark:border-rose-900/50 p-4 rounded-2xl bg-rose-50/50 dark:bg-rose-900/20 text-sm font-bold text-rose-900 dark:text-rose-400 focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 outline-none transition-all shadow-sm"
+                      className="w-full border border-rose-100 dark:border-rose-900/30 p-4 rounded-2xl bg-rose-50/30 dark:bg-rose-900/20 text-sm font-bold text-rose-900 dark:text-rose-400 focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 outline-none transition-all shadow-sm min-h-[44px]"
                       onChange={e => setFormData({...formData, limitationDate: e.target.value})} 
                     />
                   </div>
@@ -378,16 +424,16 @@ export const Cases: React.FC = () => {
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Intelligence Notes</label>
                 <textarea 
                   value={formData.notes}
-                  placeholder="Record strategic observations..." 
-                  className="w-full border border-slate-200 dark:border-slate-700 p-6 rounded-3xl h-32 text-sm text-legal-900 dark:text-slate-300 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none resize-none shadow-inner leading-relaxed bg-slate-50 dark:bg-slate-800/50"
+                  placeholder="Record strategic observations, case strategy, or important facts..."
+                  className="w-full border border-slate-200 dark:border-slate-700 p-6 rounded-3xl min-h-[160px] text-sm text-legal-900 dark:text-slate-300 focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none resize-y shadow-inner leading-relaxed bg-slate-50 dark:bg-slate-800/50 focus:bg-white dark:focus:bg-slate-800"
                   onChange={e => setFormData({...formData, notes: e.target.value})} 
                 />
               </div>
               
               <div className="flex gap-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-                <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-colors">Abort Procedure</button>
-                <button type="submit" className="flex-[2] bg-legal-900 dark:bg-legal-gold text-white dark:text-legal-900 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-legal-gold hover:text-legal-900 dark:hover:bg-white shadow-xl transition-all">
-                  {editingId ? 'Update Matter Intelligence' : 'Initialize Matter'}
+                <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-colors min-h-[44px]">Cancel</button>
+                <button type="submit" className="flex-[2] bg-legal-900 dark:bg-legal-gold text-white dark:text-legal-900 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-legal-gold hover:text-legal-900 dark:hover:bg-white shadow-xl transition-all min-h-[44px]">
+                  {editingId ? 'Save Changes' : 'Create Case'}
                 </button>
               </div>
             </form>
@@ -396,11 +442,11 @@ export const Cases: React.FC = () => {
       )}
 
       {showFeeModal && (
-        <div className="fixed inset-0 bg-legal-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-legal-900/40 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
           <div className="bg-white dark:bg-slate-900 rounded-[40px] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.3)] w-full max-w-sm overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center p-8 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="font-serif font-black italic text-xl text-legal-900 dark:text-white flex items-center gap-3"><CreditCard className="text-legal-gold" size={24}/> Time & Cost Log</h3>
-                <button onClick={() => setShowFeeModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><X size={20}/></button>
+                <h3 className="font-serif font-black italic text-xl text-legal-900 dark:text-white flex items-center gap-3"><CreditCard className="text-legal-gold" size={24}/> Log Fee / Expense</h3>
+                <button onClick={() => setShowFeeModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 min-w-[44px] min-h-[44px] flex items-center justify-center"><X size={20}/></button>
             </div>
             <form onSubmit={handleSaveFee} className="p-8 space-y-6">
                 <div>
@@ -418,35 +464,35 @@ export const Cases: React.FC = () => {
                             onClick={() => setFeeData({...feeData, type: 'Expense'})}
                             className={`flex-1 py-3 text-[10px] uppercase tracking-widest font-black rounded-lg transition-all ${feeData.type === 'Expense' ? 'bg-white dark:bg-slate-700 text-legal-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-legal-900 dark:hover:text-slate-300'}`}
                         >
-                            OPE Expense
+                            Expense
                         </button>
                     </div>
                 </div>
                 <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Narrative</label>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Description</label>
                     <input 
                         required
                         type="text" 
                         value={feeData.description}
                         onChange={e => setFeeData({...feeData, description: e.target.value})}
-                        placeholder={feeData.type === 'Professional Fee' ? "e.g. Drafting of Writ of Summons" : "e.g. Court Filing Fees"}
-                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-4 rounded-2xl text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all placeholder:font-normal placeholder:text-slate-300 dark:placeholder:text-slate-600"
+                        placeholder={feeData.type === 'Professional Fee' ? "e.g. Drafting Writ of Summons" : "e.g. Filing Fees"}
+                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-4 rounded-2xl text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all placeholder:font-normal placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:bg-white dark:focus:bg-slate-800 min-h-[44px]"
                     />
                 </div>
                 <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Quantum (₦)</label>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Amount (₦)</label>
                     <input 
                         required
                         type="number" 
                         value={feeData.amount}
                         onChange={e => setFeeData({...feeData, amount: e.target.value})}
                         placeholder="0.00"
-                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-4 rounded-2xl text-xl font-mono text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all"
+                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-4 rounded-2xl text-xl font-mono text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all focus:bg-white dark:focus:bg-slate-800 min-h-[44px]"
                     />
                 </div>
                 <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-                    <button type="submit" className="w-full bg-legal-900 dark:bg-legal-gold text-white dark:text-legal-900 text-[10px] uppercase font-black tracking-widest py-4 rounded-2xl hover:bg-legal-gold hover:text-legal-900 dark:hover:bg-white transition-all shadow-xl group flex justify-center items-center gap-2">
-                        Execute Log <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    <button type="submit" className="w-full bg-legal-900 dark:bg-legal-gold text-white dark:text-legal-900 text-[10px] uppercase font-black tracking-widest py-4 rounded-2xl hover:bg-legal-gold hover:text-legal-900 dark:hover:bg-white transition-all shadow-xl group flex justify-center items-center gap-2 min-h-[44px]">
+                        Save Fee <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                     </button>
                 </div>
             </form>
@@ -460,39 +506,39 @@ export const Cases: React.FC = () => {
             <div className="flex justify-between items-center p-8 bg-amber-50/50 dark:bg-amber-900/20 border-b border-amber-100/50 dark:border-amber-900/30">
               <div>
                   <h3 className="text-2xl font-serif font-black text-amber-900 dark:text-amber-100 italic tracking-tight flex items-center gap-3">
-                      <Calendar className="text-amber-500" size={24} /> Adjourn Matter
+                      <Calendar className="text-amber-500" size={24} /> Record Adjournment
                   </h3>
                   <p className="text-[10px] font-black uppercase tracking-widest text-amber-700/60 dark:text-amber-500 mt-2">Log New Court Date</p>
               </div>
-              <button onClick={() => setShowAdjournModal(false)} className="text-amber-400 hover:text-amber-600 transition-colors p-2 rounded-full hover:bg-amber-50 dark:hover:bg-amber-900/40">
+              <button onClick={() => setShowAdjournModal(false)} className="text-amber-400 hover:text-amber-600 transition-colors p-2 rounded-full hover:bg-amber-50 dark:hover:bg-amber-900/40 min-w-[44px] min-h-[44px] flex items-center justify-center">
                 <X size={20} />
               </button>
             </div>
             
             <form onSubmit={handleSaveAdjournment} className="p-8 space-y-6">
                 <div>
-                    <label className="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Adjourned To <span className="text-rose-500">*</span></label>
+                    <label className="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">New Hearing Date <span className="text-rose-500">*</span></label>
                     <input 
                         required
                         type="datetime-local" 
                         value={adjournData.nextHearing}
                         onChange={e => setAdjournData({...adjournData, nextHearing: e.target.value})}
-                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-4 rounded-2xl font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 outline-none transition-all shadow-inner text-sm"
+                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-4 rounded-2xl font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 outline-none transition-all shadow-inner text-sm focus:bg-white dark:focus:bg-slate-800 min-h-[44px]"
                     />
                 </div>
                 <div>
-                    <label className="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Adjournment Purpose</label>
+                    <label className="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Reason for Adjournment</label>
                     <textarea 
                         value={adjournData.notes}
                         onChange={e => setAdjournData({...adjournData, notes: e.target.value})}
-                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-4 rounded-2xl font-bold leading-relaxed text-legal-900 dark:text-white focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 outline-none transition-all shadow-inner h-32 resize-none placeholder:text-slate-300 dark:placeholder:text-slate-600 text-sm"
+                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-4 rounded-2xl font-bold leading-relaxed text-legal-900 dark:text-white focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 outline-none transition-all shadow-inner h-32 resize-none placeholder:text-slate-300 dark:placeholder:text-slate-600 text-sm focus:bg-white dark:focus:bg-slate-800"
                         placeholder="e.g. Adjourned for Continuation of Trial / Cross-examination of PW1..."
                     />
                 </div>
                 <div className="pt-4 flex gap-4">
-                    <button type="button" onClick={() => setShowAdjournModal(false)} className="flex-1 text-[10px] font-black tracking-widest uppercase text-slate-400 hover:text-slate-600 transition-colors py-4">Cancel</button>
-                    <button type="submit" className="flex-[2] bg-amber-500 text-white text-[10px] uppercase font-black tracking-widest py-4 rounded-2xl hover:bg-amber-600 transition-all shadow-xl shadow-amber-500/20 group flex justify-center items-center gap-2">
-                        Log Adjournment <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    <button type="button" onClick={() => setShowAdjournModal(false)} className="flex-1 text-[10px] font-black tracking-widest uppercase text-slate-400 hover:text-slate-600 transition-colors py-4 min-h-[44px]">Cancel</button>
+                    <button type="submit" className="flex-[2] bg-amber-500 text-white text-[10px] uppercase font-black tracking-widest py-4 rounded-2xl hover:bg-amber-600 transition-all shadow-xl shadow-amber-500/20 group flex justify-center items-center gap-2 min-h-[44px]">
+                        Save Adjournment <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                     </button>
                 </div>
             </form>
@@ -504,9 +550,9 @@ export const Cases: React.FC = () => {
         isOpen={showDeleteConfirm}
         onClose={() => setShowDeleteConfirm(false)}
         onConfirm={handleConfirmDelete}
-        title="Sanitize Matter File"
-        message="Closing this matter will permanently excise it from the active roster. This operation cannot be reversed."
-        confirmLabel="Purge Matter"
+        title="Delete Case File"
+        message="Are you sure you want to delete this case? This action is permanent and will remove all associated documents and records."
+        confirmLabel="Delete Case"
         variant="danger"
       />
     </div>

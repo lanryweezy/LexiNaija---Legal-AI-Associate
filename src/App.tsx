@@ -77,8 +77,8 @@ function AppRoutes() {
       <main className={`flex-1 ${!isFullPage ? 'ml-64' : ''} overflow-auto scrollbar-hide ${currentView === AppView.EDITOR || currentView === AppView.DOCKET || currentView === AppView.EVIDENCE || currentView === AppView.WITNESS || currentView === AppView.BRIEFS || currentView === AppView.CORPORATE ? 'bg-white dark:bg-slate-900' : ''}`}>
         <Suspense fallback={<div className="p-6 text-sm text-gray-600">Loading…</div>}>
           <Routes>
-            <Route path="/" element={<Navigate to={`/${AppView.LANDING.toLowerCase()}`} replace />} />
-            <Route path="/landing" element={<LandingPage onGetStarted={() => handleNavigate(AppView.AUTH)} onNavigate={handleNavigate} />} />
+            <Route path="/" element={<Navigate to={`/${AppView.DASHBOARD.toLowerCase()}`} replace />} />
+            <Route path="/landing" element={<LandingPage onGetStarted={() => handleNavigate(AppView.DASHBOARD)} onNavigate={handleNavigate} />} />
             <Route path="/auth" element={<Auth onAuthSuccess={() => handleNavigate(AppView.DASHBOARD)} />} />
             <Route path="/dashboard" element={<Dashboard onNavigate={handleNavigate} />} />
             <Route path="/docket" element={<Docket />} />

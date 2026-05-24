@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { UploadCloud, BookOpen, ChevronRight, AlertTriangle, Save } from 'lucide-react';
+import { UploadCloud, BookOpen, ChevronRight, AlertTriangle, Save, ShieldCheck, RefreshCw, Zap, Bookmark, X } from 'lucide-react';
 import { summarizeCaseText } from '../services/geminiService';
 import { CaseSummary } from '../types';
 import { useLegalStore } from '../contexts/LegalStoreContext';

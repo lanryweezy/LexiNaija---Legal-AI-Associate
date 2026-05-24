@@ -67,7 +67,13 @@ export const ConflictCheck: React.FC = () => {
                 className="w-full pl-4 pr-6 py-6 bg-transparent font-bold text-xl text-legal-900 outline-none placeholder:text-slate-300 placeholder:font-normal"
             />
             {query && (
-                <button type="button" onClick={() => {setQuery(''); setHasSearched(false);}} className="p-2 text-slate-300 hover:text-legal-900 transition-colors">
+                <button
+                    type="button"
+                    onClick={() => {setQuery(''); setHasSearched(false);}}
+                    className="p-2 text-slate-300 hover:text-legal-900 transition-colors focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none rounded-lg"
+                    aria-label="Clear search"
+                    title="Clear search"
+                >
                     <X size={20} />
                 </button>
             )}

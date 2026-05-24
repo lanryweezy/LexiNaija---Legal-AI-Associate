@@ -64,9 +64,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView }) => {
         </div>
         <button
             onClick={toggleTheme}
-            className="p-2 hover:bg-legal-800 rounded-lg transition-colors text-legal-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-legal-gold"
-            aria-label={theme === 'light' ? "Switch to dark mode" : "Switch to light mode"}
-            title={theme === 'light' ? "Switch to dark mode" : "Switch to light mode"}
+            aria-label="Toggle theme"
+            title="Toggle theme"
+            className="p-2 hover:bg-legal-800 rounded-lg transition-colors text-legal-gold focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none"
         >
             {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
         </button>

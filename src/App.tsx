@@ -78,7 +78,7 @@ function AppRoutes() {
         <Suspense fallback={<div className="p-6 text-sm text-gray-600">Loading…</div>}>
           <Routes>
             <Route path="/" element={<Navigate to={`/${AppView.LANDING.toLowerCase()}`} replace />} />
-            <Route path="/landing" element={<LandingPage onGetStarted={() => handleNavigate(AppView.AUTH)} onNavigate={handleNavigate} />} />
+            <Route path="/landing" element={<LandingPage onGetStarted={() => handleNavigate(AppView.DASHBOARD)} onNavigate={handleNavigate} />} />
             <Route path="/auth" element={<Auth onAuthSuccess={() => handleNavigate(AppView.DASHBOARD)} />} />
             <Route path="/dashboard" element={<Dashboard onNavigate={handleNavigate} />} />
             <Route path="/docket" element={<Docket />} />

@@ -67,11 +67,15 @@ export const Clients: React.FC = () => {
     }
   };
 
-  const filteredClients = clients.filter(c => 
-    c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    c.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (c.rcNumber && c.rcNumber.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  const filteredClients = React.useMemo(() => {
+    // ⚡ Bolt: Cache lowercased search query to avoid redundant O(N*M) string reallocations on every render
+    const searchQueryLower = searchQuery.toLowerCase();
+    return clients.filter(c =>
+      c.name.toLowerCase().includes(searchQueryLower) ||
+      c.email.toLowerCase().includes(searchQueryLower) ||
+      (c.rcNumber && c.rcNumber.toLowerCase().includes(searchQueryLower))
+    );
+  }, [clients, searchQuery]);
 
   return (
     <div className="p-8 max-w-7xl mx-auto animate-in fade-in duration-1000">

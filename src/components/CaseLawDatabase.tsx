@@ -78,10 +78,12 @@ export const CaseLawDatabase: React.FC = () => {
     setIsSearching(true);
     // Simulate API search delay
     setTimeout(() => {
+      // ⚡ Bolt: Cache lowercased query to avoid redundant O(N*M) string reallocations inside filter loop
+      const queryLower = query.toLowerCase();
       const filtered = MOCK_CASE_LAW.filter(c => 
-        c.title.toLowerCase().includes(query.toLowerCase()) || 
-        c.citation.toLowerCase().includes(query.toLowerCase()) ||
-        c.summary.toLowerCase().includes(query.toLowerCase())
+        c.title.toLowerCase().includes(queryLower) ||
+        c.citation.toLowerCase().includes(queryLower) ||
+        c.summary.toLowerCase().includes(queryLower)
       );
       setResults(filtered);
       setIsSearching(false);

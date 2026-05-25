@@ -474,14 +474,18 @@ export const Precedents: React.FC<PrecedentsProps> = ({ onNavigate }) => {
   const [useCaseId, setUseCaseId] = useState('');
   const [useTitle, setUseTitle] = useState('');
 
-  const categories = ['All', ...Array.from(new Set(TEMPLATES.map(t => t.category)))];
+  const categories = React.useMemo(() => ['All', ...Array.from(new Set(TEMPLATES.map(t => t.category)))], []);
 
-  const filteredTemplates = TEMPLATES.filter(t => {
-    const matchesCategory = selectedCategory === 'All' || t.category === selectedCategory;
-    const matchesSearch = t.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                         t.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  const filteredTemplates = React.useMemo(() => {
+    // ⚡ Bolt: Cache lowercased search query to avoid redundant O(N*M) string reallocations inside filter loop
+    const searchQueryLower = searchQuery.toLowerCase();
+    return TEMPLATES.filter(t => {
+      const matchesCategory = selectedCategory === 'All' || t.category === selectedCategory;
+      const matchesSearch = t.title.toLowerCase().includes(searchQueryLower) ||
+                           t.description.toLowerCase().includes(searchQueryLower);
+      return matchesCategory && matchesSearch;
+    });
+  }, [searchQuery, selectedCategory]);
 
   const handleCopy = () => {
     if (viewingTemplate) {

@@ -157,13 +157,17 @@ export const DocumentEditor: React.FC = () => {
     return () => document.removeEventListener('selectionchange', handleTextSelection);
   }, []);
 
-  const allDocs = cases.flatMap(c => 
-    c.documents.map(d => ({ ...d, caseTitle: c.title, caseId: c.id }))
-  ).filter(d => 
-    d.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    d.caseTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    d.content.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const allDocs = React.useMemo(() => {
+    // ⚡ Bolt: Cache lowercased search term to avoid redundant O(N*M) string reallocations on every keystroke/render
+    const searchTermLower = searchTerm.toLowerCase();
+    return cases.flatMap(c =>
+      c.documents.map(d => ({ ...d, caseTitle: c.title, caseId: c.id }))
+    ).filter(d =>
+      d.title.toLowerCase().includes(searchTermLower) ||
+      d.caseTitle.toLowerCase().includes(searchTermLower) ||
+      d.content.toLowerCase().includes(searchTermLower)
+    );
+  }, [cases, searchTerm]);
 
   const currentStoredDoc = selectedDoc 
     ? cases.find(c => c.id === selectedDoc.caseId)?.documents.find(d => d.id === selectedDoc.docId)

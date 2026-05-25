@@ -519,11 +519,11 @@ export const DocumentEditor: React.FC = () => {
                           />
                           
                           <div className="sticky top-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md z-10 py-3 mb-8 flex gap-1 items-center flex-wrap">
-                            <button onClick={() => applyFormat('bold')} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"><Bold size={16} /></button>
-                            <button onClick={() => applyFormat('italic')} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"><Italic size={16} /></button>
-                            <button onClick={() => applyFormat('h1')} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"><Heading size={16} /></button>
-                            <button onClick={() => applyFormat('list')} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"><List size={16} /></button>
-                            <button onClick={() => applyFormat('quote')} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"><Quote size={16} /></button>
+                            <button onClick={() => applyFormat('bold')} aria-label="Format text as bold" title="Bold" className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none"><Bold size={16} /></button>
+                            <button onClick={() => applyFormat('italic')} aria-label="Format text as italic" title="Italic" className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none"><Italic size={16} /></button>
+                            <button onClick={() => applyFormat('h1')} aria-label="Format text as heading" title="Heading" className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none"><Heading size={16} /></button>
+                            <button onClick={() => applyFormat('list')} aria-label="Format text as bulleted list" title="List" className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none"><List size={16} /></button>
+                            <button onClick={() => applyFormat('quote')} aria-label="Format text as blockquote" title="Quote" className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none"><Quote size={16} /></button>
                             <div className="w-px h-4 bg-gray-200 dark:bg-slate-800 mx-2"></div>
                             <button 
                                 onClick={handleOpenAiModal}
@@ -580,10 +580,10 @@ export const DocumentEditor: React.FC = () => {
                             >
                                 <Sparkles size={14} /> AI Improve
                             </button>
-                            <button onClick={() => applyFormat('bold')} className="p-2 text-white hover:bg-white/10 rounded-xl transition-colors"><Bold size={14}/></button>
-                            <button onClick={() => applyFormat('italic')} className="p-2 text-white hover:bg-white/10 rounded-xl transition-colors"><Italic size={14}/></button>
+                            <button onClick={() => applyFormat('bold')} aria-label="Format selection as bold" title="Bold" className="p-2 text-white hover:bg-white/10 rounded-xl transition-colors focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none"><Bold size={14}/></button>
+                            <button onClick={() => applyFormat('italic')} aria-label="Format selection as italic" title="Italic" className="p-2 text-white hover:bg-white/10 rounded-xl transition-colors focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none"><Italic size={14}/></button>
                             <div className="w-px h-4 bg-white/20 mx-1"></div>
-                            <button onClick={() => setSelectionRange(null)} className="p-2 text-white/50 hover:text-white rounded-xl transition-colors"><X size={14}/></button>
+                            <button onClick={() => setSelectionRange(null)} aria-label="Clear selection" title="Clear selection" className="p-2 text-white/50 hover:text-white rounded-xl transition-colors focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none"><X size={14}/></button>
                         </div>
                       )}
                   </div>

@@ -31,52 +31,65 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
     ], []);
 
     // Deep Search within documents and notes
-    const documentResults = useMemo(() => query.length > 2 ? cases.flatMap(c =>
-        c.documents.filter(d =>
-            d.title.toLowerCase().includes(query.toLowerCase()) ||
-            d.content.toLowerCase().includes(query.toLowerCase())
-        ).map(d => ({
-            id: AppView.EDITOR,
-            label: `Doc: ${d.title}`,
-            icon: FileText,
-            category: `Matter: ${c.title}`,
-            caseId: c.id,
-            docId: d.id
-        }))
-    ) : [], [query, cases]);
+    const documentResults = useMemo(() => {
+        if (query.length <= 2) return [];
+        // ⚡ Bolt: Cache lowercased query outside of nested map/filter loops to prevent O(N*M) string reallocations
+        const queryLower = query.toLowerCase();
+        return cases.flatMap(c =>
+            c.documents.filter(d =>
+                d.title.toLowerCase().includes(queryLower) ||
+                d.content.toLowerCase().includes(queryLower)
+            ).map(d => ({
+                id: AppView.EDITOR,
+                label: `Doc: ${d.title}`,
+                icon: FileText,
+                category: `Matter: ${c.title}`,
+                caseId: c.id,
+                docId: d.id
+            }))
+        );
+    }, [query, cases]);
 
-    const caseNoteResults = useMemo(() => query.length > 2 ? cases.filter(c =>
-        c.notes.toLowerCase().includes(query.toLowerCase())
-    ).map(c => ({
-        id: AppView.CASES,
-        label: `Note in: ${c.title}`,
-        icon: Briefcase,
-        category: 'Matter Note',
-        caseId: c.id
-    })) : [], [query, cases]);
+    const caseNoteResults = useMemo(() => {
+        if (query.length <= 2) return [];
+        const queryLower = query.toLowerCase();
+        return cases.filter(c =>
+            c.notes.toLowerCase().includes(queryLower)
+        ).map(c => ({
+            id: AppView.CASES,
+            label: `Note in: ${c.title}`,
+            icon: Briefcase,
+            category: 'Matter Note',
+            caseId: c.id
+        }));
+    }, [query, cases]);
 
     // Filtered items based on query
-    const filteredCommands = useMemo(() => [
-        ...commands.filter(c =>
-            c.label.toLowerCase().includes(query.toLowerCase()) ||
-            c.category.toLowerCase().includes(query.toLowerCase())
-        ),
-        ...(query.length > 2 ? cases.filter(c => c.title.toLowerCase().includes(query.toLowerCase()) || (c.suitNumber && c.suitNumber.toLowerCase().includes(query.toLowerCase()))).map(c => ({
-            id: AppView.CASES,
-            label: `Case: ${c.title}`,
-            icon: Briefcase,
-            category: 'Matter',
-            caseId: c.id
-        })) : []),
-        ...(query.length > 2 ? clients.filter(c => c.name.toLowerCase().includes(query.toLowerCase())).map(c => ({
-            id: AppView.CLIENTS,
-            label: `Client: ${c.name}`,
-            icon: Users,
-            category: 'Directory'
-        })) : []),
-        ...documentResults,
-        ...caseNoteResults
-    ], [query, commands, cases, clients, documentResults, caseNoteResults]);
+    const filteredCommands = useMemo(() => {
+        // ⚡ Bolt: Cache lowercased query to avoid redundant computation for every command, case, and client
+        const queryLower = query.toLowerCase();
+        return [
+            ...commands.filter(c =>
+                c.label.toLowerCase().includes(queryLower) ||
+                c.category.toLowerCase().includes(queryLower)
+            ),
+            ...(query.length > 2 ? cases.filter(c => c.title.toLowerCase().includes(queryLower) || (c.suitNumber && c.suitNumber.toLowerCase().includes(queryLower))).map(c => ({
+                id: AppView.CASES,
+                label: `Case: ${c.title}`,
+                icon: Briefcase,
+                category: 'Matter',
+                caseId: c.id
+            })) : []),
+            ...(query.length > 2 ? clients.filter(c => c.name.toLowerCase().includes(queryLower)).map(c => ({
+                id: AppView.CLIENTS,
+                label: `Client: ${c.name}`,
+                icon: Users,
+                category: 'Directory'
+            })) : []),
+            ...documentResults,
+            ...caseNoteResults
+        ];
+    }, [query, commands, cases, clients, documentResults, caseNoteResults]);
 
     useEffect(() => {
         if (isOpen) {

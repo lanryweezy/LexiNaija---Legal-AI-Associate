@@ -213,7 +213,7 @@ export const CaseLawDatabase: React.FC = () => {
                         {shepardizing ? 'Citator Analysis...' : 'Shepardize (Verify Status)'}
                     </button>
                     <a 
-                      href={selectedCase.link} 
+                      href={selectedCase.link?.toLowerCase().startsWith('http') ? selectedCase.link : '#'}
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="flex-1 bg-slate-100 text-slate-500 py-5 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all flex items-center justify-center gap-3"

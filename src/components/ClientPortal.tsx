@@ -21,7 +21,7 @@ const EvidenceUpload: React.FC<EvidenceUploadProps> = ({ caseId, clientName }) =
         setTimeout(() => {
             acceptedFiles.forEach(file => {
                 addEvidence(caseId, {
-                    id: Date.now().toString() + Math.random(),
+                    id: crypto.randomUUID(),
                     description: `[UPLOADED BY CLIENT] ${file.name}`,
                     type: 'Document',
                     dateObtained: new Date(),

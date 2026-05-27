@@ -6,4 +6,7 @@
 ## 2025-01-20 - Unvalidated Link Attribute (XSS Risk)
 **Vulnerability:** Found an unvalidated external link rendered dynamically (`href={selectedCase.link}`) in `src/components/CaseLawDatabase.tsx`.
 **Learning:** Rendering arbitrary strings directly to `href` can lead to XSS via `javascript:` protocols, particularly when those strings come from external systems like database fetch results.
-**Prevention:** Apply an inline protocol validation explicitly to dynamic link destinations, e.g. checking `.toLowerCase().startsWith('http')` and falling back to `#`.
+**Prevention:** Apply an inline protocol validation explicitly to dynamic link destinations, e.g. checking `.toLowerCase().startsWith('http')` and falling back to `#`.## 2026-05-27 - Secure ID Generation Enhancement
+**Vulnerability:** Found over 20 uses of `Date.now().toString()` and `(Date.now() + 1).toString()` for ID generation across state contexts and components.
+**Learning:** While `Math.random()` had been previously mitigated, using `Date.now()` is equally flawed as it creates predictable, non-cryptographic IDs that are prone to collision—especially when records are created simultaneously in rapid succession (e.g. bulk operations or testing scripts).
+**Prevention:** Use `crypto.randomUUID()` exclusively for generating all unique identifiers within the application state or UI components instead of any timestamp-based strings.

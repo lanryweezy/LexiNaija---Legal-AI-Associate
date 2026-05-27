@@ -85,7 +85,7 @@ export const Docket: React.FC = () => {
     e.preventDefault();
     if (newTask.title && newTask.dueDate) {
       addTask({
-        id: Date.now().toString(),
+        id: crypto.randomUUID(),
         title: newTask.title,
         dueDate: new Date(newTask.dueDate),
         priority: newTask.priority as any,

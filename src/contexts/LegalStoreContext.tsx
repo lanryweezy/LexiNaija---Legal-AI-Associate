@@ -431,7 +431,7 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   useEffect(() => { localStorage.setItem('lexinaija_knowledgeItems', JSON.stringify(knowledgeItems)); }, [knowledgeItems]);
 
   const addAuditLogEntry = (entry: Omit<AuditLogEntry, 'id' | 'timestamp'>) => {
-    const newEntry: AuditLogEntry = { id: Date.now().toString(), timestamp: new Date(), ...entry };
+    const newEntry: AuditLogEntry = { id: crypto.randomUUID(), timestamp: new Date(), ...entry };
     setAuditLog(prevLog => [...prevLog, newEntry]);
     pushToCloud('audit_logs', 'insert', { 
       id: newEntry.id, 
@@ -536,7 +536,7 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
           ...c,
           documents: c.documents.map(d => {
             if (d.id === docId) {
-               const version: DocumentVersion = { id: Date.now().toString(), timestamp: new Date(), content: d.content, title: d.title };
+               const version: DocumentVersion = { id: crypto.randomUUID(), timestamp: new Date(), content: d.content, title: d.title };
                const existingVersions = d.versions || [];
                addAuditLogEntry({ eventType: 'DOCUMENT_UPDATED', documentId: docId, caseId: caseId, userId: 'system', details: `Document '${d.title}' updated.` });
                pushToCloud('documents', 'update', { title: updates.title || d.title, content: updates.content || d.content, status: updates.status || d.status }, docId);

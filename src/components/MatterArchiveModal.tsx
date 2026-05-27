@@ -38,7 +38,7 @@ export const MatterArchiveModal: React.FC<MatterArchiveModalProps> = ({
     }
 
     const newDoc: SavedDocument = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       title: title.trim(),
       content: documentContent,
       type: documentType,

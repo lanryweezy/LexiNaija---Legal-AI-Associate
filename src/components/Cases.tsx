@@ -88,7 +88,7 @@ export const Cases: React.FC = () => {
         showToast("Case updated successfully.", "success");
       } else {
         addCase({
-          id: Date.now().toString(),
+          id: crypto.randomUUID(),
           title: formData.title,
           clientId: formData.clientId,
           status: formData.status as any,
@@ -111,7 +111,7 @@ export const Cases: React.FC = () => {
     e.preventDefault();
     if (selectedCaseId && feeData.description && feeData.amount) {
         const newItem: BillableItem = {
-            id: Date.now().toString(),
+            id: crypto.randomUUID(),
             description: feeData.description,
             amount: parseFloat(feeData.amount),
             date: new Date(),

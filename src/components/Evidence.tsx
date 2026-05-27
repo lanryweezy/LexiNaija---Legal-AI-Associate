@@ -39,7 +39,7 @@ export const Evidence: React.FC = () => {
     e.preventDefault();
     if (selectedCaseId && formData.description) {
       addEvidence(selectedCaseId, {
-        id: Date.now().toString(),
+        id: crypto.randomUUID(),
         description: formData.description,
         type: formData.type as any,
         dateObtained: formData.dateObtained ? new Date(formData.dateObtained) : new Date(),
@@ -104,7 +104,7 @@ export const Evidence: React.FC = () => {
         
         // Save to case documents
         saveDocumentToCase(selectedCase.id, {
-          id: Date.now().toString(),
+          id: crypto.randomUUID(),
           title: `S.84 Certificate - ${item.description.substring(0, 30)}`,
           content: content,
           type: 'Draft',
@@ -170,7 +170,7 @@ C/O THEIR COUNSEL
 `;
 
     saveDocumentToCase(selectedCase.id, {
-        id: Date.now().toString(),
+        id: crypto.randomUUID(),
         title: `List of Documents: ${selectedCase.title}`,
         content: content,
         type: 'Draft',

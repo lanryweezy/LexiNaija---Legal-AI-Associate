@@ -58,7 +58,7 @@ export const Research: React.FC = () => {
     }
 
     const userMsg: ChatMessage = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       role: 'user',
       text: textToSend,
       timestamp: new Date()
@@ -72,7 +72,7 @@ export const Research: React.FC = () => {
       const activeContext = knowledgeItems.find(k => k.id === selectedContextId)?.content;
       const responseText = await generateLegalResearch(userMsg.text, activeContext);
       const botMsg: ChatMessage = {
-        id: (Date.now() + 1).toString(),
+        id: crypto.randomUUID(),
         role: 'model',
         text: responseText,
         timestamp: new Date()
@@ -80,7 +80,7 @@ export const Research: React.FC = () => {
       setMessages(prev => [...prev, botMsg]);
     } catch (error) {
       const errorMsg: ChatMessage = {
-        id: (Date.now() + 1).toString(),
+        id: crypto.randomUUID(),
         role: 'model',
         text: "My apologies, I encountered an error accessing the legal database. Please try again.",
         timestamp: new Date(),
@@ -101,7 +101,7 @@ export const Research: React.FC = () => {
   const handleSaveToCase = () => {
     if (selectedCase && textToSave && saveTitle) {
         saveDocumentToCase(selectedCase, {
-            id: Date.now().toString(),
+            id: crypto.randomUUID(),
             title: saveTitle,
             content: textToSave,
             type: 'Research',

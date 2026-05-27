@@ -89,7 +89,7 @@ export const Billing: React.FC = () => {
       }
 
       addInvoice({
-        id: Date.now().toString(),
+        id: crypto.randomUUID(),
         clientId: newInvoice.clientId,
         caseId: newInvoice.caseId,
         amount: totalAmount,

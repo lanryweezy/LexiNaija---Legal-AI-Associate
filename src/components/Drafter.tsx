@@ -146,7 +146,7 @@ export const Drafter: React.FC = () => {
 
   const handleSaveToCase = () => {
     if (selectedCase && generatedDraft && saveTitle) {
-        const newDocId = Date.now().toString();
+        const newDocId = crypto.randomUUID();
         saveDocumentToCase(selectedCase, {
             id: newDocId,
             title: saveTitle,

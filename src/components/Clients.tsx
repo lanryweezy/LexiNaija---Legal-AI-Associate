@@ -51,7 +51,7 @@ export const Clients: React.FC = () => {
         showToast("Client intelligence updated.", "success");
       } else {
         addClient({
-          id: Date.now().toString(),
+          id: crypto.randomUUID(),
           name: formData.name,
           type: formData.type as any,
           email: formData.email,

@@ -46,7 +46,7 @@ export const ComplianceAudit: React.FC = () => {
       [],
       ['CERTIFICATE OF EXPORT'],
       ['Exported On:', `"${new Date().toLocaleString()}"`],
-      ['Immutable Hash:', `"${btoa(Date.now().toString()).substring(0, 16).toUpperCase()}"`]
+      ['Immutable Hash:', `"${btoa(crypto.randomUUID()).substring(0, 16).toUpperCase()}"`]
     ];
     
     const csvContent = [headers.join(','), ...rows.map(e => e.join(',')), ...signOff.map(e => e.join(','))].join('\n');

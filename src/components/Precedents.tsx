@@ -503,7 +503,7 @@ export const Precedents: React.FC<PrecedentsProps> = ({ onNavigate }) => {
 
   const confirmUseTemplate = () => {
     if (!viewingTemplate || !useCaseId || !useTitle) return;
-    const newDocId = Date.now().toString();
+    const newDocId = crypto.randomUUID();
     saveDocumentToCase(useCaseId, {
       id: newDocId,
       title: useTitle,

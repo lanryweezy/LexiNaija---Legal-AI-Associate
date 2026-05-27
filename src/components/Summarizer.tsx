@@ -36,7 +36,7 @@ export const Summarizer: React.FC = () => {
   const handleSaveToCase = () => {
     if (selectedCase && summary) {
         saveDocumentToCase(selectedCase, {
-            id: Date.now().toString(),
+            id: crypto.randomUUID(),
             title: `Summary: ${summary.title}`,
             content: `Ratio: ${summary.ratioDecidendi}\n\nSummary: ${summary.summary}`,
             type: 'Summary',

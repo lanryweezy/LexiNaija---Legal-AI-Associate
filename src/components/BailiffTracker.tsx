@@ -45,7 +45,7 @@ export const BailiffTracker: React.FC = () => {
     e.preventDefault();
     if (newEntry.caseId && newEntry.bailiffName) {
       setEntries([
-        { ...newEntry, id: Date.now().toString() } as BailiffEntry,
+        { ...newEntry, id: crypto.randomUUID() } as BailiffEntry,
         ...entries
       ]);
       setShowModal(false);

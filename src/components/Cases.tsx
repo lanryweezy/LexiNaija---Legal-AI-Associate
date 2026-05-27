@@ -139,15 +139,18 @@ export const Cases: React.FC = () => {
       return caseItem.billableItems.reduce((sum, item) => sum + item.amount, 0);
   };
 
-  const filteredCases = cases.filter(c => {
+  const filteredCases = React.useMemo(() => {
+    // ⚡ Bolt: Cache lowercased search query to avoid redundant O(N*M) string reallocations on every render
     const query = searchQuery.toLowerCase();
-    const clientName = getClientName(c.clientId).toLowerCase();
-    return (
-      c.title.toLowerCase().includes(query) ||
-      (c.suitNumber && c.suitNumber.toLowerCase().includes(query)) ||
-      clientName.includes(query)
-    );
-  });
+    return cases.filter(c => {
+      const clientName = getClientName(c.clientId).toLowerCase();
+      return (
+        c.title.toLowerCase().includes(query) ||
+        (c.suitNumber && c.suitNumber.toLowerCase().includes(query)) ||
+        clientName.includes(query)
+      );
+    });
+  }, [cases, searchQuery, clients]);
 
   return (
     <div className="p-8 max-w-7xl mx-auto animate-in fade-in duration-1000">

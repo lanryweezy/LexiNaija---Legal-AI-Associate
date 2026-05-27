@@ -85,7 +85,7 @@ export const ClientPortal: React.FC = () => {
   const [copied, setCopied] = useState(false);
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(`https://lexinaija.com/portal/invite-${Date.now()}`);
+    navigator.clipboard.writeText(`https://lexinaija.com/portal/invite-${crypto.randomUUID()}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

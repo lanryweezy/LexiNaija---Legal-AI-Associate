@@ -24,7 +24,7 @@ export const usePaystackPayment = () => {
       email: config.email,
       amount: config.amount * 100, // Convert to kobo (NGN)
       currency: 'NGN',
-      ref: `LX-${Date.now()}`,
+      ref: `LX-${crypto.randomUUID()}`,
       metadata: {
         custom_fields: [
           {

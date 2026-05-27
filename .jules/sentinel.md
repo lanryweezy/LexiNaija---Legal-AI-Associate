@@ -10,3 +10,7 @@
 **Vulnerability:** Found over 20 uses of `Date.now().toString()` and `(Date.now() + 1).toString()` for ID generation across state contexts and components.
 **Learning:** While `Math.random()` had been previously mitigated, using `Date.now()` is equally flawed as it creates predictable, non-cryptographic IDs that are prone to collision—especially when records are created simultaneously in rapid succession (e.g. bulk operations or testing scripts).
 **Prevention:** Use `crypto.randomUUID()` exclusively for generating all unique identifiers within the application state or UI components instead of any timestamp-based strings.
+## 2026-05-27 - Predictable ID Generation Risk (Date.now())
+**Vulnerability:** Use of `Date.now()` to generate IDs for portal invitations and Paystack payment references.
+**Learning:** Using `Date.now()` is predictable and exposes the app to enumeration attacks, unauthorized access guessing (invite links), and payment reference collisions, violating secure identifier generation principles.
+**Prevention:** Consistently use `crypto.randomUUID()` to generate globally unique, cryptographically secure string identifiers everywhere instead of timestamp-based proxies.

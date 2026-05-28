@@ -9,3 +9,6 @@
 ## 2026-05-26 - Memoizing filtered list in list components
 **Learning:** Component `Cases` (like `Clients`) suffered from unmemoized filtering that ran on every single render. Since it depends on large collections `cases` and `clients` along with search queries, the O(N) array allocation paired with redundant string reallocation was heavily degrading performance.
 **Action:** Memoize large filtered lists using `React.useMemo()` to avoid re-evaluating the array and string reallocations on irrelevant state changes or component re-renders.
+## 2026-05-27 - Memoizing Sidebar sections search
+**Learning:** The Sidebar had unmemoized lowercase computations for filtering search queries which forced O(N*M) string reallocations on every render, lagging UI.
+**Action:** Extract `searchQuery.toLowerCase()` outside of mapping and filtering array iterations to stop redundantly generating lowercase versions over and over.

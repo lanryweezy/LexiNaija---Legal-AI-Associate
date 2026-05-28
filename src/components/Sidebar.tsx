@@ -90,10 +90,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView }) => {
   const filteredSections = useMemo(() => {
     if (!searchQuery) return sections;
 
+    // ⚡ Bolt: Cache lowercased search query to avoid redundant O(N*M) string reallocations inside filter loop
+    const queryLower = searchQuery.toLowerCase();
+
     return sections.map(section => ({
       ...section,
       items: section.items.filter(item =>
-        item.label.toLowerCase().includes(searchQuery.toLowerCase())
+        item.label.toLowerCase().includes(queryLower)
       )
     })).filter(section => section.items.length > 0);
   }, [searchQuery]);

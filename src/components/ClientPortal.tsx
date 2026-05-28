@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Share2, Mail, Link as LinkIcon, Shield, Copy, CheckCircle2, UserCheck, Clock, X, ChevronRight, LayoutGrid, TrendingUp, Calendar, FileCheck, Upload, File } from 'lucide-react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 import { generateMilestones, calculateProgress, getCurrentMilestone, getNextMilestone, getMilestoneStatusColor } from '../services/milestoneService';
@@ -89,6 +89,9 @@ export const ClientPortal: React.FC = () => {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  // ⚡ Bolt: Cache filtered cases to avoid redundant O(N) array filtering on every render
+  const clientCases = useMemo(() => cases.filter(c => c.clientId === selectedClient), [cases, selectedClient]);
 
   return (
     <div className="p-8 max-w-7xl mx-auto h-[calc(100vh-2rem)] flex flex-col animate-in fade-in duration-1000">
@@ -189,10 +192,10 @@ export const ClientPortal: React.FC = () => {
                     <div>
                         <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8 border-b border-slate-100 dark:border-slate-800 pb-4">Authorized Matter Synchronization</h4>
                         <div className="space-y-10">
-                            {cases.filter(c => c.clientId === selectedClient).length === 0 ? (
+                            {clientCases.length === 0 ? (
                                 <p className="text-slate-400 font-medium italic">No active matters linked to this portal.</p>
                             ) : (
-                                cases.filter(c => c.clientId === selectedClient).map(c => {
+                                clientCases.map(c => {
                                     const milestones = generateMilestones(c.id, c.title);
                                     const progress = calculateProgress(milestones);
                                     const currentMilestone = getCurrentMilestone(milestones);

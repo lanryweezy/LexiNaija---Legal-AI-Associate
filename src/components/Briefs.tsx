@@ -10,9 +10,11 @@ import remarkGfm from 'remark-gfm';
 import { useToast } from '../contexts/ToastContext';
 import { MatterArchiveModal } from './MatterArchiveModal';
 import { AiDisclaimer } from './AiDisclaimer';
+import { useNavigate } from 'react-router-dom';
 
 export const Briefs: React.FC = () => {
   const { showToast } = useToast();
+  const navigate = useNavigate();
   const { cases, consumeCredits, creditsTotal, creditsUsed, activeSuggestion, setActiveSuggestion } = useLegalStore();
   const [selectedCaseId, setSelectedCaseId] = useState('');
   const [showArchiveModal, setShowArchiveModal] = useState(false);
@@ -117,9 +119,10 @@ export const Briefs: React.FC = () => {
                 <span className="text-sm font-black text-legal-900 italic tracking-tighter">{creditsTotal - creditsUsed} CR</span>
             </div>
             <button
-                className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 hover:text-legal-900 transition-colors focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none"
-                aria-label="Close Smart Briefs"
-                title="Close Smart Briefs"
+              onClick={() => navigate('/dashboard')}
+              aria-label="Close Briefs module"
+              title="Close"
+              className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 hover:text-legal-900 transition-colors focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none"
             >
                 <X size={18} />
             </button>
@@ -228,9 +231,9 @@ export const Briefs: React.FC = () => {
                 <div className="flex gap-2">
                   <button 
                     onClick={copyToClipboard}
-                    className="p-3 bg-slate-50 text-slate-400 hover:bg-legal-900 hover:text-white rounded-xl transition-all focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none"
-                    aria-label="Copy legal argument to clipboard"
+                    aria-label="Copy to clipboard"
                     title="Copy to clipboard"
+                    className="p-3 bg-slate-50 text-slate-400 hover:bg-legal-900 hover:text-white rounded-xl transition-all focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none"
                   >
                     <Clipboard size={18} />
                   </button>

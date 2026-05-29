@@ -8,6 +8,7 @@ import { useLegalStore } from '../contexts/LegalStoreContext';
 import { EvidenceItem } from '../types';
 import { useToast } from '../contexts/ToastContext';
 import { ConfirmModal } from './ConfirmModal';
+import { captureException } from '../services/errorTracker';
 import { 
     generateS84Certificate, 
     getDeviceFingerprint, 
@@ -115,8 +116,9 @@ export const Evidence: React.FC = () => {
         downloadS84Certificate(content, selectedCase.title, item.description);
         
         showToast("S.84 Certificate generated with integrity hash. Downloading...", "success");
-      } catch (error) {
-        console.error('S.84 Generation Error:', error);
+      } catch (error: any) {
+        console.error('S.84 Generation Error');
+        captureException(error, { tags: { component: 'Evidence', action: 'generateS84Certificate' } });
         showToast("Failed to generate S.84 Certificate. Please try again.", "error");
       }
   };

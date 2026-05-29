@@ -4,6 +4,8 @@
  * Direct client-side calls are disabled for production safety.
  */
 
+import { captureException } from './errorTracker';
+
 const API_ENDPOINT = '/api/ai';
 
 export const runGroq = async (prompt: string): Promise<string> => {
@@ -32,7 +34,8 @@ export const runGroq = async (prompt: string): Promise<string> => {
     const data = await response.json();
     return data.result || '';
   } catch (error: any) {
-    console.error("Groq API Error:", error);
+    console.error("Groq API Error");
+    captureException(error, { tags: { service: 'groqService', action: 'runGroq' } });
     throw new Error("Neural failover to Groq failed.");
   }
 };

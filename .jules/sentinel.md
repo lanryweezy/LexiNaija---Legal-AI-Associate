@@ -19,3 +19,8 @@
 **Vulnerability:** Found `try...catch` blocks in `src/components/Drafter.tsx` and `src/components/Billing.tsx` dumping raw error objects to the console via `console.error(e)`.
 **Learning:** Directly logging raw exception objects to the browser console can leak sensitive internal application states, stack traces, and API failure details to unauthorized users in production.
 **Prevention:** Use generic error messages for client-side logging (e.g., `console.error("Failed to generate.")`) and pipe actual exception details securely through the established backend telemetry service (e.g., Sentry's `captureException`).
+
+## 2025-02-28 - Information Leakage in Error Handling (Generic Services)
+**Vulnerability:** Found multiple `catch` blocks in generic services and components (`groqService`, `geminiCore`, `caseLawEngine`, `Evidence.tsx`, `LegalStoreContext`) dumping raw error objects to the console via `console.error(error)`.
+**Learning:** Directly logging raw exception objects to the browser console can leak sensitive internal application states, stack traces, network paths, or API error details to unauthorized users in production.
+**Prevention:** Use generic error messages for client-side logging (e.g., `console.error("Service Error")`) and pipe actual exception details securely through the established backend telemetry service (e.g., Sentry's `captureException(error)`).

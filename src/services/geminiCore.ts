@@ -4,6 +4,8 @@
  * Direct client-side calls are disabled for production safety.
  */
 
+import { captureException } from './errorTracker';
+
 const API_ENDPOINT = '/api/ai';
 
 export async function runGemini(prompt: string): Promise<string> {
@@ -31,8 +33,9 @@ export async function runGemini(prompt: string): Promise<string> {
 
     const data = await response.json();
     return data.result || '';
-  } catch (error) {
-    console.error("Gemini API Error:", error);
+  } catch (error: any) {
+    console.error("Gemini API Error");
+    captureException(error, { tags: { service: 'geminiCore', action: 'runGemini' } });
     throw error; // Rethrow to allow orchestrator to handle failover
   }
 }

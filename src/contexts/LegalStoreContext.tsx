@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Client, Case, Invoice, SavedDocument, DocumentVersion, BillableItem, Task, FirmProfile, EvidenceItem, LegalAnalytics, AuditLogEntry, Suggestion, AppView, KnowledgeItem } from '../types';
 import { supabase } from '../services/supabaseClient';
+import { captureException } from '../services/errorTracker';
 
 interface LegalStoreContextType {
   firmProfile: FirmProfile;
@@ -340,8 +341,9 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
             setHasMoreCases(data.length === PAGE_SIZE);
             setCasesPage(nextPage);
         }
-    } catch (e) {
-        console.error('Failed to load more cases', e);
+    } catch (e: any) {
+        console.error('Failed to load more cases');
+        captureException(e, { tags: { component: 'LegalStoreContext', action: 'loadMoreCases' } });
     } finally {
         setIsLoadingMore(false);
     }

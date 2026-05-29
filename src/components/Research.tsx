@@ -131,7 +131,11 @@ export const Research: React.FC = () => {
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Balance</span>
                 <span className="text-sm font-black text-legal-900 italic tracking-tighter">{creditsTotal - creditsUsed} CR</span>
             </div>
-            <button className="p-2 text-slate-300 hover:text-legal-900 transition-colors">
+            <button
+                aria-label="Share research"
+                title="Share research"
+                className="p-2 text-slate-300 hover:text-legal-900 transition-colors focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none"
+            >
                 <Share2 size={20} />
             </button>
             <div className="h-10 w-px bg-slate-100 mx-2"></div>

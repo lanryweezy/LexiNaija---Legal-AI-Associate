@@ -9,3 +9,7 @@
 ## 2026-05-27 - Icon-only close buttons lacking interactions
 **Learning:** Found a pattern across full-page modules (e.g., Briefs, Witness, Corporate, Strategy) where the main top-right close `<X />` button is completely decorative—it lacks both an `onClick` handler to navigate out of the page and an accessible `aria-label`/`title`.
 **Action:** When auditing icon-only buttons, ensure they actually serve a functional purpose (like navigating back to the dashboard) and are fully accessible via keyboard (`focus-visible` ring) and screen reader (`aria-label`).
+
+## 2026-05-29 - Missing form associations in complex components
+**Learning:** Found multiple form inputs in `Witness.tsx` that lacked `id` attributes and `htmlFor` on corresponding labels, resulting in disconnected inputs that are difficult for screen reader users to navigate. Moreover, interactive buttons such as "Copy to Clipboard" lacked explicit `aria-label`s.
+**Action:** Always ensure that `id` and `htmlFor` are explicitly paired on form elements and that icon-only buttons include `aria-label`, `title`, and visible focus rings (`focus-visible:ring-2`) for both mouse and keyboard users.

@@ -12,3 +12,7 @@
 ## 2026-05-27 - Memoizing Sidebar sections search
 **Learning:** The Sidebar had unmemoized lowercase computations for filtering search queries which forced O(N*M) string reallocations on every render, lagging UI.
 **Action:** Extract `searchQuery.toLowerCase()` outside of mapping and filtering array iterations to stop redundantly generating lowercase versions over and over.
+
+## 2024-05-18 - Avoid redundant inline array filtering in JSX
+**Learning:** Found multiple instances where the exact same `.filter()` operation was executed sequentially inline during JSX render blocks (e.g. `{items.filter(x).length === 0 ? (...) : items.filter(x).map(...)}`). This repeatedly re-allocates memory and re-evaluates the array, scaling an O(N) operation to O(k*N) on every render unnecessarily.
+**Action:** Extract repeated `.filter()` or `.map()` operations to `useMemo` blocks at the top of the component to cache the derived arrays and reference the cached variable inside JSX.

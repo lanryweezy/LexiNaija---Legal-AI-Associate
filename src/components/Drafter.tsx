@@ -7,6 +7,7 @@ import { draftContract, getClauseSuggestions } from '../services/geminiService';
 import { ContractParams, SavedDocument } from '../types';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 import ReactMarkdown from 'react-markdown';
+import { captureException } from '../services/errorTracker';
 import remarkGfm from 'remark-gfm';
 import { useToast } from '../contexts/ToastContext';
 import { AppView } from '../types';
@@ -130,8 +131,9 @@ export const Drafter: React.FC = () => {
         if (!consumeCredits(2)) return;
         const results = await getClauseSuggestions(params.type);
         setSuggestions(results.split(',').map(s => s.trim()));
-    } catch(e) {
-        console.error(e);
+    } catch(e: any) {
+        captureException(e, { tags: { component: 'Drafter', action: 'getClauseSuggestions' } });
+        console.error("Failed to generate clause suggestions.");
     } finally {
         setLoadingSuggestions(false);
     }

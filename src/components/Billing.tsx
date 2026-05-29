@@ -6,6 +6,7 @@ import { jsPDF } from 'jspdf';
 import * as XLSX from 'xlsx';
 import { Invoice } from '../types';
 import { useToast } from '../contexts/ToastContext';
+import { captureException } from '../services/errorTracker';
 import { calculateLPROFee, formatCurrency, getLPROReference, type TransactionType } from '../services/lproCalculator';
 
 export const Billing: React.FC = () => {
@@ -63,8 +64,9 @@ export const Billing: React.FC = () => {
     try {
       const refined = await generateFeeNoteDescription(newInvoice.rawDescription);
       setNewInvoice(prev => ({ ...prev, finalDescription: refined }));
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      captureException(e, { tags: { component: 'Billing', action: 'generateFeeNoteDescription' } });
+      console.error("Failed to process billing AI request.");
     } finally {
       setLoadingAi(false);
     }

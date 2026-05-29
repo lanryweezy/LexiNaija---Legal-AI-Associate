@@ -14,3 +14,8 @@
 **Vulnerability:** Use of `Date.now()` to generate IDs for portal invitations and Paystack payment references.
 **Learning:** Using `Date.now()` is predictable and exposes the app to enumeration attacks, unauthorized access guessing (invite links), and payment reference collisions, violating secure identifier generation principles.
 **Prevention:** Consistently use `crypto.randomUUID()` to generate globally unique, cryptographically secure string identifiers everywhere instead of timestamp-based proxies.
+
+## 2026-06-25 - Information Leakage in Error Handling
+**Vulnerability:** Found `try...catch` blocks in `src/components/Drafter.tsx` and `src/components/Billing.tsx` dumping raw error objects to the console via `console.error(e)`.
+**Learning:** Directly logging raw exception objects to the browser console can leak sensitive internal application states, stack traces, and API failure details to unauthorized users in production.
+**Prevention:** Use generic error messages for client-side logging (e.g., `console.error("Failed to generate.")`) and pipe actual exception details securely through the established backend telemetry service (e.g., Sentry's `captureException`).

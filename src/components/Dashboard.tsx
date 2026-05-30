@@ -1,4 +1,5 @@
 import { FileText, Clock, AlertCircle, Briefcase, Zap, Gavel, Calendar, AlertTriangle, CheckCircle } from 'lucide-react';
+import React from 'react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 import { CounselAgent } from './CounselAgent';
 import { getCasesApproachingLimitation, getLimitationUrgency } from '../services/limitationCalculator';
@@ -13,14 +14,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
   const { cases, activeCaseId, setActiveCaseId, setView } = useLegalStore();
   const navigate = useNavigate();
 
-  const totalDocuments = cases.reduce((acc, c) => acc + c.documents.length, 0);
-  const activeCases = cases.filter(c => c.status === 'Open' || c.status === 'Pending Court' || c.status === 'Drafting').length;
+  const totalDocuments = React.useMemo(() => cases.reduce((acc, c) => acc + c.documents.length, 0), [cases]);
+  const activeCases = React.useMemo(() => cases.filter(c => c.status === 'Open' || c.status === 'Pending Court' || c.status === 'Drafting').length, [cases]);
   const activeCase = cases.find(c => c.id === activeCaseId);
   
   // Get cases approaching limitation
-  const limitationCases = getCasesApproachingLimitation(cases, 90);
-  const criticalCases = limitationCases.filter(c => c.urgency.level === 'critical');
-  const warningCases = limitationCases.filter(c => c.urgency.level === 'warning' || c.urgency.level === 'attention');
+  const limitationCases = React.useMemo(() => getCasesApproachingLimitation(cases, 90), [cases]);
+  const criticalCases = React.useMemo(() => limitationCases.filter(c => c.urgency.level === 'critical'), [limitationCases]);
+  const warningCases = React.useMemo(() => limitationCases.filter(c => c.urgency.level === 'warning' || c.urgency.level === 'attention'), [limitationCases]);
 
   const handleNavigate = (view: AppView) => {
     setView(view);

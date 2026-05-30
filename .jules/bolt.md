@@ -16,3 +16,7 @@
 ## 2024-05-18 - Avoid redundant inline array filtering in JSX
 **Learning:** Found multiple instances where the exact same `.filter()` operation was executed sequentially inline during JSX render blocks (e.g. `{items.filter(x).length === 0 ? (...) : items.filter(x).map(...)}`). This repeatedly re-allocates memory and re-evaluates the array, scaling an O(N) operation to O(k*N) on every render unnecessarily.
 **Action:** Extract repeated `.filter()` or `.map()` operations to `useMemo` blocks at the top of the component to cache the derived arrays and reference the cached variable inside JSX.
+
+## 2024-05-28 - Unmemoized Context-Dependent Arrays
+**Learning:** The Dashboard component performed multiple sequential array iterations (`cases.reduce`, `cases.filter`, `getCasesApproachingLimitation`) directly in the render body. Because `cases` is derived from a global context provider (`useLegalStore`), any unrelated state change in that provider forces these heavy computations to re-evaluate unnecessarily.
+**Action:** Always wrap derived state arrays with `useMemo` when they depend on a global context object, ensuring re-calculation only occurs when the specific dependency reference changes.

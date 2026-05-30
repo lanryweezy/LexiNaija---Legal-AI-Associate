@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { supabase } from './supabaseClient';
+import { captureException } from './errorTracker';
 
 /**
  * LexiNaija Case Law Engine
@@ -29,8 +30,9 @@ export const fetchLatestJudgments = async () => {
 
     if (error) throw error;
     return data;
-  } catch (error) {
-    console.error("Failed to sync latest judgments:", error);
+  } catch (error: any) {
+    console.error("Failed to sync latest judgments");
+    captureException(error, { tags: { service: 'caseLawEngine', action: 'fetchLatestJudgments' } });
     return [];
   }
 };

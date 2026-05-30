@@ -67,7 +67,11 @@ export const Witness: React.FC = () => {
                 <span className="text-[10px] font-black text-legal-gold uppercase tracking-widest">Efficiency</span>
                 <span className="text-sm font-black text-white italic tracking-tighter">{creditsTotal - creditsUsed} CR</span>
             </div>
-            <button className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:text-legal-900 transition-all hover:bg-white shadow-sm">
+            <button
+                aria-label="Close Witness Intelligence"
+                title="Close Witness Intelligence"
+                className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:text-legal-900 transition-all hover:bg-white shadow-sm focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none"
+            >
                 <X size={18} />
             </button>
         </div>
@@ -78,10 +82,11 @@ export const Witness: React.FC = () => {
         <div className="w-[450px] bg-white/70 backdrop-blur-xl rounded-[40px] border border-white shadow-2xl flex flex-col overflow-hidden">
           <div className="p-8 flex-1 overflow-y-auto space-y-8">
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+              <label htmlFor="opposingRole" className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                 <MessageSquare size={14} className="text-legal-gold" /> Statement Identification
               </label>
               <select 
+                id="opposingRole"
                 value={opposingRole}
                 onChange={e => setOpposingRole(e.target.value)}
                 className="w-full bg-white border border-slate-100 p-4 rounded-2xl font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/5 outline-none transition-all cursor-pointer"
@@ -94,8 +99,9 @@ export const Witness: React.FC = () => {
             </div>
 
             <div className="flex-1 flex flex-col">
-              <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Deposition Text / Scanned Statement</label>
+              <label htmlFor="depositionText" className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Deposition Text / Scanned Statement</label>
               <textarea 
+                id="depositionText"
                 value={statement}
                 onChange={e => setStatement(e.target.value)}
                 placeholder="Paste the statement on oath here for hearsay analysis..."
@@ -151,7 +157,8 @@ export const Witness: React.FC = () => {
                 <div className="flex gap-3">
                   <button 
                     onClick={copyToClipboard}
-                    className="p-4 bg-white text-slate-400 hover:bg-legal-900 hover:text-white rounded-[20px] border border-slate-100 transition-all shadow-sm hover:shadow-xl active:scale-95"
+                    aria-label="Copy analysis to clipboard"
+                    className="p-4 bg-white text-slate-400 hover:bg-legal-900 hover:text-white rounded-[20px] border border-slate-100 transition-all shadow-sm hover:shadow-xl active:scale-95 focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none"
                     title="Copy to Clipboard"
                   >
                     <Clipboard size={18} />

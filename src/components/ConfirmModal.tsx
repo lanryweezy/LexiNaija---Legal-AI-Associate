@@ -66,7 +66,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
         </div>
         
         <div className="absolute top-6 right-6">
-            <button onClick={onClose} className="p-3 text-slate-200 hover:text-slate-400 transition-colors">
+            <button onClick={onClose} aria-label="Close modal" title="Close" className="p-3 text-slate-200 hover:text-slate-400 transition-colors focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none rounded-xl">
                 <X size={20} />
             </button>
         </div>

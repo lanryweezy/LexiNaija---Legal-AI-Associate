@@ -20,3 +20,6 @@
 ## 2024-05-28 - Unmemoized Context-Dependent Arrays
 **Learning:** The Dashboard component performed multiple sequential array iterations (`cases.reduce`, `cases.filter`, `getCasesApproachingLimitation`) directly in the render body. Because `cases` is derived from a global context provider (`useLegalStore`), any unrelated state change in that provider forces these heavy computations to re-evaluate unnecessarily.
 **Action:** Always wrap derived state arrays with `useMemo` when they depend on a global context object, ensuring re-calculation only occurs when the specific dependency reference changes.
+## 2024-05-29 - Memoizing Global Context Computed Properties
+**Learning:** `LegalStoreContext` exposed a `getAnalytics` function which performed multiple heavy O(N) array loops to compute analytics statistics. Because it returned a new object literal every time it was called, components reading this value would re-render needlessly, and the O(N) computations executed frequently inside the context block.
+**Action:** Always wrap heavy context getter calculations using `useMemo` with their specific dependencies, and expose the getter via `useCallback` returning the memoized value.

@@ -13,3 +13,7 @@
 ## 2026-05-29 - Missing form associations in complex components
 **Learning:** Found multiple form inputs in `Witness.tsx` that lacked `id` attributes and `htmlFor` on corresponding labels, resulting in disconnected inputs that are difficult for screen reader users to navigate. Moreover, interactive buttons such as "Copy to Clipboard" lacked explicit `aria-label`s.
 **Action:** Always ensure that `id` and `htmlFor` are explicitly paired on form elements and that icon-only buttons include `aria-label`, `title`, and visible focus rings (`focus-visible:ring-2`) for both mouse and keyboard users.
+
+## 2024-05-30 - Accessible Icon-Only Modal Close Buttons
+**Learning:** Icon-only close buttons (like 'X' inside Modals) lack semantic meaning and keyboard focus visibility by default, making them difficult for screen-reader and keyboard-only users to navigate and understand their purpose.
+**Action:** Always include an `aria-label` and `title` attribute for semantic meaning on icon-only buttons. Additionally, apply utility classes like `focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none rounded-xl` to ensure clear, visible focus states for keyboard users.

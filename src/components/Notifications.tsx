@@ -10,13 +10,13 @@ export const Notifications: React.FC = () => {
   const navigate = useNavigate();
 
   // Logic to gather "notifiable" events
-  const limitationCases = getCasesApproachingLimitation(cases, 90);
-  const upcomingHearings = cases.filter(c => {
+  const limitationCases = React.useMemo(() => getCasesApproachingLimitation(cases, 90), [cases]);
+  const upcomingHearings = React.useMemo(() => cases.filter(c => {
     if (!c.nextHearing) return false;
     const diff = (new Date(c.nextHearing).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24);
     return diff >= 0 && diff <= 7;
-  });
-  const pendingTasks = tasks.filter(t => t.status === 'Pending' && t.priority === 'High');
+  }), [cases]);
+  const pendingTasks = React.useMemo(() => tasks.filter(t => t.status === 'Pending' && t.priority === 'High'), [tasks]);
 
   const handleNavigate = (view: AppView, caseId?: string) => {
     if (caseId) {

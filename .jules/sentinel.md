@@ -24,3 +24,7 @@
 **Vulnerability:** Found multiple `catch` blocks in generic services and components (`groqService`, `geminiCore`, `caseLawEngine`, `Evidence.tsx`, `LegalStoreContext`) dumping raw error objects to the console via `console.error(error)`.
 **Learning:** Directly logging raw exception objects to the browser console can leak sensitive internal application states, stack traces, network paths, or API error details to unauthorized users in production.
 **Prevention:** Use generic error messages for client-side logging (e.g., `console.error("Service Error")`) and pipe actual exception details securely through the established backend telemetry service (e.g., Sentry's `captureException(error)`).
+## 2024-05-31 - Missing Input Length Limits
+**Vulnerability:** Core form fields in `Auth.tsx` and `Clients.tsx` lacked `maxLength` restrictions, theoretically allowing unbounded string inputs.
+**Learning:** While modern browsers and React handle large inputs reasonably well, explicitly setting `maxLength` on form elements is a fundamental defense-in-depth measure. It prevents excessively large payloads from degrading client-side performance, avoids UI breakage from long strings, and serves as the first line of defense against oversized inputs before they hit the API.
+**Prevention:** Always add sensible `maxLength` attributes (e.g., 255 for emails, 500 for addresses) to native `<input>` and `<textarea>` elements when building forms.

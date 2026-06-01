@@ -103,6 +103,7 @@ export const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
               <input
                 type="email"
                 required
+                maxLength={255}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-14 pr-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-legal-900 focus:bg-white focus:ring-4 focus:ring-legal-gold/5 outline-none transition-all placeholder-slate-300"
@@ -118,6 +119,7 @@ export const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
               <input
                 type="password"
                 required
+                maxLength={128}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full pl-14 pr-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-legal-900 focus:bg-white focus:ring-4 focus:ring-legal-gold/5 outline-none transition-all placeholder-slate-300"

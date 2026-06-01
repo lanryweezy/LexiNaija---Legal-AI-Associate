@@ -94,6 +94,7 @@ export const Clients: React.FC = () => {
              <input
                type="text"
                placeholder="Search by name, email, or RC..."
+               maxLength={100}
                value={searchQuery}
                onChange={(e) => setSearchQuery(e.target.value)}
                className="pl-12 pr-6 py-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold w-80 text-sm font-bold text-legal-900 dark:text-white shadow-sm outline-none transition-all placeholder:font-normal placeholder:text-slate-300 dark:placeholder:text-slate-600"
@@ -198,6 +199,7 @@ export const Clients: React.FC = () => {
                   <input 
                     type="text"
                     required 
+                    maxLength={255}
                     value={formData.name}
                     className="w-full border border-slate-200 dark:border-slate-700 p-5 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-300 dark:placeholder:text-slate-600"
                     onChange={e => setFormData({...formData, name: e.target.value})}
@@ -209,6 +211,7 @@ export const Clients: React.FC = () => {
                     <label className="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3 ml-2">CAC Registration Number (RC)</label>
                     <input
                       type="text"
+                      maxLength={50}
                       value={formData.rcNumber}
                       placeholder="e.g. RC 1234567"
                       className="w-full border border-slate-200 dark:border-slate-700 p-5 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-300 dark:placeholder:text-slate-600"
@@ -223,6 +226,7 @@ export const Clients: React.FC = () => {
                     <input
                       type="email"
                       required
+                      maxLength={255}
                       value={formData.email}
                       className="w-full border border-slate-200 dark:border-slate-700 p-5 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-300 dark:placeholder:text-slate-600"
                       onChange={e => setFormData({...formData, email: e.target.value})}
@@ -232,6 +236,7 @@ export const Clients: React.FC = () => {
                     <label className="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3 ml-2">Secure Phone Line</label>
                     <input
                       type="tel"
+                      maxLength={50}
                       value={formData.phone}
                       className="w-full border border-slate-200 dark:border-slate-700 p-5 rounded-2xl bg-white dark:bg-slate-800 text-sm font-bold text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-300 dark:placeholder:text-slate-600"
                       onChange={e => setFormData({...formData, phone: e.target.value})}
@@ -243,6 +248,7 @@ export const Clients: React.FC = () => {
                   <label className="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3 ml-2">Service Address</label>
                   <textarea
                     value={formData.address}
+                    maxLength={500}
                     className="w-full border border-slate-200 dark:border-slate-700 p-5 rounded-2xl bg-white dark:bg-slate-800 text-sm font-medium text-legal-900 dark:text-white focus:ring-4 focus:ring-legal-gold/10 focus:border-legal-gold outline-none transition-all shadow-sm resize-none h-24 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                     onChange={e => setFormData({...formData, address: e.target.value})}
                   />

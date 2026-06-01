@@ -338,7 +338,7 @@ export const DocumentEditor: React.FC = () => {
     const blob = new Blob([htmlContent], { type: 'application/msword' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a'); link.href = url; link.download = `${selectedDoc.title.replace(/\s+/g, '_')}.doc`;
-    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(url); // Clean up memory
   };
 
   const handleUpdateStatus = (newStatus: SavedDocument['status']) => {

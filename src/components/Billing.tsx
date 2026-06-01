@@ -31,6 +31,10 @@ export const Billing: React.FC = () => {
   });
   const [lproResult, setLproResult] = useState<ReturnType<typeof calculateLPROFee> | null>(null);
 
+  const filteredCasesForDropdown = React.useMemo(() => {
+    return cases.filter(c => !newInvoice.clientId || c.clientId === newInvoice.clientId);
+  }, [cases, newInvoice.clientId]);
+
   const calculateLpro = () => {
       const value = parseFloat(lproInput.propertyValue);
       if (!value) {
@@ -350,7 +354,7 @@ export const Billing: React.FC = () => {
                      onChange={e => setNewInvoice({...newInvoice, caseId: e.target.value})}
                   >
                     <option value="">-- Select Matter --</option>
-                    {cases.filter(c => !newInvoice.clientId || c.clientId === newInvoice.clientId).map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
+                    {filteredCasesForDropdown.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
                   </select>
                 </div>
               </div>

@@ -10,11 +10,13 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useToast } from '../contexts/ToastContext';
 import { MatterArchiveModal } from './MatterArchiveModal';
+import { useNavigate } from 'react-router-dom';
 
 type Tab = 'objects' | 'resolutions' | 'compliance' | 'registry';
 
 export const Corporate: React.FC = () => {
   const { showToast } = useToast();
+  const navigate = useNavigate();
   const { consumeCredits, creditsTotal, creditsUsed, clients } = useLegalStore();
   const [activeTab, setActiveTab] = useState<Tab>('objects');
   const [step, setStep] = useState(1);
@@ -115,7 +117,12 @@ export const Corporate: React.FC = () => {
                 <span className="text-[10px] font-black text-legal-gold uppercase tracking-widest">Protocol</span>
                 <span className="text-sm font-black text-white italic tracking-tighter">{creditsTotal - creditsUsed} CR</span>
             </div>
-            <button className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:text-legal-900 transition-all hover:bg-white shadow-sm">
+            <button
+                onClick={() => navigate('/dashboard')}
+                aria-label="Close Corporate & Compliance Unit"
+                title="Close"
+                className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:text-legal-900 transition-all hover:bg-white shadow-sm focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none"
+            >
                 <X size={18} />
             </button>
         </div>

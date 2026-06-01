@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { Client, Case, Invoice, SavedDocument, DocumentVersion, BillableItem, Task, FirmProfile, EvidenceItem, LegalAnalytics, AuditLogEntry, Suggestion, AppView, KnowledgeItem } from '../types';
 import { supabase } from '../services/supabaseClient';
 import { captureException } from '../services/errorTracker';
@@ -611,7 +611,7 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     pushToCloud('knowledge_items', 'delete', {}, id);
   };
 
-  const analyticsData = useMemo(() => {
+  const memoizedAnalytics = React.useMemo((): LegalAnalytics => {
     const totalCases = cases.length;
     const activeCases = cases.filter(c => c.status === 'Open' || c.status === 'Pending Court' || c.status === 'Drafting').length;
     const closedCases = cases.filter(c => c.status === 'Closed').length;
@@ -675,7 +675,7 @@ export const LegalStoreProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     return { totalCases, activeCases, closedCases, totalClients, totalRevenue, averageCaseValue, caseStatusDistribution, outcomeDistribution, winRate, monthlyRevenue, topClients, caseTypes: Array.from(caseTypes.entries()).map(([type, data]) => ({ type, count: data.count, avgValue: data.count > 0 ? data.totalValue / data.count : 0 })) };
   }, [cases, clients, invoices]);
 
-  const getAnalytics = useCallback(() => analyticsData, [analyticsData]);
+  const getAnalytics = useCallback(() => memoizedAnalytics, [memoizedAnalytics]);
 
   return (
     <LegalStoreContext.Provider value={{ 

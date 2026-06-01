@@ -10,9 +10,11 @@ import remarkGfm from 'remark-gfm';
 import { useToast } from '../contexts/ToastContext';
 import { MatterArchiveModal } from './MatterArchiveModal';
 import { AiDisclaimer } from './AiDisclaimer';
+import { useNavigate } from 'react-router-dom';
 
 export const Witness: React.FC = () => {
   const { showToast } = useToast();
+  const navigate = useNavigate();
   const { cases, consumeCredits, creditsTotal, creditsUsed } = useLegalStore();
   const [statement, setStatement] = useState('');
   const [opposingRole, setOpposingRole] = useState('Opposing Party');
@@ -68,8 +70,9 @@ export const Witness: React.FC = () => {
                 <span className="text-sm font-black text-white italic tracking-tighter">{creditsTotal - creditsUsed} CR</span>
             </div>
             <button
+                onClick={() => navigate('/dashboard')}
                 aria-label="Close Witness Intelligence"
-                title="Close Witness Intelligence"
+                title="Close"
                 className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:text-legal-900 transition-all hover:bg-white shadow-sm focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none"
             >
                 <X size={18} />

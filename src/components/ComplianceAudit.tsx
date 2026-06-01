@@ -60,6 +60,7 @@ export const ComplianceAudit: React.FC = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url); // Clean up memory
   };
 
   return (

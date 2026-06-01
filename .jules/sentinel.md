@@ -24,3 +24,8 @@
 **Vulnerability:** Found multiple `catch` blocks in generic services and components (`groqService`, `geminiCore`, `caseLawEngine`, `Evidence.tsx`, `LegalStoreContext`) dumping raw error objects to the console via `console.error(error)`.
 **Learning:** Directly logging raw exception objects to the browser console can leak sensitive internal application states, stack traces, network paths, or API error details to unauthorized users in production.
 **Prevention:** Use generic error messages for client-side logging (e.g., `console.error("Service Error")`) and pipe actual exception details securely through the established backend telemetry service (e.g., Sentry's `captureException(error)`).
+
+## 2026-05-27 - Blob URL Memory Leak (Denial of Service Risk)
+**Vulnerability:** Found `URL.createObjectURL(blob)` calls in `src/components/ComplianceAudit.tsx` and `src/components/DocumentEditor.tsx` without corresponding `URL.revokeObjectURL(url)` cleanup after download.
+**Learning:** Failing to explicitly revoke object URLs causes the browser to hold the Blob in memory indefinitely until the document unloads. In a Single Page Application (SPA), frequent file exports can lead to significant memory exhaustion, degrading performance and potentially crashing the user's browser (client-side Denial of Service).
+**Prevention:** Always pair `URL.createObjectURL()` with `URL.revokeObjectURL()` immediately after the generated URL is no longer needed (e.g., after the download link is clicked and removed from the DOM).

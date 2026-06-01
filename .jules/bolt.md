@@ -23,3 +23,6 @@
 ## 2024-05-29 - Memoizing Global Context Computed Properties
 **Learning:** `LegalStoreContext` exposed a `getAnalytics` function which performed multiple heavy O(N) array loops to compute analytics statistics. Because it returned a new object literal every time it was called, components reading this value would re-render needlessly, and the O(N) computations executed frequently inside the context block.
 **Action:** Always wrap heavy context getter calculations using `useMemo` with their specific dependencies, and expose the getter via `useCallback` returning the memoized value.
+## 2026-05-30 - Memoizing Context-Dependent Arrays on every keystroke
+**Learning:** The Sidebar component recalculated notification badge counts (involving `getCasesApproachingLimitation` and `tasks.filter`) on every render. Because these derivations depend on `cases` and `tasks` from a global context provider (`useLegalStore`), but this component also contained a local `searchQuery` state, typing in the search bar forced these heavy O(N) recalculations on every keystroke.
+**Action:** Always wrap context-dependent array operations in `useMemo` when they coexist with unrelated local state (like input queries) to prevent unnecessary recalculations on unrelated state updates.

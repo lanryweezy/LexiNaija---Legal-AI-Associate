@@ -139,6 +139,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView }) => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4 group-focus-within:text-legal-gold transition-colors" />
           <input
             type="text"
+            maxLength={255}
             placeholder="Search features..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

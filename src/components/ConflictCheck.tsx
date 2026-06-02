@@ -72,6 +72,7 @@ export const ConflictCheck: React.FC = () => {
             <input 
                 id="conflict-search"
                 type="text" 
+                maxLength={255}
                 value={query}
                 onChange={(e) => {
                     setQuery(e.target.value);

@@ -17,3 +17,6 @@
 ## 2024-05-30 - Accessible Icon-Only Modal Close Buttons
 **Learning:** Icon-only close buttons (like 'X' inside Modals) lack semantic meaning and keyboard focus visibility by default, making them difficult for screen-reader and keyboard-only users to navigate and understand their purpose.
 **Action:** Always include an `aria-label` and `title` attribute for semantic meaning on icon-only buttons. Additionally, apply utility classes like `focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none rounded-xl` to ensure clear, visible focus states for keyboard users.
+## 2024-05-15 - Standardizing Action Labels
+**Learning:** Found instances where common cancel actions were labeled "Abort Procedure", which could induce unnecessary cognitive load or sound overly dramatic for standard forms in a legal app.
+**Action:** Standardized cancel buttons to use the universally understood "Cancel" label to improve usability and reduce user hesitation.

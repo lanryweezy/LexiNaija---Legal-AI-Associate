@@ -19,7 +19,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   title,
   message,
   confirmLabel = 'Confirm Action',
-  cancelLabel = 'Abort Procedure',
+  cancelLabel = 'Cancel',
   variant = 'danger'
 }) => {
   if (!isOpen) return null;

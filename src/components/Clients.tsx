@@ -256,7 +256,7 @@ export const Clients: React.FC = () => {
               </div>
 
               <div className="flex gap-4 pt-6 border-t border-slate-50 dark:border-slate-800">
-                <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-colors">Abort Procedure</button>
+                <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-colors">Cancel</button>
                 <button type="submit" className="flex-[2] bg-legal-900 dark:bg-legal-gold text-white dark:text-legal-900 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-legal-gold hover:text-legal-900 dark:hover:bg-white shadow-xl transition-all">
                   {editingId ? 'Update Client Intelligence' : 'Register New Client'}
                 </button>

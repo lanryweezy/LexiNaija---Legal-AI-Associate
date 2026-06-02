@@ -39,9 +39,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView }) => {
   });
 
   // Calculate Notification Badge Count
-  const limitationCount = getCasesApproachingLimitation(cases, 90).length;
-  const urgentTasks = tasks.filter(t => t.status === 'Pending' && t.priority === 'High').length;
-  const totalNotifications = limitationCount + urgentTasks;
+  // ⚡ Bolt: Memoize context-dependent array operations to avoid O(N) recalculations on unrelated state updates (e.g. typing in search)
+  const { totalNotifications, limitationCount } = useMemo(() => {
+    const limitationCount = getCasesApproachingLimitation(cases, 90).length;
+    const urgentTasks = tasks.filter(t => t.status === 'Pending' && t.priority === 'High').length;
+    return {
+      limitationCount,
+      totalNotifications: limitationCount + urgentTasks
+    };
+  }, [cases, tasks]);
 
   const sections: NavSection[] = [
     {

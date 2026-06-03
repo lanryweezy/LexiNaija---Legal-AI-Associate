@@ -23,15 +23,18 @@ export const ConflictCheck: React.FC = () => {
       (c.email && c.email.toLowerCase().includes(q))
     );
 
-    const opMatches = cases.filter(c =>
-      (c.opposingParty && c.opposingParty.toLowerCase().includes(q)) ||
-      (c.opposingCounsel && c.opposingCounsel.toLowerCase().includes(q))
-    );
+    // ⚡ Bolt: Iterate over cases once, accumulating both opMatches and caMatches in a single pass to prevent duplicate iterations
+    const opMatches: typeof cases = [];
+    const caMatches: typeof cases = [];
+    cases.forEach(c => {
+      const isOpMatch = (c.opposingParty && c.opposingParty.toLowerCase().includes(q)) ||
+                        (c.opposingCounsel && c.opposingCounsel.toLowerCase().includes(q));
+      const isCaMatch = c.title.toLowerCase().includes(q) ||
+                        (c.suitNumber && c.suitNumber.toLowerCase().includes(q));
 
-    const caMatches = cases.filter(c =>
-      c.title.toLowerCase().includes(q) ||
-      (c.suitNumber && c.suitNumber.toLowerCase().includes(q))
-    );
+      if (isOpMatch) opMatches.push(c);
+      if (isCaMatch) caMatches.push(c);
+    });
 
     return {
       clientMatches: cMatches,

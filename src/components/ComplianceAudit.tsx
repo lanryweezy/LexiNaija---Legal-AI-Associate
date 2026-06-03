@@ -16,14 +16,17 @@ export const ComplianceAudit: React.FC = () => {
   const [filter, setFilter] = useState('All');
 
   // Detailed audit logs based on the core audit entries
-  const detailedLogs: AuditEntry[] = auditLog.map(entry => ({
-    id: entry.id,
-    action: entry.eventType.replace('_', ' '),
-    user: entry.userId || 'System',
-    details: entry.details || 'No additional details.',
-    timestamp: new Date(entry.timestamp).toLocaleString(),
-    ipAddress: 'Local Session'
-  }));
+  // ⚡ Bolt: Memoize mapped logs to prevent redundant object array re-allocations on every render
+  const detailedLogs: AuditEntry[] = React.useMemo(() => {
+    return auditLog.map(entry => ({
+      id: entry.id,
+      action: entry.eventType.replace('_', ' '),
+      user: entry.userId || 'System',
+      details: entry.details || 'No additional details.',
+      timestamp: new Date(entry.timestamp).toLocaleString(),
+      ipAddress: 'Local Session'
+    }));
+  }, [auditLog]);
 
   const handleExportCSV = () => {
     if (detailedLogs.length === 0) return;

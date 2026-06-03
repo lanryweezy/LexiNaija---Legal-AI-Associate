@@ -258,6 +258,7 @@ export const Research: React.FC = () => {
             <div className="relative group">
                 <textarea
                     value={input}
+                    maxLength={2000}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
@@ -316,6 +317,7 @@ export const Research: React.FC = () => {
                       <input 
                         id="save-doc-title"
                         type="text" 
+                        maxLength={255}
                         className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl font-bold text-legal-900 focus:ring-2 focus:ring-legal-gold/20 outline-none"
                         value={saveTitle}
                         onChange={e => setSaveTitle(e.target.value)}

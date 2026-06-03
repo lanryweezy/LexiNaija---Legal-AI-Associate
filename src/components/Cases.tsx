@@ -449,7 +449,7 @@ export const Cases: React.FC = () => {
           <div className="bg-white dark:bg-slate-900 rounded-[40px] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.3)] w-full max-w-sm overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center p-8 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
                 <h3 className="font-serif font-black italic text-xl text-legal-900 dark:text-white flex items-center gap-3"><CreditCard className="text-legal-gold" size={24}/> Log Fee / Expense</h3>
-                <button onClick={() => setShowFeeModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 min-w-[44px] min-h-[44px] flex items-center justify-center"><X size={20}/></button>
+                <button onClick={() => setShowFeeModal(false)} aria-label="Close" title="Close" className="text-slate-400 hover:text-slate-600 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 min-w-[44px] min-h-[44px] flex items-center justify-center"><X size={20}/></button>
             </div>
             <form onSubmit={handleSaveFee} className="p-8 space-y-6">
                 <div>
@@ -513,7 +513,7 @@ export const Cases: React.FC = () => {
                   </h3>
                   <p className="text-[10px] font-black uppercase tracking-widest text-amber-700/60 dark:text-amber-500 mt-2">Log New Court Date</p>
               </div>
-              <button onClick={() => setShowAdjournModal(false)} className="text-amber-400 hover:text-amber-600 transition-colors p-2 rounded-full hover:bg-amber-50 dark:hover:bg-amber-900/40 min-w-[44px] min-h-[44px] flex items-center justify-center">
+              <button onClick={() => setShowAdjournModal(false)} aria-label="Close" title="Close" className="text-amber-400 hover:text-amber-600 transition-colors p-2 rounded-full hover:bg-amber-50 dark:hover:bg-amber-900/40 min-w-[44px] min-h-[44px] flex items-center justify-center">
                 <X size={20} />
               </button>
             </div>

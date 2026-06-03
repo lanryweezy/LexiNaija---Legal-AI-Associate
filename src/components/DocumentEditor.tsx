@@ -608,7 +608,7 @@ export const DocumentEditor: React.FC = () => {
                             <h3 className="text-xs font-black uppercase tracking-widest text-legal-900 dark:text-white flex items-center gap-2">
                                 <History size={14} className="text-legal-gold" /> Version History
                             </h3>
-                            <button onClick={() => setShowHistory(false)} className="text-slate-400 hover:text-slate-600"><X size={16} /></button>
+                            <button onClick={() => setShowHistory(false)} aria-label="Close" title="Close" className="text-slate-400 hover:text-slate-600"><X size={16} /></button>
                         </div>
                         <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide">
                             {currentStoredDoc?.versions && currentStoredDoc.versions.length > 0 ? (
@@ -657,7 +657,7 @@ export const DocumentEditor: React.FC = () => {
                              <h3 className="text-white font-serif font-black text-2xl italic tracking-tight flex items-center gap-3 relative z-10">
                                 <Sparkles size={24} className="text-legal-gold animate-pulse"/> Legal Intelligence Refinement
                              </h3>
-                             <button onClick={() => setShowAiModal(false)} className="text-white/40 hover:text-white relative z-10 transition-colors"><X size={24} /></button>
+                             <button onClick={() => setShowAiModal(false)} aria-label="Close" title="Close" className="text-white/40 hover:text-white relative z-10 transition-colors"><X size={24} /></button>
                         </div>
                         <div className="p-10">
                             <div className="mb-8">

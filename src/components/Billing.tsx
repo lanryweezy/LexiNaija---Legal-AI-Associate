@@ -332,7 +332,7 @@ export const Billing: React.FC = () => {
                 <h3 className="text-2xl font-serif font-black italic tracking-tight text-legal-900 dark:text-white flex items-center gap-3">
                   <FileText className="text-legal-gold" size={24} /> Generate Fee Note
                 </h3>
-                <button onClick={() => setDrafting(false)} className="text-slate-400 hover:text-slate-600 transition-colors bg-white dark:bg-slate-800 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700"><X size={20}/></button>
+                <button onClick={() => setDrafting(false)} aria-label="Close" title="Close" className="text-slate-400 hover:text-slate-600 transition-colors bg-white dark:bg-slate-800 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700"><X size={20}/></button>
             </div>
             
             <div className="p-8 space-y-8 overflow-y-auto">
@@ -384,7 +384,7 @@ export const Billing: React.FC = () => {
                         <h4 className="text-legal-gold font-serif font-black italic text-lg tracking-tight flex items-center gap-2">
                           <CheckCircle size={18} /> LPRO 2023 Statutory Calculator
                         </h4>
-                        <button onClick={() => setShowLproCalc(false)} className="text-white/40 hover:text-white"><X size={18}/></button>
+                        <button onClick={() => setShowLproCalc(false)} aria-label="Close" title="Close" className="text-white/40 hover:text-white"><X size={18}/></button>
                       </div>
                       
                       <div className="grid grid-cols-2 gap-4 mb-6">

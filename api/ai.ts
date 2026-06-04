@@ -60,7 +60,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Rate limiting
-    const rateLimit = checkRateLimit(geminiKey || groqKey || 'default');
+    const clientIp = (req.headers['x-forwarded-for'] as string) || req.socket?.remoteAddress || 'default_ip';
+    const rateLimit = checkRateLimit(clientIp);
     res.setHeader('X-RateLimit-Limit', RATE_LIMIT.MAX_REQUESTS.toString());
     res.setHeader('X-RateLimit-Remaining', rateLimit.remaining.toString());
 
@@ -68,7 +69,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(429).json({ 
         error: 'Rate limit exceeded',
         message: 'Too many requests. Please try again later.',
-        retryAfter: Math.ceil((rateLimitStore.get(geminiKey || groqKey || 'default')?.resetTime || Date.now()) / 1000)
+        retryAfter: Math.ceil((rateLimitStore.get(clientIp)?.resetTime || Date.now()) / 1000)
       });
     }
 

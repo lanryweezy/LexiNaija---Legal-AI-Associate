@@ -9,6 +9,17 @@ export const Settings: React.FC = () => {
   const [formData, setFormData] = useState(firmProfile);
   const [saved, setSaved] = useState(false);
 
+  // ⚡ Bolt: Pre-group knowledge items by category to avoid O(N*M) nested filtering inside the render map
+  const groupedKnowledgeItems = React.useMemo(() => {
+    const grouped: Record<string, typeof knowledgeItems> = {};
+    const items = knowledgeItems || [];
+    items.forEach(item => {
+      if (!grouped[item.category]) grouped[item.category] = [];
+      grouped[item.category].push(item);
+    });
+    return grouped;
+  }, [knowledgeItems]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateFirmProfile(formData);
@@ -226,7 +237,7 @@ export const Settings: React.FC = () => {
             <div className="p-10 space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {['Entertainment', 'G.M IBRU', 'LAW SCHOOL', 'CAC', 'General'].map(cat => {
-                  const items = (knowledgeItems || []).filter(k => k.category === cat);
+                  const items = groupedKnowledgeItems[cat] || [];
                   return (
                     <div key={cat} className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-[32px] border border-slate-100 dark:border-slate-700 flex flex-col gap-4 group hover:bg-white dark:hover:bg-slate-800 hover:shadow-xl transition-all duration-500 min-h-[180px]">
                       <div className="flex items-center justify-between">

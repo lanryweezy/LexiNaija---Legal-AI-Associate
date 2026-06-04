@@ -286,11 +286,15 @@ export const PracticeGuide: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [activeGuide, setActiveGuide] = useState<string | null>(null);
 
-  const categories = ['All', ...Array.from(new Set(GUIDES.map(g => g.category)))];
+  // ⚡ Bolt: Memoize categories to prevent recreation on every render
+  const categories = React.useMemo(() => ['All', ...Array.from(new Set(GUIDES.map(g => g.category)))], []);
 
-  const filteredGuides = selectedCategory === 'All' 
-    ? GUIDES 
-    : GUIDES.filter(g => g.category === selectedCategory);
+  // ⚡ Bolt: Memoize filtered guides to prevent re-filtering on unrelated renders
+  const filteredGuides = React.useMemo(() => {
+    return selectedCategory === 'All'
+      ? GUIDES
+      : GUIDES.filter(g => g.category === selectedCategory);
+  }, [selectedCategory]);
 
   return (
     <div className="p-8 max-w-7xl mx-auto h-[calc(100vh-2rem)] flex flex-col animate-in fade-in duration-1000">

@@ -1,3 +1,6 @@
+## 2025-03-02 - O(N*M) Overhead in Render Loops
+**Learning:** Performing `Array.filter` operations repeatedly inside of JSX `.map` loops on derived global state (like context values) leads to massive redundant nested loop execution scaling at O(N*M).
+**Action:** Pre-group data via a single-pass iteration inside a `React.useMemo` hook (e.g. creating a categorized hash map lookup), and reference the cached map during rendering.
 ## 2026-05-23 - Memoizing CommandPalette
 **Learning:** The CommandPalette had expensive array filtering operations running on every re-render (including arrow key navigation) because the computed variables were not memoized.
 **Action:** Use `useMemo` for expensive computed values like `filteredCommands` derived from state that do not need to be recalculated on every keystroke or selection change.

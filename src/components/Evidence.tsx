@@ -386,6 +386,7 @@ C/O THEIR COUNSEL
                               id="ev-desc"
                               required
                               type="text" 
+                              maxLength={255}
                               className="w-full bg-slate-50 border border-slate-100 p-5 rounded-2xl font-bold text-legal-900 outline-none focus:bg-white transition-all shadow-inner"
                               placeholder="e.g. Certified True Copy of Judgment..."
                               value={formData.description}
@@ -422,6 +423,7 @@ C/O THEIR COUNSEL
                           <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Custody Location</label>
                           <input 
                               type="text" 
+                              maxLength={255}
                               className="w-full bg-slate-50 border border-slate-100 p-5 rounded-2xl font-bold text-legal-900 outline-none focus:bg-white transition-all shadow-inner"
                               placeholder="e.g. Chambers Safe, Registry"
                               value={formData.custodyLocation}

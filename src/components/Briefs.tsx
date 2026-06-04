@@ -149,6 +149,7 @@ export const Briefs: React.FC = () => {
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-2">Issue for Determination</label>
                 <input 
                     type="text"
+                    maxLength={255}
                     value={formData.issue}
                     onChange={e => setFormData({...formData, issue: e.target.value})}
                     className="w-full bg-white border border-slate-100 p-5 rounded-[24px] font-bold text-legal-900 focus:ring-4 focus:ring-legal-gold/5 outline-none transition-all"
@@ -173,6 +174,7 @@ export const Briefs: React.FC = () => {
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-2">Target Forum</label>
                     <input 
                         type="text"
+                        maxLength={255}
                         value={formData.jurisdiction}
                         onChange={e => setFormData({...formData, jurisdiction: e.target.value})}
                         className="w-full bg-white border border-slate-100 p-5 rounded-[24px] font-bold text-legal-900 outline-none"
@@ -183,6 +185,7 @@ export const Briefs: React.FC = () => {
             <div className="flex-1 flex flex-col">
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-2">Strategic Fact Reservoir</label>
                 <textarea 
+                    maxLength={5000}
                     value={formData.facts}
                     onChange={e => setFormData({...formData, facts: e.target.value})}
                     placeholder="Provide specific facts to be synthesized into the legal argument..."

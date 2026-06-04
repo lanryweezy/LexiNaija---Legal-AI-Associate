@@ -119,8 +119,8 @@ export const Clients: React.FC = () => {
                 {c.type === 'Corporate' ? <Building2 size={24} /> : <User size={24} />}
               </div>
               <div className="flex gap-1">
-                <button onClick={() => handleOpenEdit(c)} className="p-2 text-slate-300 hover:text-legal-900 dark:hover:text-white transition-colors"><Pencil size={16}/></button>
-                <button onClick={() => handleDeleteRequest(c.id)} className="p-2 text-slate-300 hover:text-rose-600 transition-colors"><Trash2 size={16}/></button>
+                <button onClick={() => handleOpenEdit(c)} aria-label="Edit Client" title="Edit Client" className="p-2 text-slate-300 hover:text-legal-900 dark:hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none rounded-xl"><Pencil size={16}/></button>
+                <button onClick={() => handleDeleteRequest(c.id)} aria-label="Delete Client" title="Delete Client" className="p-2 text-slate-300 hover:text-rose-600 transition-colors focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none rounded-xl"><Trash2 size={16}/></button>
               </div>
             </div>
 
@@ -170,7 +170,7 @@ export const Clients: React.FC = () => {
               <h3 className="text-2xl font-serif font-black text-legal-900 dark:text-white italic tracking-tight">
                   {editingId ? 'Update Client Record' : 'Initialize Client Enrollment'}
               </h3>
-              <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+              <button onClick={() => setShowModal(false)} aria-label="Close modal" title="Close modal" className="text-slate-400 hover:text-slate-600 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none">
                 <X size={20} />
               </button>
             </div>

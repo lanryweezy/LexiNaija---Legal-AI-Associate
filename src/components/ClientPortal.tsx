@@ -186,7 +186,7 @@ export const ClientPortal: React.FC = () => {
                         <span className="text-[10px] font-black text-legal-gold uppercase tracking-widest">Active Terminal</span>
                         <h3 className="text-3xl font-serif font-black italic text-legal-900 dark:text-white tracking-tight">{clients.find(c => c.id === selectedClient)?.name}</h3>
                     </div>
-                    <button onClick={() => setSelectedClient('')} className="p-3 text-slate-400 hover:text-legal-900 dark:hover:text-white bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl transition-all"><X size={20}/></button>
+                    <button onClick={() => setSelectedClient('')} aria-label="Close" title="Close" className="p-3 text-slate-400 hover:text-legal-900 dark:hover:text-white bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl transition-all"><X size={20}/></button>
                 </div>
                 <div className="flex-1 overflow-y-auto p-10 space-y-12 scrollbar-hide">
                     <div>
@@ -298,7 +298,7 @@ export const ClientPortal: React.FC = () => {
                 <h3 className="font-serif font-black italic text-3xl text-legal-900 dark:text-white tracking-tight">Onboard Entity</h3>
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Portal Provisioning Protocol</p>
               </div>
-              <button onClick={() => setShowInviteModal(false)} className="w-12 h-12 flex items-center justify-center bg-white dark:bg-slate-800 rounded-full text-slate-300 hover:text-legal-900 dark:hover:text-white transition-all shadow-sm border border-slate-50 dark:border-slate-700">
+              <button onClick={() => setShowInviteModal(false)} aria-label="Close" title="Close" className="w-12 h-12 flex items-center justify-center bg-white dark:bg-slate-800 rounded-full text-slate-300 hover:text-legal-900 dark:hover:text-white transition-all shadow-sm border border-slate-50 dark:border-slate-700">
                 <X size={20} />
               </button>
             </div>

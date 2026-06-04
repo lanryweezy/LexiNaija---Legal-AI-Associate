@@ -33,3 +33,8 @@
 **Vulnerability:** Found `URL.createObjectURL(blob)` calls in `src/components/ComplianceAudit.tsx` and `src/components/DocumentEditor.tsx` without corresponding `URL.revokeObjectURL(url)` cleanup after download.
 **Learning:** Failing to explicitly revoke object URLs causes the browser to hold the Blob in memory indefinitely until the document unloads. In a Single Page Application (SPA), frequent file exports can lead to significant memory exhaustion, degrading performance and potentially crashing the user's browser (client-side Denial of Service).
 **Prevention:** Always pair `URL.createObjectURL()` with `URL.revokeObjectURL()` immediately after the generated URL is no longer needed (e.g., after the download link is clicked and removed from the DOM).
+
+## 2024-06-25 - Missing Input Length Limits
+**Vulnerability:** Core form fields in `Sidebar.tsx`, `Research.tsx`, and `ConflictCheck.tsx` lacked `maxLength` restrictions, theoretically allowing unbounded string inputs.
+**Learning:** While modern browsers and React handle large inputs reasonably well, explicitly setting `maxLength` on form elements is a fundamental defense-in-depth measure. It prevents excessively large payloads from degrading client-side performance, avoids UI breakage from long strings, and serves as the first line of defense against oversized inputs before they hit the API.
+**Prevention:** Always add sensible `maxLength` attributes (e.g., 255 for emails, 500 for addresses) to native `<input>` and `<textarea>` elements when building forms.

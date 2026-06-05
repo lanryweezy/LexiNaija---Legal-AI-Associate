@@ -19,10 +19,29 @@ serve(async (req) => {
 
     const body = await req.text();
     
-    // In a real production environment, you should verify the signature 
-    // using crypto.subtle.importKey and crypto.subtle.verify.
-    // For this implementation, we assume the signature matches if the PAYSTACK_SECRET_KEY is present.
-    // (Actual verification logic omitted for brevity but recommended for live apps)
+    if (!PAYSTACK_SECRET_KEY) {
+      return new Response('Server configuration error', { status: 500 });
+    }
+
+    const encoder = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      'raw',
+      encoder.encode(PAYSTACK_SECRET_KEY),
+      { name: 'HMAC', hash: 'SHA-512' },
+      false,
+      ['verify']
+    );
+
+    // Parse the hex signature into a Uint8Array for constant-time verification
+    const signatureBytes = new Uint8Array(
+      signature.match(/.{1,2}/g)?.map(byte => parseInt(byte, 16)) || []
+    );
+
+    const isValid = await crypto.subtle.verify('HMAC', key, signatureBytes, encoder.encode(body));
+
+    if (!isValid) {
+      return new Response('Invalid signature', { status: 401 });
+    }
 
     const event = JSON.parse(body);
 

@@ -97,10 +97,11 @@ export const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
 
         <form onSubmit={handleAuth} className="space-y-6">
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2">Email Address</label>
+            <label htmlFor="auth-email" className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2">Email Address</label>
             <div className="relative group">
               <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-200 group-focus-within:text-legal-gold transition-colors" size={20} />
               <input
+                id="auth-email"
                 type="email"
                 required
                 maxLength={255}
@@ -113,10 +114,11 @@ export const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
           </div>
 
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2">Password</label>
+            <label htmlFor="auth-password" className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2">Password</label>
             <div className="relative group">
               <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-200 group-focus-within:text-legal-gold transition-colors" size={20} />
               <input
+                id="auth-password"
                 type="password"
                 required
                 maxLength={128}

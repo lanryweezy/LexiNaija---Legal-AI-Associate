@@ -169,6 +169,17 @@ export const DocumentEditor: React.FC = () => {
     );
   }, [cases, searchTerm]);
 
+  // ⚡ Bolt: Pre-group filtered documents by caseId to avoid O(N*M) filtering overhead during render
+  const docsByCaseId = React.useMemo(() => {
+    const map = new Map<string, typeof allDocs>();
+    allDocs.forEach(doc => {
+      const existing = map.get(doc.caseId) || [];
+      existing.push(doc);
+      map.set(doc.caseId, existing);
+    });
+    return map;
+  }, [allDocs]);
+
   const currentStoredDoc = selectedDoc 
     ? cases.find(c => c.id === selectedDoc.caseId)?.documents.find(d => d.id === selectedDoc.docId)
     : null;
@@ -370,7 +381,7 @@ export const DocumentEditor: React.FC = () => {
         
         <div className="flex-1 overflow-y-auto px-3 space-y-1">
           {cases.map(c => {
-            const caseDocs = allDocs.filter(d => d.caseId === c.id);
+            const caseDocs = docsByCaseId.get(c.id) || [];
             if (caseDocs.length === 0) return null;
             return (
               <div key={c.id} className="mb-4">

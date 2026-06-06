@@ -38,7 +38,9 @@ export const CounselAgent: React.FC<CounselAgentProps> = ({ onNavigate }) => {
           <div key={s.id} className="p-6 hover:bg-slate-50/50 transition-colors group relative">
             <button 
                 onClick={() => dismissSuggestion(s.id)}
-                className="absolute top-4 right-4 text-slate-200 hover:text-slate-400 transition-colors"
+                aria-label="Dismiss suggestion"
+                title="Dismiss suggestion"
+                className="absolute top-4 right-4 text-slate-200 hover:text-slate-400 transition-colors focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none rounded-md"
             >
                 <X size={14} />
             </button>

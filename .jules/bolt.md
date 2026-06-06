@@ -35,3 +35,6 @@
 ## 2026-05-31 - Avoid O(N*M) Rendering Overhead in Nested Filter Loops
 **Learning:** In `DocumentEditor.tsx`, performing an `Array.filter` inside a `.map()` iteration over cases causes significant O(N*M) runtime overhead, as the inner array was repeatedly queried for elements belonging to each mapped case during every render cycle.
 **Action:** Extract the inner filtered array and pre-group the items by their respective identifiers using a `Map` within a `React.useMemo` block. Inside the render `.map()` loop, replace the `Array.filter` with a simple `O(1)` Map lookup (`docsByCaseId.get(case.id)`).
+## 2025-06-05 - Avoid O(N*M) lookups inside list renders and data exports
+**Learning:** Performing `Array.find()` lookups on large collections (like `clients` or `cases`) inside of a `.map()` iteration (such as mapping `invoices` for rendering or data export) causes O(N*M) runtime scaling, blocking the main thread and slowing down large lists.
+**Action:** Always pre-group dependencies by their unique identifiers using `new Map()` (and wrap with `React.useMemo` if inside a component render loop), then replace the `Array.find()` calls with an O(1) `.get()` lookup on the Map.

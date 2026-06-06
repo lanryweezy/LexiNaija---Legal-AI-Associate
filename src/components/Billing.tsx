@@ -31,6 +31,9 @@ export const Billing: React.FC = () => {
   });
   const [lproResult, setLproResult] = useState<ReturnType<typeof calculateLPROFee> | null>(null);
 
+  // ⚡ Bolt: Cache client lookup map to avoid O(N*M) client.find calls in invoices map render loop
+  const clientMap = React.useMemo(() => new Map(clients.map(c => [c.id, c])), [clients]);
+
   const filteredCasesForDropdown = React.useMemo(() => {
     return cases.filter(c => !newInvoice.clientId || c.clientId === newInvoice.clientId);
   }, [cases, newInvoice.clientId]);
@@ -117,10 +120,13 @@ export const Billing: React.FC = () => {
       return;
     }
 
+    // ⚡ Bolt: Cache lookup maps to avoid O(N*M) lookups during export
+    const caseMap = new Map(cases.map(c => [c.id, c]));
+
     const data = invoices.map(inv => ({
       'Invoice ID': `INV-${inv.id.slice(-4)}`,
-      'Client': clients.find(c => c.id === inv.clientId)?.name || 'Unknown',
-      'Matter': cases.find(c => c.id === inv.caseId)?.title || 'General',
+      'Client': clientMap.get(inv.clientId)?.name || 'Unknown',
+      'Matter': caseMap.get(inv.caseId)?.title || 'General',
       'Description': inv.description,
       'Amount (NGN)': inv.amount,
       'Status': inv.status,
@@ -287,7 +293,7 @@ export const Billing: React.FC = () => {
               <div key={inv.id} className="bg-white dark:bg-slate-900 p-6 rounded-[24px] shadow-sm border border-slate-100 dark:border-slate-800 flex justify-between items-center hover:shadow-lg hover:border-legal-gold/50 transition-all group">
                 <div className="flex-1 pr-6">
                    <p className="text-[9px] uppercase tracking-widest font-black text-slate-400 mb-2">REF: INV-{inv.id.slice(-4)}</p>
-                   <h4 className="font-serif font-black text-xl italic text-legal-900 dark:text-white tracking-tight">{clients.find(c => c.id === inv.clientId)?.name}</h4>
+                   <h4 className="font-serif font-black text-xl italic text-legal-900 dark:text-white tracking-tight">{clientMap.get(inv.clientId)?.name}</h4>
                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-2 line-clamp-2 leading-relaxed">{inv.description}</p>
                 </div>
                 <div className="flex items-center gap-6 border-l border-slate-100 dark:border-slate-800 pl-6 h-full">

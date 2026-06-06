@@ -143,7 +143,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView }) => {
       <div className="px-4 pt-4 pb-2">
         <div className="relative group">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4 group-focus-within:text-legal-gold transition-colors" />
+          <label htmlFor="sidebar-search" className="sr-only">Search features</label>
           <input
+            id="sidebar-search"
             type="text"
             maxLength={255}
             placeholder="Search features..."

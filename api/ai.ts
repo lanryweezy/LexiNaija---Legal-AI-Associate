@@ -121,7 +121,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.error('AI API Error:', error);
     return res.status(500).json({ 
       error: 'AI service unavailable',
-      message: error.message || 'Failed to generate response'
+      message: 'An unexpected error occurred while processing your request. Please try again later.'
     });
   }
 }

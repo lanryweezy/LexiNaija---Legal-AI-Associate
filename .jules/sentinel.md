@@ -7,3 +7,8 @@
 **Vulnerability:** The Paystack webhook edge function skipped HMAC signature verification, blindly parsing the request body. This allowed any unauthenticated attacker to spoof a `charge.success` event and artificially inflate account credits or activate subscription tiers for any email address without actually making a payment.
 **Learning:** Comments indicating "Actual verification logic omitted for brevity" in production-ready edge functions leave critical billing endpoints exposed to trivially exploitable spoofing attacks.
 **Prevention:** Always cryptographically verify webhook signatures using `crypto.subtle` or provider SDKs to authenticate that incoming payloads genuinely originate from the trusted provider (e.g., Paystack, Stripe) before performing sensitive state updates.
+
+## 2024-06-06 - Sensitive Information Leakage via Error Messages
+**Vulnerability:** The serverless AI endpoint (`api/ai.ts`) was directly passing raw `error.message` from downstream services to the client in JSON responses during 500 errors.
+**Learning:** This could expose internal implementation details, downstream API provider structures, or potentially sensitive internal state information that an attacker could leverage.
+**Prevention:** Always sanitize error messages at the API boundary, logging raw errors server-side while returning generic, safe fallback messages (e.g., "An unexpected error occurred") to clients.

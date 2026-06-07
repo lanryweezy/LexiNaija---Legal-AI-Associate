@@ -34,7 +34,9 @@ export const Cases: React.FC = () => {
       type: 'Professional Fee'
   });
 
-  const getClientName = (id: string) => clients.find(c => c.id === id)?.name || 'Unknown Client';
+  // ⚡ Bolt: Cache client lookup map to avoid O(N*M) client.find calls in filteredCases map/filter loops
+  const clientMap = React.useMemo(() => new Map(clients.map(c => [c.id, c.name])), [clients]);
+  const getClientName = React.useCallback((id: string) => clientMap.get(id) || 'Unknown Client', [clientMap]);
 
   const handleOpenAdd = () => {
     setEditingId(null);
@@ -150,7 +152,7 @@ export const Cases: React.FC = () => {
         clientName.includes(query)
       );
     });
-  }, [cases, searchQuery, clients]);
+  }, [cases, searchQuery, getClientName]);
 
   return (
     <div className="p-8 max-w-7xl mx-auto animate-in fade-in duration-1000">

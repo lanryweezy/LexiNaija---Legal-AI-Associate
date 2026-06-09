@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { 
   FileText, Download, Copy, RefreshCw, CheckCircle2, Save, X, Sparkles, Plus, 
@@ -17,6 +18,7 @@ import { AiDisclaimer } from './AiDisclaimer';
 type Step = 'type' | 'parties' | 'terms' | 'preview';
 
 export const Drafter: React.FC = () => {
+  const navigate = useNavigate();
   const { showToast } = useToast();
   const { 
     cases, clients, updateCaseDocument, saveDocumentToCase, 
@@ -217,7 +219,7 @@ export const Drafter: React.FC = () => {
                 <span className="text-lg font-black text-legal-900 leading-none mt-1 uppercase italic tracking-tighter">{creditsTotal - creditsUsed} AVAILABLE</span>
             </div>
             <div className="h-10 w-px bg-slate-100"></div>
-            <button className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors">
+            <button onClick={() => navigate('/dashboard')} aria-label="Close to Dashboard" title="Close" className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none">
                 <X size={20} />
             </button>
         </div>

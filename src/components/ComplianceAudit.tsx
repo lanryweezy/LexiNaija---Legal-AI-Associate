@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FileSearch, ShieldCheck, Download, Printer, Share2, History, AlertCircle, CheckCircle2, X, Search } from 'lucide-react';
 import { useLegalStore } from '../contexts/LegalStoreContext';
 
@@ -12,6 +13,7 @@ interface AuditEntry {
 }
 
 export const ComplianceAudit: React.FC = () => {
+  const navigate = useNavigate();
   const { auditLog } = useLegalStore();
   const [filter, setFilter] = useState('All');
 
@@ -93,7 +95,7 @@ export const ComplianceAudit: React.FC = () => {
             <Printer size={16} /> Technical Report
           </button>
           <div className="w-px h-6 bg-slate-100 mx-2"></div>
-          <button className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:text-legal-900 transition-all hover:bg-white shadow-sm">
+          <button onClick={() => navigate('/dashboard')} aria-label="Close to Dashboard" title="Close" className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:text-legal-900 transition-all hover:bg-white shadow-sm focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none">
             <X size={18} />
           </button>
         </div>

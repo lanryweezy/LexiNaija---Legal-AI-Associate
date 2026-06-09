@@ -20,3 +20,6 @@
 ## 2024-05-15 - Standardizing Action Labels
 **Learning:** Found instances where common cancel actions were labeled "Abort Procedure", which could induce unnecessary cognitive load or sound overly dramatic for standard forms in a legal app.
 **Action:** Standardized cancel buttons to use the universally understood "Cancel" label to improve usability and reduce user hesitation.
+## 2024-05-30 - Full-Page Module Navigation Close Buttons
+**Learning:** Found a pattern across full-page modules (e.g., ComplianceAudit, Drafter, Evidence, Corporate, Strategy, Witness, Briefs) where the main top-right close `<X />` button lacked an `onClick` handler to navigate out of the page and accessible `aria-label`/`title`.
+**Action:** When auditing icon-only buttons, ensure they actually serve a functional purpose (like navigating back to the dashboard using `useNavigate`) and are fully accessible via keyboard (`focus-visible` ring) and screen reader (`aria-label`).

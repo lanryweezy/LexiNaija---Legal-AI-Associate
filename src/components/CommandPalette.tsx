@@ -35,19 +35,24 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
         if (query.length <= 2) return [];
         // ⚡ Bolt: Cache lowercased query outside of nested map/filter loops to prevent O(N*M) string reallocations
         const queryLower = query.toLowerCase();
-        return cases.flatMap(c =>
-            c.documents.filter(d =>
-                d.title.toLowerCase().includes(queryLower) ||
-                d.content.toLowerCase().includes(queryLower)
-            ).map(d => ({
-                id: AppView.EDITOR,
-                label: `Doc: ${d.title}`,
-                icon: FileText,
-                category: `Matter: ${c.title}`,
-                caseId: c.id,
-                docId: d.id
-            }))
-        );
+        const results: any[] = [];
+
+        // ⚡ Bolt: Use a single pass instead of flatMap + filter + map to avoid multiple O(N) arrays allocation
+        cases.forEach(c => {
+            c.documents.forEach(d => {
+                if (d.title.toLowerCase().includes(queryLower) || d.content.toLowerCase().includes(queryLower)) {
+                    results.push({
+                        id: AppView.EDITOR,
+                        label: `Doc: ${d.title}`,
+                        icon: FileText,
+                        category: `Matter: ${c.title}`,
+                        caseId: c.id,
+                        docId: d.id
+                    });
+                }
+            });
+        });
+        return results;
     }, [query, cases]);
 
     const caseNoteResults = useMemo(() => {

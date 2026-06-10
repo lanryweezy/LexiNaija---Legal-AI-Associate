@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import {
     Archive, Plus, Trash2, FileText, Image as ImageIcon, MessageSquare, Box, FileCheck,
@@ -17,6 +18,7 @@ import {
 } from '../services/s84Generator';
 
 export const Evidence: React.FC = () => {
+  const navigate = useNavigate();
   const { showToast } = useToast();
   const { cases, addEvidence, deleteEvidence, saveDocumentToCase, firmProfile, clients, creditsTotal, creditsUsed } = useLegalStore();
   const [selectedCaseId, setSelectedCaseId] = useState('');
@@ -209,7 +211,7 @@ C/O THEIR COUNSEL
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Efficiency</span>
                 <span className="text-sm font-black text-legal-900 italic tracking-tighter">{creditsTotal - creditsUsed} CR</span>
             </div>
-            <button className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 hover:text-legal-900 transition-colors">
+            <button onClick={() => navigate('/dashboard')} aria-label="Close to Dashboard" title="Close" className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 hover:text-legal-900 transition-colors focus-visible:ring-2 focus-visible:ring-legal-gold focus:outline-none">
                 <X size={18} />
             </button>
         </div>

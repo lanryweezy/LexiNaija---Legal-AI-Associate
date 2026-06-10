@@ -160,13 +160,22 @@ export const DocumentEditor: React.FC = () => {
   const allDocs = React.useMemo(() => {
     // ⚡ Bolt: Cache lowercased search term to avoid redundant O(N*M) string reallocations on every keystroke/render
     const searchTermLower = searchTerm.toLowerCase();
-    return cases.flatMap(c =>
-      c.documents.map(d => ({ ...d, caseTitle: c.title, caseId: c.id }))
-    ).filter(d =>
-      d.title.toLowerCase().includes(searchTermLower) ||
-      d.caseTitle.toLowerCase().includes(searchTermLower) ||
-      d.content.toLowerCase().includes(searchTermLower)
-    );
+    const results: any[] = [];
+
+    // ⚡ Bolt: Use a single pass instead of flatMap + filter + map to avoid multiple O(N) array allocations
+    cases.forEach(c => {
+      const caseTitleLower = c.title.toLowerCase();
+      c.documents.forEach(d => {
+        if (
+          d.title.toLowerCase().includes(searchTermLower) ||
+          caseTitleLower.includes(searchTermLower) ||
+          d.content.toLowerCase().includes(searchTermLower)
+        ) {
+          results.push({ ...d, caseTitle: c.title, caseId: c.id });
+        }
+      });
+    });
+    return results;
   }, [cases, searchTerm]);
 
   // ⚡ Bolt: Pre-group filtered documents by caseId to avoid O(N*M) filtering overhead during render
